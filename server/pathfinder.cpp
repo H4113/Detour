@@ -48,7 +48,6 @@ bool PF_Astar(PathNode *start, PathNode *goal, const std::vector<PathNode*> &nod
 	std::set<AstarNode*> openSet;
 	std::map<PathNode*, AstarNode> nodeInfo;
 	
-
 	// Init
 	nodeInfo.insert(std::pair<PathNode*, AstarNode>(start, AstarNode(start, 0, 0, heuristic(start, goal))));	
 	openSet.insert(&(nodeInfo.begin()->second));
@@ -72,7 +71,7 @@ bool PF_Astar(PathNode *start, PathNode *goal, const std::vector<PathNode*> &nod
 			result.clear();
 			while(current)
 			{
-				result.push_front(goal);
+				result.push_front(current->node);
 				current = current->parent;
 			}
 
@@ -128,6 +127,22 @@ bool PF_Astar(PathNode *start, PathNode *goal, const std::vector<PathNode*> &nod
 	return false;
 }
 
+
+
+// Test features
+
+static double testDistance(const PathNode *a, const PathNode *b)
+{
+	double diffLong = a->point->longitude - b->point->longitude;
+	double diffLat = a->point->latitude - b->point->latitude;
+	return diffLong * diffLong + diffLat * diffLat;
+}
+
+static double testHeuristic(const PathNode *a, const PathNode *b)
+{
+	return testDistance(a, b);
+}
+
 void TestPathfinder(void)
 {
 	const unsigned int W = 4;
@@ -139,7 +154,10 @@ void TestPathfinder(void)
 	std::vector<PathNode*> nodes;
 	Road roads[NROADS];
 	unsigned iroad = 0;
-
+	
+	bool ret;
+	std::deque<PathNode*> result;
+	
 	nodes.resize(W * H);
 
 	// Initialize graph
@@ -153,7 +171,7 @@ void TestPathfinder(void)
 			PathNode *node = nodes[index];
 			
 			coord[index].longitude = i;
-			coord[index].latitude = i;
+			coord[index].latitude = j;
 
 			node->point = coord + index;
 			
@@ -219,5 +237,22 @@ void TestPathfinder(void)
 			}
 		}
 
+
+	ret = PF_Astar(nodes[1], nodes[3 + 2 * W], nodes, testDistance, testHeuristic, result);
+
+	if(ret)
+	{
+		unsigned int n = 1;
+		
+		std::cout << "I found a path!" << std::endl;
+		std::cout << "Size: " << result.size() << std::endl;
+		
+		for(std::deque<PathNode*>::const_iterator it = result.begin(); it != result.end(); ++it)
+		{
+			std::cout << " n" << (n++) << ": (" << (*it)->point->longitude << ", " << (*it)->point->latitude << ")" << "    " << (*it) << std::endl;	
+		}
+	}
+	else
+		std::cout << "No path..." << std::endl;
 }
 
