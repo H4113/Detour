@@ -3,6 +3,8 @@
 
 #include "general.h"
 
+#define PORT_NUMBER 6666
+
 struct PathRequest
 {
 	Coordinates pointA;
@@ -13,5 +15,7 @@ struct PathAnswer
 {
 	PathNode* first;
 };
+
+void start(void);
 
 #endif // NETWORK_H
