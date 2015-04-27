@@ -16,6 +16,6 @@ struct PathAnswer
 	PathNode* first;
 };
 
-void start(void);
+void startServer(void);
 
 #endif // NETWORK_H

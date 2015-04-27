@@ -9,7 +9,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 
-void start(void)
+void startServer(void)
 {
 	int serverSocket, 
 		clientSocket, 
