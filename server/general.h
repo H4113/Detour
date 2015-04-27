@@ -11,13 +11,13 @@ struct Coordinates
 
 struct Neighbor
 {
-	struct Node *node;
-	unsigned int idRoad;
+	struct PathNode *node;
+	struct Road *road;
 };
 
 struct PathNode
 {
-	unsigned int point;
+	Coordinates *point;
 	std::vector<Neighbor> neighbors;
 };
 
