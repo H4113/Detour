@@ -1,17 +1,13 @@
 #ifndef PATHFINDER_H
 #define PATHFINDER_H
 
+#include "general.h"
+
 enum RoadDirection
 {
 	RD_BOTH_DIRECTIONS,
 	RD_1_TO_2,
 	RD_2_TO_1
-};
-
-struct Coordinates
-{
-	double longitude;
-	double latitude;
 };
 
 struct Road
