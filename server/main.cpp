@@ -8,6 +8,7 @@ int main(void)
 {
 	std::cout << "NetworkProject server" << std::endl;
 
+	//startServer();
 	TestPathfinder();
 
 	return 0;
