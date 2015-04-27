@@ -1,6 +1,8 @@
 #ifndef PATHFINDER_H
 #define PATHFINDER_H
 
+#include <vector>
+
 enum RoadDirection
 {
 	RD_BOTH_DIRECTIONS,
@@ -14,12 +16,24 @@ struct Coordinates
 	double latitude;
 };
 
+struct Neighbor
+{
+	struct Node *node;
+	unsigned int idRoad;
+};
+
+struct Node
+{
+	unsigned int point;
+	std::vector<Neighbor> neighbors;
+};
+
 struct Road
 {
 	double distance;
-	Coordinates *points; // Used only to send the road shape to the client
-	unsigned int node1; // Index
-	unsigned int node2; // Index
+	std::vector<Coordinates> points; // Used only to send the road shape to the client
+	unsigned int point1; // Index
+	unsigned int point2; // Index
 	RoadDirection direction;
 };
 
