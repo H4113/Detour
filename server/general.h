@@ -2,6 +2,7 @@
 #define GENERAL_H
 
 #include <vector>
+#include <deque>
 
 struct Coordinates
 {
