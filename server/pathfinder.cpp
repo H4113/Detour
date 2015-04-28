@@ -22,6 +22,13 @@ struct AstarNode
 	}
 };
 
+struct ResultNode
+{
+	Coordinates *point;
+	struct ResultNode *next;
+	Road *roadToNext;
+};
+
 static AstarNode *minNode(const std::set<AstarNode*> &openSet)
 {
 	if(openSet.size())
@@ -136,7 +143,13 @@ bool PF_Astar(PathNode *start, PathNode *goal, const std::vector<PathNode*> &nod
 	return false;
 }
 
+/*
+void PF_BuildPath(const std::deque<PathNode*> &result, std::vector<Coordinates*> &path)
+{
+	path.clear();
 
+}
+*/
 
 // Test features
 
@@ -190,8 +203,8 @@ void TestPathfinder(void)
 				Neighbor nb;
 
 				r->distance = DIST_ROAD;
-				r->point1 = index;
-				r->point2 = index - 1;
+				r->point1 = coord + index;
+				r->point2 = coord + index - 1;
 				r->direction = RD_BOTH_DIRECTIONS;
 			
 				nb.node = nodes[index - 1];
@@ -205,8 +218,8 @@ void TestPathfinder(void)
 				Neighbor nb;
 				
 				r->distance = DIST_ROAD;
-				r->point1 = index;
-				r->point2 = r->point1 + 1;
+				r->point1 = coord + index;
+				r->point2 = coord + index + 1;
 				r->direction = RD_BOTH_DIRECTIONS;
 				
 				nb.node = nodes[index + 1];
@@ -220,8 +233,8 @@ void TestPathfinder(void)
 				Neighbor nb;
 				
 				r->distance = DIST_ROAD;
-				r->point1 = index;
-				r->point2 = r->point1 - W;
+				r->point1 = coord + index;
+				r->point2 = coord + index - W;
 				r->direction = RD_BOTH_DIRECTIONS;
 			
 				nb.node = nodes[index - W];
@@ -235,8 +248,8 @@ void TestPathfinder(void)
 				Neighbor nb;
 				
 				r->distance = DIST_ROAD;
-				r->point1 = index;
-				r->point2 = r->point1 + W;
+				r->point1 = coord + index;
+				r->point2 = coord + index + W;
 				r->direction = RD_BOTH_DIRECTIONS;
 				
 				nb.node = nodes[index + W];

@@ -32,9 +32,10 @@ struct Road
 {
 	double distance;
 	std::vector<Coordinates> points; // Used only to send the road shape to the client
-	unsigned int point1; // Index
-	unsigned int point2; // Index
+	Coordinates *point1;
+	Coordinates *point2;
 	RoadDirection direction;
 };
 
 #endif // GENERAL_H
+
