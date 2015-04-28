@@ -17,9 +17,14 @@ TEST = '{\n\
 CONST_ARRON = 1000000000000000
 
 class Road:
-	def __init__(self, distance, points):
+	'''Direction : 0 == Both directions
+					1 == Logical direction
+					2 == Inverse direction 
+	'''
+	def __init__(self, distance, points, direction):
 		self.distance = float(distance);
 		self.points = points;
+		self.direction = direction
 
 class Neighbor:
 	def __init__(self, pathNode, road):
@@ -50,10 +55,10 @@ def main() :
 
 	nodes = {};
 
-	for v in obj.get('features'):
-		gid = v.get('properties').get('gid')
+	for intersection in obj.get('features'):
+		gid = intersection.get('properties').get('gid')
 
-		coord = v.get('geometry').get('coordinates')
+		coord = intersection.get('geometry').get('coordinates')
 		longitude = coord[1]*CONST_ARRON
 		latitude = coord[0]*CONST_ARRON
 		nodes[(longitude, latitude)] = PathNode(Point(longitude, latitude))
@@ -62,10 +67,21 @@ def main() :
 	with open(pathTronc, 'r') as infile:
 		obj = json.load(infile)
 
-	for v in obj.get('features'):
-		gid = v.get('properties').get('gid')
+	for troncon in obj.get('features'):
+		
+		gid = troncon.get('properties').get('gid')
+		direction = troncon.get('properties').get('senscirc')
+		if direction == 'Double':
+			direction = 0
+		elif direction == 'Conforme':
+			direction = 1
+		elif direction == 'Inverse':
+			direction = 2
+		else:
+			print 'Error when parsing direction'
 
-		list_coord = v.get('geometry').get('coordinates')
+		list_coord = troncon.get('geometry').get('coordinates')
+
 		points = []
 
 		ok = True
@@ -83,9 +99,10 @@ def main() :
 				if end == None:
 					ok = False
 		
+		'''TODO distance to calculate'''
 		distance = 0
 
-		road = Road(distance, points)
+		road = Road(distance, points, direction)
 
 		if ok:
 			n1 = Neighbor(end, road)
