@@ -36,7 +36,7 @@ void test_des()
 	if ( -2 == (DES_set_key_checked(&Key1, &SchKey1) || DES_set_key_checked(&Key2, &SchKey2) || DES_set_key_checked(&Key3, &SchKey3)))
 	{
 		printf(" Weak key ....\n");
-		return 1;
+		return;
 	}
 	
 	/* Buffers for Encryption and Decryption */
@@ -63,6 +63,8 @@ int main(void)
 
 	//startServer();
 	//TestPathfinder();
+
+	test_des();
 
 	return 0;
 }
