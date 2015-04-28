@@ -23,10 +23,10 @@ class Road:
 		self.direction = direction
 
 	def __str__(self):
-		string = "{},".format(self.distance)
+		string = "{},{},".format(self.distance, len(self.points))
 		for p in self.points:
-			string += str(p)
-		string += ",{}".format(self.direction)
+			string += str(p)+","
+		string += "{}".format(self.direction)
 		return string
 
 class Neighbor:
@@ -51,11 +51,11 @@ class PathNode:
 		self.neighbors.append(neighbor)
 
 	def __str__(self):
-		string = "{},{};".format(self.id, str(self.point))
+		string = "{},{},{},".format(self.id, str(self.point), len(self.neighbors))
 		for i, n in enumerate(self.neighbors):
 			string += "{}".format(str(n))
 			if i != len(self.neighbors)-1:
-				string += ";"
+				string += ","
 		return string
 
 class Point:
@@ -64,7 +64,7 @@ class Point:
 		self.latitude = float(latitude)
 
 	def __str__(self):
-		return '[{},{}]'.format(self.longitude/CONST_ARRON, self.latitude/CONST_ARRON)
+		return '{},{}'.format(self.longitude/CONST_ARRON, self.latitude/CONST_ARRON)
 
 def getPhiAndTheta(pointA, pointB):
 	latA = pointA.point.latitude/CONST_ARRON
