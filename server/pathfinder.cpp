@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cmath>
 
 #include <set>
 #include <map>
@@ -42,7 +43,15 @@ static AstarNode *minNode(const std::set<AstarNode*> &openSet)
 	return 0;
 }
 
-bool PF_Astar(PathNode *start, PathNode *goal, const std::vector<PathNode*> &nodes, double (*distance)(const PathNode*, const PathNode*), double (*heuristic)(const PathNode*, const PathNode*), std::deque<PathNode*> &result)
+double PF_EarthDistance(const PathNode *a, const PathNode *b)
+{
+	double ta = M_PI * (90. - a->point->latitude) / 180.;
+	double tb = M_PI * (90. - b->point->latitude) / 180.;
+
+	return sqrt(ta * ta + tb * tb - 2. * ta * tb * cos(a->point->longitude - b->point->longitude));
+}
+
+bool PF_Astar(PathNode *start, PathNode *goal, const std::vector<PathNode*> &nodes, double (*heuristic)(const PathNode*, const PathNode*), std::deque<PathNode*> &result)
 {
 	std::set<PathNode*> closedSet;
 	std::set<AstarNode*> openSet;
@@ -97,7 +106,7 @@ bool PF_Astar(PathNode *start, PathNode *goal, const std::vector<PathNode*> &nod
 						if(itnbinfo != nodeInfo.end()) // Should be always true
 						{
 							AstarNode *neighborAstar = &(itnbinfo->second);
-							double tmpGScore = current->gScore + distance(current->node, neighbor);
+							double tmpGScore = current->gScore + itnb->road->distance;
 							if(tmpGScore < neighborAstar->gScore || openSet.find(neighborAstar) == openSet.end())
 							{
 								neighborAstar->parent = current;
@@ -145,14 +154,14 @@ static double testHeuristic(const PathNode *a, const PathNode *b)
 
 void TestPathfinder(void)
 {
-	const unsigned int W = 4;
-	const unsigned int H = 4;
+	const unsigned int W = 100;
+	const unsigned int H = 100;
 	const unsigned int NROADS = W * H * 4 - 2 * (W + H);
 	const double DIST_ROAD = 1;
 
-	Coordinates coord[W * H];
+	Coordinates *coord = new Coordinates[W * H];
 	std::vector<PathNode*> nodes;
-	Road roads[NROADS];
+	Road *roads = new Road[NROADS];
 	unsigned iroad = 0;
 	
 	bool ret;
@@ -237,8 +246,7 @@ void TestPathfinder(void)
 			}
 		}
 
-
-	ret = PF_Astar(nodes[1], nodes[3 + 2 * W], nodes, testDistance, testHeuristic, result);
+	ret = PF_Astar(nodes[0], nodes[W * H - 1], nodes, PF_EarthDistance, result);
 
 	if(ret)
 	{
@@ -254,5 +262,8 @@ void TestPathfinder(void)
 	}
 	else
 		std::cout << "No path..." << std::endl;
+
+	delete [] coord;
+	delete [] roads;
 }
 
