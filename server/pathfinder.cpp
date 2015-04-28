@@ -257,7 +257,7 @@ void TestPathfinder(void)
 		
 		for(std::deque<PathNode*>::const_iterator it = result.begin(); it != result.end(); ++it)
 		{
-			std::cout << " n" << (n++) << ": (" << (*it)->point->longitude << ", " << (*it)->point->latitude << ")" << "    " << (*it) << std::endl;	
+			std::cout << " n" << (n++) << ": (" << (*it)->point->longitude << ", " << (*it)->point->latitude << ")    " << (*it) << std::endl;	
 		}
 	}
 	else
