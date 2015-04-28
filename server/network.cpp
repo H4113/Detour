@@ -1,5 +1,6 @@
 #include "network.h"
 #include "utils.h"
+#include "general.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -9,6 +10,43 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 
+static void splitArray(char* c, const char* s, char* first, char* second)
+{
+	int i = 0;
+	second = strpbrk(c, s);
+	if(second == 0) // null
+		error("ERROR, wrong request");
+	++second;
+	printf("%s", c);
+	while(*c && *c != *s)
+	{
+		printf("%s\n", c);
+		first[i++] = *c++;
+		printf("i : %d ¬¬ c : %s ¬¬ first : %s  \n", i, c, first);
+	}
+	printf("second : %s\n", second);
+}
+
+static void clientRoutine(const int& clientSocket)
+{
+	char buffer[256], 
+		first[256], 
+		second[256];
+	int n;
+	bzero(first,256);
+	bzero(second,256);
+	bzero(buffer,256);
+
+	n = read(clientSocket, buffer, 255);
+	if (n < 0)
+		error("ERROR reading from client socket");
+	printf("Here is the request from the client: %s\n",buffer);
+
+	//splitArray(buffer, "A", first, second);
+
+	printf("%s %s end", first, second);
+}
+
 void startServer(void)
 {
 	int serverSocket, 
@@ -16,8 +54,6 @@ void startServer(void)
 		portNumber;
 	struct sockaddr_in serverAddress,
 		clientAddress;
-	char buffer[256];
-	int n;
 	socklen_t clientLength;
 
 	serverSocket = socket(AF_INET, SOCK_STREAM, 0);
@@ -25,7 +61,7 @@ void startServer(void)
 		error("ERROR opening server socket");
 
 	// Maybe parameter ?
-	portNumber = PORT_NUMBER;
+	portNumber = NET_PORT_NUMBER;
 
 	serverAddress.sin_family = AF_INET;
 	serverAddress.sin_addr.s_addr = INADDR_ANY;
@@ -42,9 +78,6 @@ void startServer(void)
 		clientSocket = accept(serverSocket, (struct sockaddr *) &clientAddress, &clientLength);
 		if(clientSocket < 0) 
 			error("ERROR on accepting client socket");
-		n = read(clientSocket,buffer,255);
-		if (n < 0) 
-			error("ERROR reading from client socket");
-		printf("Here is the message: %s\n",buffer);
+		clientRoutine(clientSocket);
 	}
 }

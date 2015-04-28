@@ -29,7 +29,7 @@ BINRELEASE=$(addprefix $(RELEASEDIR)/,$(BIN))
 FLAGSDEBUG=-g -pg
 FLAGSRELEASE=-O2
 
-LIBS=-lm
+LIBS=-lm -lssl -lcrypto
 
 $(DEBUG): $(OBJDEBUG)
 	$(GPP) -o $(BINDEBUG) $(OBJDEBUG) $(LIBS)

@@ -3,7 +3,8 @@
 
 #include "general.h"
 
-#define PORT_NUMBER 6666
+#define NET_PORT_NUMBER 6666
+#define NET_SEPARATOR (char*)'A'
 
 struct PathRequest
 {
