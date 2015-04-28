@@ -62,8 +62,8 @@ int main(void)
 {
 	std::cout << "NetworkProject server" << std::endl;
 
-	startServer();
-	//TestPathfinder();
+	//startServer();
+	TestPathfinder();
 
 	//test_des();
 
