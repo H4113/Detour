@@ -243,9 +243,10 @@ static void testInitRoad(Road *road)
 		double a = (double) i / (double) (nbPoints+1);
 		Coordinates coord =
 		{
-			a * road->point1->longitude + (1.f-a) * road->point2->longitude,
-			a * road->point1->latitude + (1.f-a) * road->point2->latitude
+			(1.f-a) * road->point1->longitude + a * road->point2->longitude,
+			(1.f-a) * road->point1->latitude + a * road->point2->latitude
 		};
+
 		road->points.push_back(coord);
 	}
 }
@@ -293,7 +294,6 @@ void TestPathfinder(void)
 				r->point1 = node->point;
 				r->point2 = coord + index - 1;
 				r->direction = RD_BOTH_DIRECTIONS;
-				testInitRoad(r);
 				
 				nb.node = nodes[index - 1];
 				nb.road = r;
@@ -309,7 +309,6 @@ void TestPathfinder(void)
 				r->point1 = node->point;
 				r->point2 = coord + index + 1;
 				r->direction = RD_BOTH_DIRECTIONS;
-				testInitRoad(r);
 				
 				nb.node = nodes[index + 1];
 				nb.road = r;
@@ -325,7 +324,6 @@ void TestPathfinder(void)
 				r->point1 = node->point;
 				r->point2 = coord + index - W;
 				r->direction = RD_BOTH_DIRECTIONS;
-				testInitRoad(r);
 			
 				nb.node = nodes[index - W];
 				nb.road = r;
@@ -341,14 +339,16 @@ void TestPathfinder(void)
 				r->point1 = node->point;
 				r->point2 = coord + index + W;
 				r->direction = RD_BOTH_DIRECTIONS;
-				testInitRoad(r);
-				
+			
 				nb.node = nodes[index + W];
 				nb.road = r;
 
 				node->neighbors.push_back(nb);
 			}
 		}
+	
+	for(unsigned int i = 0; i < NROADS; ++i)
+		testInitRoad(roads + i);
 
 	ret = PF_Astar(nodes[0], nodes[W * H - 1], nodes, PF_EarthDistance, &result);
 
