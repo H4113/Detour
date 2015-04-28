@@ -2,6 +2,7 @@
 
 import json
 import os
+import math
 
 INTER_FILE = "intersections.json"
 TRONC_FILE = "troncons.json"
@@ -15,6 +16,7 @@ TEST = '{\n\
 }'
 
 CONST_ARRON = 1000000000000000
+R_EARTH = 6371000
 
 class Road:
 	'''Direction : 0 == Both directions
@@ -46,6 +48,48 @@ class Point:
 
 	def __str__(self):
 		return '{}, {}'.format(self.longitude, self.latitude)
+
+def getPhiAndTheta(pointA, pointB):
+	latA = pointA.point.latitude/CONST_ARRON
+	latB = pointB.point.latitude/CONST_ARRON
+	longA = pointA.point.longitude/CONST_ARRON
+	longB = pointB.point.longitude/CONST_ARRON
+
+	degree_to_radians = math.pi / 180.
+
+	phiA = (90. - latA) * degree_to_radians
+	phiB = (90. - latB) * degree_to_radians
+	
+	thetaA = longA * degree_to_radians
+	thetaB = longB * degree_to_radians
+
+	return {'phiA' : phiA, 'thetaA' : thetaA, 'phiB' : phiB, 'thetaB' : thetaB}
+
+def calculateDistance(pointA, pointB):
+	
+	if pointA == pointB:
+		return 0.0
+	else:
+		res = getPhiAndTheta(pointA,pointB)
+		phiA = res.get('phiA')
+		phiB = res.get('phiB')
+		thetaA = res.get('thetaA')
+		thetaB = res.get('thetaB')
+
+		cos = (math.sin(phiA)*math.sin(phiB)*math.cos(thetaA - thetaB) + math.cos(phiA)*math.cos(phiB))
+		arc = math.acos(cos)
+
+		return R_EARTH * arc
+
+'''Gautier's way'''
+def calculate2(pointA, pointB):
+	res = getPhiAndTheta(pointA,pointB)
+	phiA = res.get('phiA')
+	phiB = res.get('phiB')
+	thetaA = res.get('thetaA')
+	thetaB = res.get('thetaB')
+
+	return R_EARTH * math.sqrt(phiA * phiA + phiB * phiB - 2. * phiA * phiB * math.cos(thetaA - thetaB))
 
 def main() :
 	
@@ -98,13 +142,10 @@ def main() :
 				end = nodes.get((longitude, latitude))
 				if end == None:
 					ok = False
-		
-		'''TODO distance to calculate'''
-		distance = 0
-
-		road = Road(distance, points, direction)
-
 		if ok:
+			distance = calculateDistance(start,end)
+			road = Road(distance, points, direction)
+
 			n1 = Neighbor(end, road)
 			n2 = Neighbor(start, road)
 			start.add(n1)
