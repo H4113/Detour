@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstring>
 #include <openssl/des.h>
 
 #include "general.h"
