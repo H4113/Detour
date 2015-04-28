@@ -9,6 +9,7 @@
 #include <sys/types.h> 
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <pthread.h>
 
 static void splitArray(char* c, const char* s, char* first, char* second)
 {
@@ -27,8 +28,10 @@ static void splitArray(char* c, const char* s, char* first, char* second)
 	printf("second : %s\n", second);
 }
 
-static void clientRoutine(const int& clientSocket)
+static void *clientRoutine(void* clientSocket)
 {
+	printf("\n\tB\n");
+	int cs = *(reinterpret_cast<int*>(clientSocket));
 	char buffer[256], 
 		first[256], 
 		second[256];
@@ -37,18 +40,22 @@ static void clientRoutine(const int& clientSocket)
 	bzero(second,256);
 	bzero(buffer,256);
 
-	n = read(clientSocket, buffer, 255);
+	n = read(cs, buffer, 255);
 	if (n < 0)
 		error("ERROR reading from client socket");
 	printf("Here is the request from the client: %s\n",buffer);
 
 	//splitArray(buffer, "A", first, second);
 
-	printf("%s %s end", first, second);
+	//printf("%s %s end", first, second);
+
+	printf("\n\tE\n");
+	pthread_exit(NULL);
 }
 
 void startServer(void)
 {
+	pthread_t thread;
 	int serverSocket, 
 		clientSocket, 
 		portNumber;
@@ -78,6 +85,9 @@ void startServer(void)
 		clientSocket = accept(serverSocket, (struct sockaddr *) &clientAddress, &clientLength);
 		if(clientSocket < 0) 
 			error("ERROR on accepting client socket");
-		clientRoutine(clientSocket);
+
+		pthread_create(&thread, NULL, clientRoutine, (void *)&clientSocket);
 	}
+
+	pthread_exit(NULL);
 }

@@ -62,10 +62,10 @@ int main(void)
 {
 	std::cout << "NetworkProject server" << std::endl;
 
-	//startServer();
+	startServer();
 	//TestPathfinder();
 
-	test_des();
+	//test_des();
 
 	return 0;
 }
