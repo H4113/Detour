@@ -24,7 +24,8 @@ struct ImportedRoad
 /*
 *	Use this function to generate the map's nodes
 */
-void ImportNodes();
+void ImportNodes(std::map<Coordinates, PathNode*> &nodes, std::map<unsigned int, Road*> &roads, 
+	const std::map<unsigned int, ImportedRoad*> &importedRoads);
 
 /*
 *	Use this function to generate the map's roads 
