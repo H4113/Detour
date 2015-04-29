@@ -5,6 +5,7 @@
 #include "general.h"
 #include "pathfinder.h"
 #include "network.h"
+#include "utils.h"
 
 /* Triple DES key for Encryption and Decryption */
 DES_cblock Key1 = { 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11 };
@@ -61,6 +62,7 @@ void test_des()
 int main(void)
 {
 	std::cout << "NetworkProject server" << std::endl;
+	std::cout << ParseDouble(std::string("10.54")) << std::endl;
 
 	//startServer();
 	TestPathfinder();
