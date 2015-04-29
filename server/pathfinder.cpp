@@ -253,8 +253,8 @@ static void testInitRoad(Road *road)
 
 void TestPathfinder(void)
 {
-	const unsigned int W = 4;
-	const unsigned int H = 4;
+	const unsigned int W = 100;
+	const unsigned int H = 100;
 	const unsigned int NROADS = W * H * 4 - 2 * (W + H);
 	const double DIST_ROAD = 1;
 
@@ -373,14 +373,6 @@ void TestPathfinder(void)
 		}
 		
 		PF_FreeResult(result);
-		
-		/*
-		
-		while(result != 0)
-		{
-			result = result->next;
-		}
-		*/
 	}
 	else
 		std::cout << "No path..." << std::endl;

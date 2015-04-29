@@ -16,6 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
+function str2ab(str) {
+  var buf = new ArrayBuffer(str.length*2); // 2 bytes for each char
+  var bufView = new Uint16Array(buf);
+  for (var i=0, strLen=str.length; i<strLen; i++) {
+    bufView[i] = str.charCodeAt(i);
+  }
+  return buf;
+}
+
 var app = {
     // Application Constructor
     initialize: function() {
@@ -34,6 +44,15 @@ var app = {
     // function, we must explicitly call 'app.receivedEvent(...);'
     onDeviceReady: function() {
         app.receivedEvent('deviceready');
+
+        chrome.socket.create('tcp', {}, function(createInfo) {
+          chrome.socket.connect(createInfo.socketId, "192.168.1.199", 6666, function(result) {
+            alert("prout");
+            chrome.socket.write(createInfo.socketId, str2ab("lauwl"), function() {
+              alert("ouiiiii");
+            });
+          });
+        });
     },
     // Update DOM on a Received Event
     receivedEvent: function(id) {
