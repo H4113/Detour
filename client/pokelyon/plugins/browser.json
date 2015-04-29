@@ -1,0 +1,31 @@
+{
+    "prepare_queue": {
+        "installed": [],
+        "uninstalled": []
+    },
+    "config_munge": {
+        "files": {}
+    },
+    "installed_plugins": {
+        "com.tlantic.plugins.socket": {
+            "PACKAGE_NAME": "com.h4113.pokelyon"
+        },
+        "cordova-plugin-whitelist": {
+            "PACKAGE_NAME": "com.h4113.pokelyon"
+        },
+        "org.chromium.socket": {
+            "PACKAGE_NAME": "com.h4113.pokelyon"
+        },
+        "org.apache.cordova.geolocation": {
+            "PACKAGE_NAME": "com.h4113.pokelyon"
+        }
+    },
+    "dependent_plugins": {
+        "org.chromium.common": {
+            "PACKAGE_NAME": "com.h4113.pokelyon"
+        },
+        "org.chromium.system.network": {
+            "PACKAGE_NAME": "com.h4113.pokelyon"
+        }
+    }
+}
