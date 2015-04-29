@@ -1,0 +1,50 @@
+{
+    "com.tlantic.plugins.socket": {
+        "source": {
+            "type": "registry",
+            "id": "com.tlantic.plugins.socket"
+        },
+        "is_top_level": true,
+        "variables": {}
+    },
+    "cordova-plugin-whitelist": {
+        "source": {
+            "type": "registry",
+            "id": "cordova-plugin-whitelist@1"
+        },
+        "is_top_level": true,
+        "variables": {}
+    },
+    "org.chromium.socket": {
+        "source": {
+            "type": "registry",
+            "id": "org.chromium.socket"
+        },
+        "is_top_level": true,
+        "variables": {}
+    },
+    "org.chromium.common": {
+        "source": {
+            "type": "registry",
+            "id": "org.chromium.common"
+        },
+        "is_top_level": false,
+        "variables": {}
+    },
+    "org.chromium.system.network": {
+        "source": {
+            "type": "registry",
+            "id": "org.chromium.system.network"
+        },
+        "is_top_level": false,
+        "variables": {}
+    },
+    "org.apache.cordova.geolocation": {
+        "source": {
+            "type": "registry",
+            "id": "org.apache.cordova.geolocation"
+        },
+        "is_top_level": true,
+        "variables": {}
+    }
+}
