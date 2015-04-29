@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cstdlib>
+#include <sstream>
 
 #include "utils.h"
 #include "general.h"
@@ -16,6 +17,22 @@ void error(const char *msg)
 {
 	std::cerr << msg << std::endl;
 	exit(1);
+}
+
+double ParseDouble(const std::string &s)
+{
+	std::istringstream iss(s);
+	double ret;
+	iss >> ret;
+	return ret;
+}
+
+unsigned int ParseUint(const std::string &s)
+{
+	std::istringstream iss(s);
+	unsigned int ret;
+	iss >> ret;
+	return ret;
 }
 
 PathNode *GetClosestNode(const std::map<Coordinates, PathNode*> &nodes, const Coordinates &coord)
