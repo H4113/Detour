@@ -156,6 +156,7 @@ def parseFiles() :
 		for i, coord in enumerate(list_coord):
 			longitude = coord[1]*CONST_ARRON
 			latitude = coord[0]*CONST_ARRON
+			points.append(Point(longitude, latitude))
 			if i == 0:
 				start = nodes.get((longitude, latitude))
 				if start == None:
@@ -164,8 +165,6 @@ def parseFiles() :
 				end = nodes.get((longitude, latitude))
 				if end == None:
 					ok = False
-			else:
-				points.append(Point(longitude, latitude))
 		if ok:
 			distance = calculateDistance(start,end)
 			road = Road(distance, points, direction)
