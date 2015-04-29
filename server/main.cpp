@@ -65,15 +65,10 @@ int main(void)
 	std::cout << "NetworkProject server" << std::endl;
 	std::cout << ParseDouble(std::string("10.54")) << std::endl;
 
-	startServer();
-	//TestPathfinder();
+	//startServer();
+	TestPathfinderRealData();
 
 	//test_des();
-
-	std::map<Coordinates, PathNode*> nodes;
-	std::map<unsigned int, Road*> roads;
-
-	ImportData(roads,nodes);
 
 	return 0;
 }
