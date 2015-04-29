@@ -3,6 +3,8 @@
 
 #include "general.h"
 
+#include <stdint.h>
+
 #define NET_PORT_NUMBER 6666
 #define NET_SEPARATOR (char*)'A'
 
@@ -19,11 +21,12 @@ struct PathAnswer
 
 union PathRequest
 {
-	char buffer[20];
+	char buffer[40];
 	struct
 	{
-		int type;
-		int junk;
+		int16_t type;
+		int16_t junk;
+		int32_t junk2;
 		PathR path;
 	};
 };

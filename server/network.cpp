@@ -40,10 +40,13 @@ static void *clientRoutine(void* clientSocket)
 	bzero(second,256);
 	bzero(pr.buffer,20);
 
-	n = read(cs, pr.buffer, 19);
+	n = read(cs, pr.buffer, 40);
 	if (n < 0)
 		error("ERROR reading from client socket");
 	printf("Here is the request from the client: %d %d\n",pr.type,pr.junk);
+	printf("%lf %lf %lf %lf\n", pr.path.pointA.longitude, pr.path.pointA.latitude, pr.path.pointB.longitude, pr.path.pointB.latitude);
+	for(int i = 0; i < 40; ++i)
+		printf("%02x", pr.buffer[i]);
 
 	//splitArray(buffer, "A", first, second);
 
