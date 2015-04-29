@@ -18,8 +18,8 @@
  */
 
 function str2ab(str) {
-  var buf = new ArrayBuffer(str.length*2); // 2 bytes for each char
-  var bufView = new Uint16Array(buf);
+  var buf = new ArrayBuffer(str.length);
+  var bufView = new Uint8Array(buf);
   for (var i=0, strLen=str.length; i<strLen; i++) {
     bufView[i] = str.charCodeAt(i);
   }
@@ -48,8 +48,9 @@ var app = {
         chrome.socket.create('tcp', {}, function(createInfo) {
           chrome.socket.connect(createInfo.socketId, "192.168.1.199", 6666, function(result) {
             alert("prout");
-            chrome.socket.write(createInfo.socketId, str2ab("lauwl"), function() {
+            chrome.socket.write(createInfo.socketId, str2ab("lauwlnkxhkldhqkjhdkl<kjhqklsik"), function() {
               alert("ouiiiii");
+              chrome.socket.disconnect(createInfo.socketId);
             });
           });
         });
