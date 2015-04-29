@@ -70,12 +70,11 @@ int main(void)
 
 	//test_des();
 
-	std::map<unsigned int, ImportedRoad*> importedRoads;
 	std::map<Coordinates, PathNode*> nodes;
 	std::map<unsigned int, Road*> roads;
 
-	ImportRoads(importedRoads);
-	ImportNodes(nodes, roads, importedRoads);
+	ImportData(roads,nodes);
+
 	return 0;
 }
 
