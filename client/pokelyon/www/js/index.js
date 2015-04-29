@@ -26,6 +26,18 @@ function str2ab(str) {
   return buf;
 }
 
+function sendQuery(buf) {
+    chrome.socket.create('tcp', {}, function(createInfo) {
+      chrome.socket.connect(createInfo.socketId, "192.168.1.199", 6666, function(result) {
+        alert("prout");
+        chrome.socket.write(createInfo.socketId, buf, function() {
+          alert("ouiiiii");
+          chrome.socket.disconnect(createInfo.socketId);
+        });
+      });
+    });
+}
+
 var app = {
     // Application Constructor
     initialize: function() {
@@ -44,27 +56,28 @@ var app = {
     // function, we must explicitly call 'app.receivedEvent(...);'
     onDeviceReady: function() {
         app.receivedEvent('deviceready');
-		var buf = new ArrayBuffer(4+4*4);
-		var type_req = new Int16Array(buf,0,1);
-		var type_junk = new Int16Array(buf,2,1);
-		var gpscoord = new Float32Array(buf,4,4);
-		
-		type_req = 0;type_junk = 42;
+    		var buf = new ArrayBuffer(4+4*4);
+    		var type_req = new Int16Array(buf,0,1);
+    		var type_junk = new Int16Array(buf,2,1);
+    		var gpscoord = new Float32Array(buf,4,4);
+    		
+    		type_req = 0;
+        type_junk = 42;
 
-		
-		var onSuccess = function(position) {
+    		var onSuccess = function(position) {
             alert('Latitude: '          + position.coords.latitude          + '\n' +
-                  'Longitude: '         + position.coords.longitude         + '\n' +
-                  'Altitude: '          + position.coords.altitude          + '\n' +
-                  'Accuracy: '          + position.coords.accuracy          + '\n' +
-                  'Altitude Accuracy: ' + position.coords.altitudeAccuracy  + '\n' +
-                  'Heading: '           + position.coords.heading           + '\n' +
-                  'Speed: '             + position.coords.speed             + '\n' +
-                  'Timestamp: '         + position.timestamp                + '\n');
-			gpscoord[0] = position.coords.latitude;
-			gpscoord[1] = position.coords.longitude; 
-			gpscoord[2] = position.coords.latitude;
-			gpscoord[3] = position.coords.longitude; 
+                      'Longitude: '         + position.coords.longitude         + '\n' +
+                      'Altitude: '          + position.coords.altitude          + '\n' +
+                      'Accuracy: '          + position.coords.accuracy          + '\n' +
+                      'Altitude Accuracy: ' + position.coords.altitudeAccuracy  + '\n' +
+                      'Heading: '           + position.coords.heading           + '\n' +
+                      'Speed: '             + position.coords.speed             + '\n' +
+                      'Timestamp: '         + position.timestamp                + '\n');
+      			/*gpscoord[0] = position.coords.latitude;
+      			gpscoord[1] = position.coords.longitude; 
+      			gpscoord[2] = position.coords.latitude;
+      			gpscoord[3] = position.coords.longitude;*/
+            sendQuery(buf);
         };
 
         // onError Callback receives a PositionError object
@@ -75,21 +88,6 @@ var app = {
         }
 
         navigator.geolocation.getCurrentPosition(onSuccess, onError);
-		
-		
-		
-        chrome.socket.create('tcp', {}, function(createInfo) {
-          chrome.socket.connect(createInfo.socketId, "192.168.1.199", 6666, function(result) {
-            alert("prout");
-            chrome.socket.write(createInfo.socketId, buf, function() {
-              alert("ouiiiii");
-              chrome.socket.disconnect(createInfo.socketId);
-            });
-          });
-        });
-
-
-
     },
     // Update DOM on a Received Event
     receivedEvent: function(id) {

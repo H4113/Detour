@@ -32,18 +32,18 @@ static void *clientRoutine(void* clientSocket)
 {
 	printf("\n\tB\n");
 	int cs = *(reinterpret_cast<int*>(clientSocket));
-	char buffer[256], 
-		first[256], 
+	PathRequest pr;
+	char first[256], 
 		second[256];
 	int n;
 	bzero(first,256);
 	bzero(second,256);
-	bzero(buffer,256);
+	bzero(pr.buffer,20);
 
-	n = read(cs, buffer, 255);
+	n = read(cs, pr.buffer, 19);
 	if (n < 0)
 		error("ERROR reading from client socket");
-	printf("Here is the request from the client: %s\n",buffer);
+	printf("Here is the request from the client: %d %d\n",pr.type,pr.junk);
 
 	//splitArray(buffer, "A", first, second);
 

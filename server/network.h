@@ -6,7 +6,7 @@
 #define NET_PORT_NUMBER 6666
 #define NET_SEPARATOR (char*)'A'
 
-struct PathRequest
+struct PathR
 {
 	Coordinates pointA;
 	Coordinates pointB;
@@ -15,6 +15,17 @@ struct PathRequest
 struct PathAnswer
 {
 	PathNode* first;
+};
+
+union PathRequest
+{
+	char buffer[20];
+	struct
+	{
+		int type;
+		int junk;
+		PathR path;
+	};
 };
 
 void startServer(void);
