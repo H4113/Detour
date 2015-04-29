@@ -63,7 +63,7 @@ void startServer(void)
 		clientAddress;
 	socklen_t clientLength;
 
-	serverSocket = socket(AF_INET, SOCK_STREAM, 0);
+	serverSocket = socket(PF_INET, SOCK_STREAM, 0);
 	if(serverSocket < 0) 
 		error("ERROR opening server socket");
 
