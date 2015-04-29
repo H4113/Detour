@@ -70,7 +70,8 @@ int main(void)
 
 	//test_des();
 
-	ImportRoads();
+	std::map<unsigned int, ImportedRoad*> roads;
+	ImportRoads(roads);
 
 	return 0;
 }

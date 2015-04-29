@@ -7,13 +7,14 @@
 #include "import.h"
 #include "utils.h"
 
-void ImportRoads() {
+void ImportRoads(std::map<unsigned int, ImportedRoad*> &roads) {
 	std::string line;
 	char str[20] = "";
 
 	strcat(str,PATH_FILE);
 	strcat(str, ROADS_FILE);
 	std::ifstream file (str);
+
 
 	if(file.is_open()) {
 		
@@ -22,7 +23,7 @@ void ImportRoads() {
 			std::string part;
 			unsigned int i = 0;
 			
-			ImportedRoad road;
+			ImportedRoad* road = new ImportedRoad();
 
 			unsigned int id = 0;
 			double distance = 0;
@@ -69,13 +70,15 @@ void ImportRoads() {
 							break;
 						}
 				}
-				
-				road.distance = distance;
-				road.points = points;
-				road.point1 = id_start;
-				road.point2 = id_end;
 				i++;
 			}
+			road->distance = distance;
+			road->points = points;
+			road->point1 = id_start;
+			road->point2 = id_end;
+			road->direction = direction;
+
+			roads.insert(std::pair<unsigned int,ImportedRoad*>(id,road));
 		}
 	}
 }
