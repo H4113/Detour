@@ -32,6 +32,7 @@ enum RoadDirection
 struct Road
 {
 	double distance;
+	//TODO change this to vector<> *points (will optimize copying)
 	std::vector<Coordinates> points; // Used only to send the road shape to the client
 	Coordinates *point1;
 	Coordinates *point2;
