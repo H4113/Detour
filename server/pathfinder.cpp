@@ -87,6 +87,11 @@ void PathFinder::Load(void)
 	std::cout << "Importing data..." << std::endl;
 	ImportData(roads, nodes);
 	std::cout << "Data imported!" << std::endl;
+
+	for(std::map<Coordinates, PathNode*>::const_iterator it = nodes.begin();
+		it != nodes.end();
+		++it)
+		std::cout << it->second->neighbors.size() << std::endl;
 }
 
 bool PathFinder::Astar(const Coordinates &coordStart, const Coordinates &coordGoal)
@@ -99,14 +104,17 @@ bool PathFinder::Astar(const Coordinates &coordStart, const Coordinates &coordGo
 
 	if(!(start = getClosestNode(coordStart)))
 	{
-		std::cout << "[Pathfinder] Couldn't find a node close to start (" << coordStart.longitude << ", " << coordStart.latitude << ")" << std::endl;
+		std::cerr << "[Pathfinder] Couldn't find a node close to start (" << coordStart.longitude << ", " << coordStart.latitude << ")" << std::endl;
 		return false;
 	}
 	if(!(goal = getClosestNode(coordGoal)))
 	{
-		std::cout << "[Pathfinder] Couldn't find a node close to goal (" << coordGoal.longitude << ", " << coordGoal.latitude << ")" << std::endl;
+		std::cerr << "[Pathfinder] Couldn't find a node close to goal (" << coordGoal.longitude << ", " << coordGoal.latitude << ")" << std::endl;
 		return false;
 	}
+
+	std::cout << "start: (" << start->point->longitude << ", " << start->point->latitude << ")" << std::endl;
+	std::cout << "goal: (" << goal->point->longitude << ", " << goal->point->latitude << ")" << std::endl;
 	
 	// Init
 	nodeInfo.insert(std::pair<PathNode*, AstarNode>(start, AstarNode(start, 0, 0, heuristic(start, goal))));	
@@ -158,6 +166,8 @@ bool PathFinder::Astar(const Coordinates &coordStart, const Coordinates &coordGo
 
 				closedSet.insert(current->node);
 
+				std::cout << "neighbors count: " << current->node->neighbors.size() << std::endl;
+
 				for(std::vector<Neighbor>::iterator itnb = current->node->neighbors.begin();
 				    itnb != current->node->neighbors.end();
 					++itnb)
@@ -197,6 +207,8 @@ bool PathFinder::Astar(const Coordinates &coordStart, const Coordinates &coordGo
 			}
 		}
 	}
+
+	std::cerr << "[Pathfinder] Unable to find a path between the points..." << std::endl;
 
 	return false;
 }
@@ -440,8 +452,8 @@ void TestPathfinder(void)
 
 void TestPathfinderRealData(void)
 {
-	const Coordinates COORD_START = {45.42111, 4.1};
-	const Coordinates COORD_GOAL = {45.2842, 4.1804};
+	const Coordinates COORD_START = {45.42111, 4.78};
+	const Coordinates COORD_GOAL = {45.2842, 4.92};
 	
 	PathFinder pf;
 	std::vector<Coordinates> path;
