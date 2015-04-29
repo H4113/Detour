@@ -22,19 +22,19 @@ struct ImportedRoad
 };
 
 /*
-*	Use this function to generate the map's nodes
+*	Use this function to generate all the nodes and roads 
+*/
+void ImportData(std::map<unsigned int, Road*> &roads, std::map<Coordinates, PathNode*> &nodes);
+
+/*
+*	Method that generate the map's nodes
 */
 void ImportNodes(std::map<Coordinates, PathNode*> &nodes, std::map<unsigned int, Road*> &roads, 
 	const std::map<unsigned int, ImportedRoad*> &importedRoads);
 
 /*
-*	Use this function to generate the map's roads 
+*	Method that generate the map's roads 
 */
 void ImportRoads(std::map<unsigned int, ImportedRoad*> &roads);
-
-/*
-*	This function generate a road from a string
-*/
-void ParseRoadLine(std::string);
 
 #endif // IMPORT_H
