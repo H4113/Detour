@@ -5,6 +5,7 @@
 #include "general.h"
 #include "pathfinder.h"
 #include "network.h"
+#include "import.h"
 
 /* Triple DES key for Encryption and Decryption */
 DES_cblock Key1 = { 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11 };
@@ -66,6 +67,8 @@ int main(void)
 	TestPathfinder();
 
 	//test_des();
+
+	ImportRoads();
 
 	return 0;
 }
