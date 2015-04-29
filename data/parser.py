@@ -6,12 +6,15 @@ import math
 
 INTER_FILE = "intersections.json"
 TRONC_FILE = "troncons.json"
-OUT_FILE = "out.txt"
+ROADS_OUT_FILE = "roads.out"
+NODES_OUT_FILE = "nodes.out"
 
 CONST_ARRON = 1000000000000000
 R_EARTH = 6371000
 
 class Road:
+	ids = 0
+
 	'''Direction : 
 			0 == Both directions
 			1 == Logical direction
@@ -21,21 +24,23 @@ class Road:
 		self.distance = float(distance)
 		self.points = points
 		self.direction = direction
+		self.id = Road.ids
+		Road.ids += 1
 
 	def __str__(self):
-		string = "{},{},".format(self.distance, len(self.points))
+		string = "{},{},{},".format(self.id, self.distance, len(self.points))
 		for p in self.points:
 			string += str(p)+","
 		string += "{}".format(self.direction)
 		return string
 
 class Neighbor:
-	def __init__(self, pathNode, road):
+	def __init__(self, pathNode, id_road):
 		self.neighbor = pathNode
-		self.road = road
+		self.id_road = id_road
 
 	def __str__(self):
-		string = "{},{}".format(self.neighbor.id, str(self.road))
+		string = "{},{}".format(self.neighbor.id, self.id_road)
 		return string
 
 class PathNode:
@@ -65,6 +70,17 @@ class Point:
 
 	def __str__(self):
 		return '{},{}'.format(self.longitude/CONST_ARRON, self.latitude/CONST_ARRON)
+
+def getDirection(direction):
+	if direction == 'Double':
+		return 0
+	elif direction == 'Conforme':
+		return 1
+	elif direction == 'Inverse':
+		return 2
+	else:
+		print 'Error when parsing direction'
+		return -1
 
 def getPhiAndTheta(pointA, pointB):
 	latA = pointA.point.latitude/CONST_ARRON
@@ -115,10 +131,9 @@ def parseFiles() :
 		obj = json.load(infile)
 
 	nodes = {}
+	roads = {}
 
 	for intersection in obj.get('features'):
-		gid = intersection.get('properties').get('gid')
-
 		coord = intersection.get('geometry').get('coordinates')
 		longitude = coord[1]*CONST_ARRON
 		latitude = coord[0]*CONST_ARRON
@@ -129,17 +144,8 @@ def parseFiles() :
 		obj = json.load(infile)
 
 	for troncon in obj.get('features'):
-		
-		gid = troncon.get('properties').get('gid')
 		direction = troncon.get('properties').get('senscirc')
-		if direction == 'Double':
-			direction = 0
-		elif direction == 'Conforme':
-			direction = 1
-		elif direction == 'Inverse':
-			direction = 2
-		else:
-			print 'Error when parsing direction'
+		direction = getDirection(direction)
 
 		list_coord = troncon.get('geometry').get('coordinates')
 
@@ -162,21 +168,29 @@ def parseFiles() :
 		if ok:
 			distance = calculateDistance(start,end)
 			road = Road(distance, points, direction)
+			roads[road.id] = road
 
-			n1 = Neighbor(end, road)
-			n2 = Neighbor(start, road)
+			n1 = Neighbor(end, road.id)
+			n2 = Neighbor(start, road.id)
 			start.add(n1)
 			end.add(n2)
 
-	return nodes
+	return (nodes,roads)
 
-def encodeNodes(nodes):
-	with open(OUT_FILE, 'w') as outfile:
+def encodeNodes(nodes, roads):
+	with open(NODES_OUT_FILE, 'w') as outfile:
 		for n in nodes.itervalues():
-			outfile.write(str(n)+"\n");
+			outfile.write(str(n)+"\n")
+
+	with open(ROADS_OUT_FILE, 'w') as outfile:
+		for r in roads.itervalues():
+			outfile.write(str(r)+"\n")
 
 
 if __name__ == "__main__":
 	nodes = {}
-	nodes = parseFiles()
-	encodeNodes(nodes)
+	roads = {}
+	res = parseFiles()
+	nodes = res[0]
+	roads = res[1]
+	encodeNodes(nodes, roads)
