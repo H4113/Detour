@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstdlib>
 #include <cmath>
 
 #include <set>
@@ -10,9 +11,10 @@ struct AstarNode
 {
 	PathNode *node;
 	struct AstarNode *parent;
+	Road *roadToParent;
 	double gScore;
 	double fScore;
-	
+
 	AstarNode(PathNode *n, AstarNode *p, double g, double f):
 		node(n),
 		parent(p),
@@ -58,7 +60,7 @@ double PF_EarthDistance(const PathNode *a, const PathNode *b)
 	return sqrt(ta * ta + tb * tb - 2. * ta * tb * cos(a->point->longitude - b->point->longitude));
 }
 
-bool PF_Astar(PathNode *start, PathNode *goal, const std::vector<PathNode*> &nodes, double (*heuristic)(const PathNode*, const PathNode*), std::deque<PathNode*> &result)
+bool PF_Astar(PathNode *start, PathNode *goal, const std::vector<PathNode*> &nodes, double (*heuristic)(const PathNode*, const PathNode*), ResultNode **result)
 {
 	std::set<PathNode*> closedSet;
 	std::set<AstarNode*> openSet;
@@ -84,12 +86,24 @@ bool PF_Astar(PathNode *start, PathNode *goal, const std::vector<PathNode*> &nod
 		AstarNode *current = minNode(openSet);
 		if(current->node == goal) // We're ok, ready to build the path
 		{
-			result.clear();
+			ResultNode *rnode = 0;
+			Road *road = 0;
+
 			while(current)
 			{
-				result.push_front(current->node);
+				ResultNode *previous = rnode;
+
+				rnode = new ResultNode;
+				rnode->point = current->node->point;
+				rnode->next = previous;
+				rnode->roadToNext = road;
+
+				road = current->roadToParent;
+
 				current = current->parent;
 			}
+
+			*result = rnode;
 
 			return true;
 		}
@@ -114,9 +128,11 @@ bool PF_Astar(PathNode *start, PathNode *goal, const std::vector<PathNode*> &nod
 						{
 							AstarNode *neighborAstar = &(itnbinfo->second);
 							double tmpGScore = current->gScore + itnb->road->distance;
+							
 							if(tmpGScore < neighborAstar->gScore || openSet.find(neighborAstar) == openSet.end())
 							{
 								neighborAstar->parent = current;
+								neighborAstar->roadToParent = itnb->road;
 								neighborAstar->gScore = tmpGScore;
 								neighborAstar->fScore = tmpGScore + heuristic(neighbor, goal);
 								
@@ -143,13 +159,65 @@ bool PF_Astar(PathNode *start, PathNode *goal, const std::vector<PathNode*> &nod
 	return false;
 }
 
-/*
-void PF_BuildPath(const std::deque<PathNode*> &result, std::vector<Coordinates*> &path)
+bool PF_BuildPath(const ResultNode *result, std::vector<Coordinates> &path)
 {
 	path.clear();
+	
+	while(result)
+	{
+		path.push_back((*result->point));
 
+		if(result->next != 0)
+		{
+			Road *road = result->roadToNext;
+			if(road == 0)
+			{
+				result = result->next;
+				continue;
+			}
+
+			if(road->point1 == result->point && road->point2 == result->next->point) // 1 -> 2
+			{
+				for(std::vector<Coordinates>::const_iterator it = road->points.begin();
+					it != road->points.end();
+					++it)
+				{
+					path.push_back(*it);
+				}
+			}
+			else if(road->point1 == result->next->point && road->point2 == result->point) // 2 -> 1
+			{
+				for(std::vector<Coordinates>::const_reverse_iterator it = road->points.rbegin();
+					it != road->points.rend();
+					++it)
+				{
+					path.push_back(*it);
+				}
+			}
+			else
+			{
+				std::cout << "[Pathfinder] Cannot build path..." << std::endl;
+				std::cout << "(" << road->point1 << ", " << road->point2 << ") VS (" << result->point << ", " << result->next->point << ")" << std::endl;
+				return false;
+			}
+		}
+
+		result = result->next;
+	}
+
+	return true;
 }
-*/
+
+void PF_FreeResult(ResultNode *node)
+{
+	ResultNode *tmp;
+	while(node)
+	{
+		tmp = node;
+		node = node->next;
+		delete tmp;
+	}
+}
 
 // Test features
 
@@ -165,6 +233,24 @@ static double testHeuristic(const PathNode *a, const PathNode *b)
 	return testDistance(a, b);
 }
 
+static void testInitRoad(Road *road)
+{
+	const unsigned int MAX_INTERM_POINTS = 4;
+
+	unsigned int nbPoints = rand() % (MAX_INTERM_POINTS+1);
+	for(unsigned int i = 1; i <= nbPoints; ++i)
+	{
+		double a = (double) i / (double) (nbPoints+1);
+		Coordinates coord =
+		{
+			(1.f-a) * road->point1->longitude + a * road->point2->longitude,
+			(1.f-a) * road->point1->latitude + a * road->point2->latitude
+		};
+
+		road->points.push_back(coord);
+	}
+}
+
 void TestPathfinder(void)
 {
 	const unsigned int W = 100;
@@ -178,9 +264,11 @@ void TestPathfinder(void)
 	unsigned iroad = 0;
 	
 	bool ret;
-	std::deque<PathNode*> result;
+	ResultNode *result;
 	
 	nodes.resize(W * H);
+
+	srand(time(0));
 
 	// Initialize graph
 	for(unsigned int i = 0; i < W * H; ++i)
@@ -203,10 +291,10 @@ void TestPathfinder(void)
 				Neighbor nb;
 
 				r->distance = DIST_ROAD;
-				r->point1 = coord + index;
+				r->point1 = node->point;
 				r->point2 = coord + index - 1;
 				r->direction = RD_BOTH_DIRECTIONS;
-			
+				
 				nb.node = nodes[index - 1];
 				nb.road = r;
 
@@ -218,7 +306,7 @@ void TestPathfinder(void)
 				Neighbor nb;
 				
 				r->distance = DIST_ROAD;
-				r->point1 = coord + index;
+				r->point1 = node->point;
 				r->point2 = coord + index + 1;
 				r->direction = RD_BOTH_DIRECTIONS;
 				
@@ -233,7 +321,7 @@ void TestPathfinder(void)
 				Neighbor nb;
 				
 				r->distance = DIST_ROAD;
-				r->point1 = coord + index;
+				r->point1 = node->point;
 				r->point2 = coord + index - W;
 				r->direction = RD_BOTH_DIRECTIONS;
 			
@@ -248,30 +336,43 @@ void TestPathfinder(void)
 				Neighbor nb;
 				
 				r->distance = DIST_ROAD;
-				r->point1 = coord + index;
+				r->point1 = node->point;
 				r->point2 = coord + index + W;
 				r->direction = RD_BOTH_DIRECTIONS;
-				
+			
 				nb.node = nodes[index + W];
 				nb.road = r;
 
 				node->neighbors.push_back(nb);
 			}
 		}
+	
+	for(unsigned int i = 0; i < NROADS; ++i)
+		testInitRoad(roads + i);
 
-	ret = PF_Astar(nodes[0], nodes[W * H - 1], nodes, PF_EarthDistance, result);
+	ret = PF_Astar(nodes[0], nodes[W * H - 1], nodes, PF_EarthDistance, &result);
 
 	if(ret)
 	{
-		unsigned int n = 1;
+		std::vector<Coordinates> path;
 		
 		std::cout << "I found a path!" << std::endl;
-		std::cout << "Size: " << result.size() << std::endl;
-		
-		for(std::deque<PathNode*>::const_iterator it = result.begin(); it != result.end(); ++it)
+		std::cout << "Building path..." << std::endl;
+
+		if(PF_BuildPath(result, path))
 		{
-			std::cout << " n" << (n++) << ": (" << (*it)->point->longitude << ", " << (*it)->point->latitude << ")    " << (*it) << std::endl;	
+			unsigned int n = 1;
+			
+			std::cout << "Path size: " << path.size() << std::endl;
+			for(std::vector<Coordinates>::const_iterator it = path.begin();
+				it != path.end();
+				++it)
+			{
+				std::cout << " n" << (n++) << ": (" << it->longitude << ", " << it->latitude << ")" << std::endl;	
+			}
 		}
+		
+		PF_FreeResult(result);
 	}
 	else
 		std::cout << "No path..." << std::endl;
