@@ -24,13 +24,6 @@ struct AstarNode
 	}
 };
 
-struct ResultNode
-{
-	Coordinates *point;
-	struct ResultNode *next;
-	Road *roadToNext;
-};
-
 static AstarNode *minNode(const std::set<AstarNode*> &openSet)
 {
 	if(openSet.size())
@@ -52,12 +45,17 @@ static AstarNode *minNode(const std::set<AstarNode*> &openSet)
 	return 0;
 }
 
+double PF_EarthDistance(const Coordinates &a, const Coordinates &b)
+{
+	double ta = M_PI * (90. - a.latitude) / 180.;
+	double tb = M_PI * (90. - b.latitude) / 180.;
+
+	return sqrt(ta * ta + tb * tb - 2. * ta * tb * cos(a.longitude - b.longitude));
+}
+
 double PF_EarthDistance(const PathNode *a, const PathNode *b)
 {
-	double ta = M_PI * (90. - a->point->latitude) / 180.;
-	double tb = M_PI * (90. - b->point->latitude) / 180.;
-
-	return sqrt(ta * ta + tb * tb - 2. * ta * tb * cos(a->point->longitude - b->point->longitude));
+	return PF_EarthDistance(*(a->point), *(b->point));
 }
 
 bool PF_Astar(PathNode *start, PathNode *goal, const std::vector<PathNode*> &nodes, double (*heuristic)(const PathNode*, const PathNode*), ResultNode **result)
