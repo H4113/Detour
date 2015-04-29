@@ -20,15 +20,18 @@ class Road:
 			1 == Logical direction
 			2 == Inverse direction
 	'''
-	def __init__(self, distance, points, direction):
+	def __init__(self, distance, id_start, id_end, points, direction):
 		self.distance = float(distance)
+		self.id_start = id_start
+		self.id_end = id_end
 		self.points = points
 		self.direction = direction
 		self.id = Road.ids
 		Road.ids += 1
 
 	def __str__(self):
-		string = "{},{},{},".format(self.id, self.distance, len(self.points))
+		string = "{},{},{},{},{},".format(self.id, self.distance, str(self.id_start), 
+			str(self.id_end), len(self.points))
 		for p in self.points:
 			string += str(p)+","
 		string += "{}".format(self.direction)
@@ -156,7 +159,6 @@ def parseFiles() :
 		for i, coord in enumerate(list_coord):
 			longitude = coord[1]*CONST_ARRON
 			latitude = coord[0]*CONST_ARRON
-			points.append(Point(longitude, latitude))
 			if i == 0:
 				start = nodes.get((longitude, latitude))
 				if start == None:
@@ -165,9 +167,11 @@ def parseFiles() :
 				end = nodes.get((longitude, latitude))
 				if end == None:
 					ok = False
+			else:
+				points.append(Point(longitude, latitude))
 		if ok:
 			distance = calculateDistance(start,end)
-			road = Road(distance, points, direction)
+			road = Road(distance, start.id, end.id, points, direction)
 			roads[road.id] = road
 
 			n1 = Neighbor(end, road.id)
