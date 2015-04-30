@@ -42,6 +42,8 @@ function sendQuery(buf) {
               alert("ouiiiii ");
               chrome.socket.read(socketId, 1000, function(readInfo) {
                 alert(arrayBufferToString(readInfo.data));
+				var path = parseData(readInfo.data);
+				drawPathOnMap(Map.map,path);
               });
               alert("TRALALALALALA");
               //chrome.socket.disconnect(socketId);
