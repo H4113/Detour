@@ -9,7 +9,7 @@ function parseData(buffer) {
 	var sizeview = new Uint32Array(buffer);
 	var size = sizeview[1];
 	var size_buf = (buffer.byteLength-8)/8/2;
-	alert("size: "+size+"\n buffer: "+size_buf );
+	alert("size: "+size+"\n buffer: "+size_buf + "\ntotal buffer size : " + buffer.byteLength);
 	buffer = buffer.slice(8);
 	var sizeview = new Float64Array(buffer);
 	var path = [];

@@ -43,7 +43,7 @@ static void splitArray(char* c, const char* s, char* first, char* second)
 
 static void *clientRoutine(void* clientSocket)
 {
-	printf("\n\tB\n");
+	printf("\n\tB - %d\n", RLIMIT_FSIZE);
 	int cs = *(reinterpret_cast<int*>(clientSocket));
 	PathRequest pr;
 	char first[256], 
@@ -79,12 +79,12 @@ static void *clientRoutine(void* clientSocket)
 			memcpy(answer + 8 + i * 16 + 8, &(path[i].latitude), 8);
 		}
 
-		std::ofstream myfile;
-		myfile.open ("buff.bin");
-		for(int i = 0; i < size; ++i) {
-			myfile << answer[i];
-		}
-		myfile.close();
+		// std::ofstream myfile;
+		// myfile.open ("buff.bin");
+		// for(int i = 0; i < size; ++i) {
+		// 	myfile << answer[i];
+		// }
+		// myfile.close();
 
 		n = write(cs, answer, size);
 		printf("sent : %d %d\n", n, size);

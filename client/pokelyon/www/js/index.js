@@ -43,6 +43,7 @@ function sendQuery(buf) {
 						
 						// NEW
 						chrome.socket.read(socketId, 8, function(readInfo) {
+							alert("recu init: "+readInfo.data.byteLength);
 							var dataview = new Uint32Array(readInfo.data);
 							var type = sizeview[0];
 							var size = sizeview[1];
@@ -78,7 +79,7 @@ function sendQuery(buf) {
 						}
 						// NEW 
 						/*
-						chrome.socket.read(socketId, 1000, function(readInfo) {
+						chrome.socket.read(socketId, null, function(readInfo) {
 							alert("recu");
 							//alert(arrayBufferToString(readInfo.data));
 							var path = parseData(readInfo.data);
