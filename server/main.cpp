@@ -65,7 +65,7 @@ int main(void)
 	std::cout << "NetworkProject server" << std::endl;
 	std::cout << ParseDouble(std::string("10.54")) << std::endl;
 
-	startServer();
+	//startServer();
 	//TestPathfinder();
 
 	//test_des();
@@ -74,6 +74,26 @@ int main(void)
 	std::map<unsigned int, Road*> roads;
 
 	ImportData(roads,nodes);
+
+	//ALEX TEST
+	// std::map<Coordinates, PathNode*>::iterator itN;
+	// int empty = 0;
+	// for(itN = nodes.begin(); itN!=nodes.end(); ++itN) {
+	// 	unsigned int i;
+	// 	std::vector<Neighbor> n = itN->second->neighbors;
+
+	// 	if(n.size() == 0) {
+	// 		empty++;
+	// 	}
+	// 	else {
+	// 		for(i=0; i<n.size(); i++) {
+	// 			Coordinates *c = n[i].node->point;
+	// 			std::cout << c->longitude <<","<< c->latitude << ",";
+	// 		}
+	// 		std::cout << std::endl;
+	// 	}		
+	// }
+	// std::cout << empty << std::endl;
 
 	return 0;
 }
