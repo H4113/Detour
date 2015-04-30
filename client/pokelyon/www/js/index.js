@@ -41,11 +41,12 @@ function sendQuery(buf) {
 					if(writeInfo.bytesWritten > 0) {
 						alert("ouiiiii ");
 						chrome.socket.read(socketId, 1000, function(readInfo) {
+							alert("recu");
 							//alert(arrayBufferToString(readInfo.data));
 							var path = parseData(readInfo.data);
 							var str = "";
-							for(var i=0;i<r.length;i++){
-								if(r[i] !== undefined){
+							for(var i=0;i<path.length;i++){
+								if(path[i] !== undefined){
 									str += path[i].x+" "+path[i].y+"\n";
 								}
 							}
@@ -61,6 +62,7 @@ function sendQuery(buf) {
 					}
 				});
 			} else {
+				alert("pas de serveur");
 			  // Cannot connect
 			  // Do something smart
 			}
