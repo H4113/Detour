@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 import json
 import re
 
@@ -5,7 +7,7 @@ OUTPUT = "pop.sql"
 JSON_FILE = "tourisme.json"
 
 def formatstring(s):
-    return re.sub(r"'", r"''", "s'alut! c'a va ?")
+    return re.sub(r"'", r"''", s)
 
 with open(JSON_FILE, "r") as g:
     data = json.loads(g.read())
