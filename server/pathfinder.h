@@ -41,7 +41,7 @@ class PathFinder
 void TestPathfinder(void);
 void TestPathfinderRealData(void);
 
-void PF_FindPath(const Coordinates &coordStart, const Coordinates &coordGoal, std::vector<Coordinates> &path);
+bool PF_FindPath(const Coordinates &coordStart, const Coordinates &coordGoal, std::vector<Coordinates> &path);
 
 #endif
 
