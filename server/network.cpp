@@ -1,6 +1,7 @@
 #include "network.h"
 #include "utils.h"
 #include "general.h"
+#include "pathfinder.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -46,16 +47,28 @@ static void *clientRoutine(void* clientSocket)
 	if (n < 0)
 		error("ERROR reading from client socket");
 	printf("Here is the request from the client: %d %d\n",pr.type,pr.junk);
-	printf("%lf %lf %lf %lf\n", pr.path.pointA.longitude, pr.path.pointA.latitude, pr.path.pointB.longitude, pr.path.pointB.latitude);
+	printf("%.30f %.30f %.30f %.30f\n", pr.path.pointA.longitude, pr.path.pointA.latitude, pr.path.pointB.longitude, pr.path.pointB.latitude);
 
 	// BUILD PATH
 	std::vector<Coordinates> path;
-	BuildPath(path);
+	if(!PF_FindPath(pr.path.pointA, pr.path.pointB, path))
+	{
+		// ANSWER !!!!
+		int32_t type = 1;
+		int32_t size = 8 + 8 * path.size();
+		char* answer = new char[size];
+		memcpy(answer, (char*) &type, 4);
+		memcpy(answer, (char*) &size, 4);
 
-	// ANSWER !!!!
-	char* answer = "LAULAULAUWL";
-	n = write(cs, answer, strlen(answer));
-	printf("sent : %d\n", n);
+		for(int i = 0; i < size; ++i)
+			printf("%02x", answer[i]);
+
+		n = write(cs, answer, strlen(answer));
+		printf("sent : %d\n", n);
+		delete[] answer;
+	} else {
+		// Send error?
+	}
 
 	printf("\n\tE\n");
 
