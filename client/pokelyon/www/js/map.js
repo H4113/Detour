@@ -1,4 +1,3 @@
-
 var Map = {
 	create: function() {
 		this.map = L.map('map').setView([45.757927, 4.847598], 15);
