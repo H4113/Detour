@@ -10,6 +10,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <pthread.h>
+#include <vector>
 
 static void splitArray(char* c, const char* s, char* first, char* second)
 {
@@ -40,14 +41,18 @@ static void *clientRoutine(void* clientSocket)
 	bzero(second,256);
 	bzero(pr.buffer,40);
 
+	// REQUEST
 	n = read(cs, pr.buffer, 40);
 	if (n < 0)
 		error("ERROR reading from client socket");
 	printf("Here is the request from the client: %d %d\n",pr.type,pr.junk);
 	printf("%lf %lf %lf %lf\n", pr.path.pointA.longitude, pr.path.pointA.latitude, pr.path.pointB.longitude, pr.path.pointB.latitude);
 
-	// PROCESS HERE
+	// BUILD PATH
+	std::vector<Coordinates> path;
+	BuildPath(path);
 
+	// ANSWER !!!!
 	char* answer = "LAULAULAUWL";
 	n = write(cs, answer, strlen(answer));
 	printf("sent : %d\n", n);
