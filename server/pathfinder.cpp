@@ -255,7 +255,7 @@ bool PathFinder::BuildPath(std::vector<Coordinates> &path)
 			{
 				std::cout << "[Pathfinder] Cannot build path..." << std::endl;
 				std::cout << "(" << road->point1 << ", " << road->point2 << ") VS (" << result->point << ", " << result->next->point << ")" << std::endl;
-				return false;
+				//return false;
 			}
 		}
 
@@ -475,6 +475,25 @@ void TestPathfinderRealData(void)
 			{
 				std::cout << " n" << (n++) << ": (" << it->longitude << ", " << it->latitude << ")" << std::endl;	
 			}
+		}
+		else
+			std::cout << "The path cannot be built" << std::endl;
+	}
+}
+
+void PF_FindPath(const Coordinates &coordStart, const Coordinates &coordGoal, std::vector<Coordinates> &path)
+{
+	PathFinder pf;
+
+	pf.Load();
+	if(pf.Astar(coordStart, coordGoal))
+	{
+		std::cout << "I found a path!" << std::endl;
+		std::cout << "Building path..." << std::endl;
+		if(pf.BuildPath(path))
+		{
+			std::cout << "Path built!" << std::endl;
+			std::cout << "Path size: " << path.size() << std::endl;
 		}
 		else
 			std::cout << "The path cannot be built" << std::endl;
