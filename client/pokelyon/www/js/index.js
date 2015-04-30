@@ -26,16 +26,25 @@ function str2ab(str) {
   return buf;
 }
 
+function arrayBufferToString(buffer) {
+    return String.fromCharCode.apply(null, new Uint8Array(buffer));
+}
+
 function sendQuery(buf) {
     chrome.socket.create('tcp', {}, function(createInfo) {
       //alert(createInfo);
-      chrome.socket.connect(createInfo.socketId, "192.168.1.199", 6666, function(result) {
+      var socketId = createInfo.socketId;
+      chrome.socket.connect(socketId, "192.168.1.199", 6666, function(result) {
         if(result >= 0) {
           alert("prout " + result);
-          chrome.socket.write(createInfo.socketId, buf, function(writeInfo) {
+          chrome.socket.write(socketId, buf, function(writeInfo) {
             if(writeInfo.bytesWritten > 0) {
               alert("ouiiiii ");
-              chrome.socket.disconnect(createInfo.socketId);
+              chrome.socket.read(socketId, 1000, function(readInfo) {
+                alert(arrayBufferToString(readInfo.data));
+              });
+              alert("TRALALALALALA");
+              //chrome.socket.disconnect(socketId);
             } else {
               // Cannot send data
               // Do something smart 
@@ -79,7 +88,7 @@ var app = {
         type_junk2[0] = 42;
 
     		var onSuccess = function(position) {
-            alert('Latitude: '          + position.coords.latitude          + '\n' +
+            alert('Latitude: '              + position.coords.latitude          + '\n' +
                       'Longitude: '         + position.coords.longitude         + '\n' +
                       'Altitude: '          + position.coords.altitude          + '\n' +
                       'Accuracy: '          + position.coords.accuracy          + '\n' +
