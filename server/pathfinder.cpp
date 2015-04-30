@@ -455,33 +455,21 @@ void TestPathfinderRealData(void)
 	const Coordinates COORD_START = {45.7453359924, 4.75066959288};
 	const Coordinates COORD_GOAL = {45.8086683352, 4.75925371217};
 	
-	PathFinder pf;
 	std::vector<Coordinates> path;
-
-	pf.Load();
-	if(pf.Astar(COORD_START, COORD_GOAL))
+	
+	if(PF_FindPath(COORD_START, COORD_GOAL, path))
 	{
-		std::cout << "I found a path!" << std::endl;
-		std::cout << "Building path..." << std::endl;
-		if(pf.BuildPath(path))
+		unsigned int n = 1;
+		for(std::vector<Coordinates>::const_iterator it = path.begin();
+			it != path.end();
+			++it)
 		{
-			unsigned int n = 1;
-			
-			std::cout << "Path built!" << std::endl;
-			std::cout << "Path size: " << path.size() << std::endl;
-			for(std::vector<Coordinates>::const_iterator it = path.begin();
-				it != path.end();
-				++it)
-			{
-				std::cout << " n" << (n++) << ": (" << it->longitude << ", " << it->latitude << ")" << std::endl;	
-			}
+			std::cout << " n" << (n++) << ": (" << it->longitude << ", " << it->latitude << ")" << std::endl;	
 		}
-		else
-			std::cout << "The path cannot be built" << std::endl;
 	}
 }
 
-void PF_FindPath(const Coordinates &coordStart, const Coordinates &coordGoal, std::vector<Coordinates> &path)
+bool PF_FindPath(const Coordinates &coordStart, const Coordinates &coordGoal, std::vector<Coordinates> &path)
 {
 	PathFinder pf;
 
@@ -496,7 +484,12 @@ void PF_FindPath(const Coordinates &coordStart, const Coordinates &coordGoal, st
 			std::cout << "Path size: " << path.size() << std::endl;
 		}
 		else
+		{
 			std::cout << "The path cannot be built" << std::endl;
+			return false;
+		}
+		return true;
 	}
+	return false;
 }
 
