@@ -58,19 +58,22 @@ static void *clientRoutine(void* clientSocket)
 		// ANSWER !!!!
 		int32_t type = 1;
 		int32_t size = 8 + 8 * path.size() * 2;
+		int32_t nbDouble = path.size();
 		char* answer = new char[size];
 		memcpy(answer, (char*) &type, 4);
-		memcpy(answer + 4, (char*) &size, 4);
+		memcpy(answer + 4, (char*) &(nbDouble), 4);
 
 		for(int i = 0; i < path.size(); ++i) 
 		{
 			memcpy(answer + 8 + i * 16, (char*) &(path[i].longitude), 8);
-			memcpy(answer + 8 + i * 16 + 8, (char*) &(path[i].longitude), 8);
+			memcpy(answer + 8 + i * 16 + 8, (char*) &(path[i].latitude), 8);
 		}
 
 		std::ofstream myfile;
 		myfile.open ("buff.bin");
-		myfile << answer;
+		for(int i = 0; i < size; ++i) {
+			myfile << answer[i];
+		}
 		myfile.close();
 
 		n = write(cs, answer, size);
