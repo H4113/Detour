@@ -40,8 +40,8 @@ function sendQuery(buf) {
 				chrome.socket.write(socketId, buf, function(writeInfo) {
 					if(writeInfo.bytesWritten > 0) {
 						alert("ouiiiii ");
-						chrome.socket.read(socketId, 1000, function(readInfo) {
-							alert("recu");
+						chrome.socket.read(socketId, null, function(readInfo) {
+							alert("recu " + readInfo.data.byteLength);
 							//alert(arrayBufferToString(readInfo.data));
 							var path = parseData(readInfo.data);
 							var str = "";
