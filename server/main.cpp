@@ -1,13 +1,13 @@
 #include <iostream>
 #include <cstring>
 #include <openssl/des.h>
-#include <pqxx/pqxx>
 
 #include "general.h"
 #include "pathfinder.h"
 #include "network.h"
 #include "import.h"
 #include "utils.h"
+#include "database.h"
 
 
 /* Triple DES key for Encryption and Decryption */
@@ -67,19 +67,13 @@ int main(void)
 	std::cout << "NetworkProject server" << std::endl;
 	std::cout << ParseDouble(std::string("10.54")) << std::endl;
 
-	startServer();
+	//startServer();
 	//TestPathfinder();
 
 	//TestPathfinderRealData();
 	//test_des();
 
-	pqxx::connection conn("dbname=testpgdb user=testuser password=testpass hostaddr=127.0.0.1 port=5432");
-	if (conn.is_open()) {
-		std::cout << "We are connected to " << conn.dbname() << std::endl;
-	} 
-	else {
-		std::cout << "We are not connected!" << std::endl;
-	}
+	testSQLConnection();
 
 	//ALEX TEST
 
