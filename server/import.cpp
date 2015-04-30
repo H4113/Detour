@@ -15,6 +15,8 @@ void ImportData(std::map<unsigned int, Road*> &roads, std::map<Coordinates, Path
 }
 
 void ImportRoads(std::map<unsigned int, ImportedRoad*> &roads) {
+	roads.clear();
+
 	std::string line;
 	char str[20] = "";
 
@@ -93,6 +95,9 @@ void ImportRoads(std::map<unsigned int, ImportedRoad*> &roads) {
 
 void ImportNodes(std::map<Coordinates, PathNode*> &nodes, std::map<unsigned int, Road*> &roads, 
 	const std::map<unsigned int, ImportedRoad*> &importedRoads) {
+	nodes.clear();
+	roads.clear();
+
 	std::string line;
 	char str[20] = "";
 
@@ -113,7 +118,6 @@ void ImportNodes(std::map<Coordinates, PathNode*> &nodes, std::map<unsigned int,
 			unsigned int id = 0;
 			unsigned int id_road = 0;
 
-			Road* road = new Road();
 			PathNode* node = new PathNode();
 			
 			while(getline(is, part,',')) {
@@ -131,6 +135,8 @@ void ImportNodes(std::map<Coordinates, PathNode*> &nodes, std::map<unsigned int,
 						break;
 					default:
 						if(i%2) {
+							Road* road = new Road();
+
 							id_road = ParseUint(part);
 							std::map<unsigned int, ImportedRoad*>::const_iterator itRoad = importedRoads.find(id_road);
 							
@@ -145,6 +151,7 @@ void ImportNodes(std::map<Coordinates, PathNode*> &nodes, std::map<unsigned int,
 			}
 			node->point = point;
 			nodesNoNeighbor.insert(std::pair<unsigned int,PathNode*>(id,node));
+
 			nodes.insert(std::pair<Coordinates, PathNode*>(*point,node));
 		}
 	}
