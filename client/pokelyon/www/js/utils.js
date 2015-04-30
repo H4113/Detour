@@ -8,11 +8,12 @@
 function parseData(buffer) {
 	var sizeview = new Uint32Array(buffer);
 	var size = sizeview[1];
-	alert(size);
+	var size_buf = (buffer.byteLength-8)/8/2;
+	alert("size: "+size+"\n buffer: "+truc );
 	buffer = buffer.slice(8);
 	var sizeview = new Float64Array(buffer);
 	var path = [];
-	for(var i=0;i<size;++i){
+	for(var i=0;i<size_buf;++i){
 		var p = {x:sizeview[2*i],y:sizeview[2*i+1]};
 		path.push(p);
 	}
