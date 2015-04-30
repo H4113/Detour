@@ -42,45 +42,50 @@ function sendQuery(buf) {
 						alert("ouiiiii ");
 						
 						// NEW
-						chrome.socket.read(socketId, 8, function(readInfo) {
-							alert("recu init: "+readInfo.data.byteLength);
-							var dataview = new Uint32Array(readInfo.data);
-							var type = dataview[0];
-							var size = dataview[1];
-							var buf = new ArrayBuffer(size);
+						// chrome.socket.read(socketId, 8, function(readInfo) {
+						// 	alert("recu init: "+readInfo.data.byteLength);
+						// 	var dataview = new Uint32Array(readInfo.data);
+						// 	var type = dataview[0];
+						// 	var size = dataview[1];
+						// 	var buf = new ArrayBuffer(size);
 							
 							
-							// read all coordinates
-							var current_pos = 0;
-							function readCoord(readInfo) {
-								var tmp = new Float64Array(readInfo.data);
-								var buf2 = new Float64Array(buf,current_pos,readInfo.data.byteLength);
-								current_pos += readInfo.data.byteLength;
-								buf2.set(tmp);
+						// 	// read all coordinates
+						// 	var current_pos = 0;
+						// 	function readCoord(readInfo) {
+      //           alert("bite");
+						// 		var tmp = new Float64Array(readInfo.data);
+						// 		var buf2 = new Float64Array(buf,current_pos,readInfo.data.byteLength);
+						// 		current_pos += readInfo.data.byteLength;
+						// 		buf2.set(tmp);
 								
-								if(readInfo.data.byteLength == 0){
-									alert("fin prematuree");
-									current_pos = size; // security
-								}
-							}
-							
-							chrome.socket.read(socketId, null, readCoord);
-							while(current_pos < size){
-								// wait;
-							}
-							alert("recu fin");
-							//alert(arrayBufferToString(readInfo.data));
-							var path = parseData2(buf);
-							var str = "";
-							for(var i=0;i<path.length;i++){
-								if(path[i] !== undefined) {
-									str += i+") "+path[i].x+" "+path[i].y+"\n";
-								}
-							}
+						// 		if(readInfo.data.byteLength == 0){
+						// 			alert("fin prematuree");
+						// 			current_pos = size; // security
+						// 		}
 
-							alert(str);
-							drawPathOnMap(Map.map,path);
-						});
+      //           if(current_pos<size) {
+      //             chrome.socket.read(socketId, null, readCoord);
+      //           }
+						// 	}
+							
+						// 	chrome.socket.read(socketId, null, readCoord);
+						// 	while(current_pos < size){
+						// 		// wait;
+						// 	}
+						// 	alert("recu fin");
+						// 	//alert(arrayBufferToString(readInfo.data));
+						// 	var path = parseData2(buf);
+						// 	var str = "";
+						// 	for(var i=0;i<path.length;i++){
+						// 		if(path[i] !== undefined) {
+						// 			str += i+") "+path[i].x+" "+path[i].y+"\n";
+						// 		}
+						// 	}
+
+						// 	alert(str);
+						// 	drawPathOnMap(Map.map,path);
+						// });
 						// NEW 
 						/*
 						chrome.socket.read(socketId, null, function(readInfo) {
