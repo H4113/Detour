@@ -28,12 +28,24 @@ function str2ab(str) {
 
 function sendQuery(buf) {
     chrome.socket.create('tcp', {}, function(createInfo) {
+      //alert(createInfo);
       chrome.socket.connect(createInfo.socketId, "192.168.1.199", 6666, function(result) {
-        alert("prout");
-        chrome.socket.write(createInfo.socketId, buf, function() {
-          alert("ouiiiii");
-          chrome.socket.disconnect(createInfo.socketId);
-        });
+        if(result >= 0) {
+          alert("prout " + result);
+          chrome.socket.write(createInfo.socketId, buf, function(writeInfo) {
+            if(writeInfo.bytesWritten > 0) {
+              alert("ouiiiii ");
+              chrome.socket.disconnect(createInfo.socketId);
+            } else {
+              // Cannot send data
+              // Do something smart 
+            }
+          });
+        } else {
+          // Cannot connect
+          // Do something smart
+        }
+
       });
     });
 }
@@ -56,13 +68,15 @@ var app = {
     // function, we must explicitly call 'app.receivedEvent(...);'
     onDeviceReady: function() {
         app.receivedEvent('deviceready');
-    		var buf = new ArrayBuffer(4+4*4);
+    		var buf = new ArrayBuffer(8+4*8);
     		var type_req = new Int16Array(buf,0,1);
     		var type_junk = new Int16Array(buf,2,1);
-    		var gpscoord = new Float32Array(buf,4,4);
+        var type_junk2 = new Int32Array(buf,4,1);
+    		var gpscoord = new Float64Array(buf,8,4);
     		
-    		type_req = 0;
-        type_junk = 42;
+    		type_req[0] = 0;
+        type_junk[0] = 42;
+        type_junk2[0] = 42;
 
     		var onSuccess = function(position) {
             alert('Latitude: '          + position.coords.latitude          + '\n' +
@@ -73,10 +87,11 @@ var app = {
                       'Heading: '           + position.coords.heading           + '\n' +
                       'Speed: '             + position.coords.speed             + '\n' +
                       'Timestamp: '         + position.timestamp                + '\n');
-      			/*gpscoord[0] = position.coords.latitude;
+      			gpscoord[0] = position.coords.latitude;
       			gpscoord[1] = position.coords.longitude; 
       			gpscoord[2] = position.coords.latitude;
-      			gpscoord[3] = position.coords.longitude;*/
+      			gpscoord[3] = position.coords.longitude;
+            alert(gpscoord[1]);
             sendQuery(buf);
         };
 

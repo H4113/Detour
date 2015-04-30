@@ -68,12 +68,13 @@ int main(void)
 	//startServer();
 	//TestPathfinder();
 
+	TestPathfinderRealData();
 	//test_des();
 
-	std::map<Coordinates, PathNode*> nodes;
-	std::map<unsigned int, Road*> roads;
+	// std::map<Coordinates, PathNode*> nodes;
+	// std::map<unsigned int, Road*> roads;
 
-	ImportData(roads,nodes);
+	//ImportData(roads,nodes);
 
 	//ALEX TEST
 	// std::map<Coordinates, PathNode*>::iterator itN;

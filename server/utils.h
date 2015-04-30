@@ -13,6 +13,5 @@ void error(const char* msg);
 double ParseDouble(const std::string &s);
 unsigned int ParseUint(const std::string &s);
 
-PathNode *GetClosestNode(const std::map<Coordinates, PathNode*> &nodes, const Coordinates &coord);
-
 #endif
+
