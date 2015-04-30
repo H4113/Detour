@@ -61,6 +61,7 @@ void test_des()
 	print_data("\n Decrypted",text,sizeof(input_data));
 }
 
+
 int main(void)
 {
 	std::cout << "NetworkProject server" << std::endl;

@@ -14,6 +14,15 @@
 #include <vector>
 #include <iostream>
 #include <fstream>
+#include <signal.h>
+
+static int portNumber;
+
+void siginthandler(int param)
+{
+	close(portNumber);
+	exit(1);
+}
 
 static void splitArray(char* c, const char* s, char* first, char* second)
 {
@@ -55,6 +64,7 @@ static void *clientRoutine(void* clientSocket)
 	std::vector<Coordinates> path;
 	if(PF_FindPath(pr.path.pointA, pr.path.pointB, path))
 	{
+		printf("%d\n", path.size());
 		// ANSWER !!!!
 		int32_t type = 1;
 		int32_t size = 8 + 8 * path.size() * 2;
@@ -65,8 +75,8 @@ static void *clientRoutine(void* clientSocket)
 
 		for(int i = 0; i < path.size(); ++i) 
 		{
-			memcpy(answer + 8 + i * 16, (char*) &(path[i].longitude), 8);
-			memcpy(answer + 8 + i * 16 + 8, (char*) &(path[i].latitude), 8);
+			memcpy(answer + 8 + i * 16, &(path[i].longitude), 8);
+			memcpy(answer + 8 + i * 16 + 8, &(path[i].latitude), 8);
 		}
 
 		std::ofstream myfile;
@@ -93,11 +103,12 @@ void startServer(void)
 {
 	pthread_t thread;
 	int serverSocket, 
-		clientSocket, 
-		portNumber;
+		clientSocket;
 	struct sockaddr_in serverAddress,
 		clientAddress;
 	socklen_t clientLength;
+
+	signal(SIGINT, siginthandler);
 
 	serverSocket = socket(PF_INET, SOCK_STREAM, 0);
 	if(serverSocket < 0) 
