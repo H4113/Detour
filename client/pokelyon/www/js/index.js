@@ -45,24 +45,28 @@ function sendQuery(buf) {
 						chrome.socket.read(socketId, 8, function(readInfo) {
 							alert("recu init: "+readInfo.data.byteLength);
 							var dataview = new Uint32Array(readInfo.data);
-							var type = sizeview[0];
-							var size = sizeview[1];
-							var buf = new ArrayBuffer(size+8);
+							var type = dataview[0];
+							var size = dataview[1];
+							var buf = new ArrayBuffer(size);
 							
 							
-							var current_pos = 0;
 							// read all coordinates
+							var current_pos = 0;
+							function readCoord(readInfo) {
+								var tmp = new Float64Array(readInfo.data);
+								var buf2 = new Float64Array(buf,current_pos,readInfo.data.byteLength);
+								current_pos += readInfo.data.byteLength;
+								buf2.set(tmp);
+								
+								if(readInfo.data.byteLength == 0){
+									alert("fin prematuree");
+									current_pos = size; // security
+								}
+							}
+							
+							chrome.socket.read(socketId, null, readCoord);
 							while(current_pos < size){
-								chrome.socket.read(socketId, null, function(readInfo) {
-									var tmp = new Float64Array(readInfo.data);
-									var buf2 = new Float64Array(buf,current_pos,readInfo.data.byteLength);
-									current_pos += readInfo.data.byteLength;
-									buf2.set(tmp);
-									
-									if(readInfo.data.byteLength == 0){
-										current_pos = size; // security
-									}
-								});
+								// wait;
 							}
 							alert("recu fin");
 							//alert(arrayBufferToString(readInfo.data));
