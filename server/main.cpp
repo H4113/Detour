@@ -1,7 +1,6 @@
 #include <iostream>
 #include <cstring>
 #include <openssl/des.h>
-//#include <pqxx/pqxx>
 
 #include "general.h"
 #include "pathfinder.h"
@@ -72,14 +71,6 @@ int main(void)
 
 	//TestPathfinderRealData();
 	//test_des();
-
-	// pqxx::connection conn("dbname=testpgdb user=testuser password=testpass hostaddr=127.0.0.1 port=5432");
-	// if (conn.is_open()) {
-	// 	std::cout << "We are connected to " << conn.dbname() << std::endl;
-	// } 
-	// else {
-	// 	std::cout << "We are not connected!" << std::endl;
-	// }
 
 	//ALEX TEST
 
