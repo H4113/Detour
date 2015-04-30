@@ -1,6 +1,7 @@
 #include "network.h"
 #include "utils.h"
 #include "general.h"
+#include "pathfinder.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -10,6 +11,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <pthread.h>
+#include <vector>
 
 static void splitArray(char* c, const char* s, char* first, char* second)
 {
@@ -40,17 +42,33 @@ static void *clientRoutine(void* clientSocket)
 	bzero(second,256);
 	bzero(pr.buffer,40);
 
+	// REQUEST
 	n = read(cs, pr.buffer, 40);
 	if (n < 0)
 		error("ERROR reading from client socket");
 	printf("Here is the request from the client: %d %d\n",pr.type,pr.junk);
-	printf("%lf %lf %lf %lf\n", pr.path.pointA.longitude, pr.path.pointA.latitude, pr.path.pointB.longitude, pr.path.pointB.latitude);
+	printf("%.30f %.30f %.30f %.30f\n", pr.path.pointA.longitude, pr.path.pointA.latitude, pr.path.pointB.longitude, pr.path.pointB.latitude);
 
-	// PROCESS HERE
+	// BUILD PATH
+	std::vector<Coordinates> path;
+	if(!PF_FindPath(pr.path.pointA, pr.path.pointB, path))
+	{
+		// ANSWER !!!!
+		int32_t type = 1;
+		int32_t size = 8 + 8 * path.size();
+		char* answer = new char[size];
+		memcpy(answer, (char*) &type, 4);
+		memcpy(answer, (char*) &size, 4);
 
-	char* answer = "LAULAULAUWL";
-	n = write(cs, answer, strlen(answer));
-	printf("sent : %d\n", n);
+		for(int i = 0; i < size; ++i)
+			printf("%02x", answer[i]);
+
+		n = write(cs, answer, strlen(answer));
+		printf("sent : %d\n", n);
+		delete[] answer;
+	} else {
+		// Send error?
+	}
 
 	printf("\n\tE\n");
 

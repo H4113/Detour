@@ -87,11 +87,6 @@ void PathFinder::Load(void)
 	std::cout << "Importing data..." << std::endl;
 	ImportData(roads, nodes);
 	std::cout << "Data imported!" << std::endl;
-
-	for(std::map<Coordinates, PathNode*>::const_iterator it = nodes.begin();
-		it != nodes.end();
-		++it)
-		std::cout << it->second->neighbors.size() << std::endl;
 }
 
 bool PathFinder::Astar(const Coordinates &coordStart, const Coordinates &coordGoal)
@@ -165,8 +160,6 @@ bool PathFinder::Astar(const Coordinates &coordStart, const Coordinates &coordGo
 				openSet.erase(it);
 
 				closedSet.insert(current->node);
-
-				std::cout << "neighbors count: " << current->node->neighbors.size() << std::endl;
 
 				for(std::vector<Neighbor>::iterator itnb = current->node->neighbors.begin();
 				    itnb != current->node->neighbors.end();
@@ -452,8 +445,8 @@ void TestPathfinder(void)
 
 void TestPathfinderRealData(void)
 {
-	const Coordinates COORD_START = {45.7453359924, 4.75066959288};
-	const Coordinates COORD_GOAL = {45.8086683352, 4.75925371217};
+	const Coordinates COORD_START = {45.7825076, 4.8736838};
+	const Coordinates COORD_GOAL = {45.6803042752, 4.92207816575};
 	
 	std::vector<Coordinates> path;
 	
