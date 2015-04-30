@@ -48,7 +48,7 @@ function sendQuery(buf) {
 							var type = sizeview[0];
 							var size = sizeview[1];
 							var buf = new ArrayBuffer(size+8);
-							buf
+							
 							
 							var current_pos = 0;
 							// read all coordinates
@@ -62,11 +62,11 @@ function sendQuery(buf) {
 									if(readInfo.data.byteLength == 0){
 										current_pos = size; // security
 									}
-								}
+								});
 							}
-							alert("recu");
+							alert("recu fin");
 							//alert(arrayBufferToString(readInfo.data));
-							var path = parseData(readInfo.data);
+							var path = parseData2(buf);
 							var str = "";
 							for(var i=0;i<path.length;i++){
 								if(path[i] !== undefined) {
@@ -76,7 +76,7 @@ function sendQuery(buf) {
 
 							alert(str);
 							drawPathOnMap(Map.map,path);
-						}
+						});
 						// NEW 
 						/*
 						chrome.socket.read(socketId, null, function(readInfo) {
