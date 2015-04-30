@@ -151,82 +151,28 @@ void ImportNodes(std::map<Coordinates, PathNode*> &nodes, std::map<unsigned int,
 	file.close();
 
 	//Neighbors generation
+	std::map<unsigned int, ImportedRoad*>::const_iterator itIR;
+	PathNode* node_start;
+	PathNode* node_end;
+	Neighbor n1;
+	Neighbor n2;
+	Road* r;
 
-	// std::map<unsigned int, ImportedRoad*>::iterator itIR;
-	// for(itIR = importedRoads.begin(); itIR != importedRoads.end(); ++itIR) {
-	// 	node_start = nodesNoNeighbor.find(itIR->second->point1)->second;
-	// 	node_end = nodesNoNeighbor.find(itIR->second->point2)->second;
+	for(itIR = importedRoads.begin(); itIR != importedRoads.end(); ++itIR) {
+		node_start = nodesNoNeighbor.find(itIR->second->point1)->second;
+		node_end = nodesNoNeighbor.find(itIR->second->point2)->second;
 
-	// 	r = roads.find(itIR->first)->second;
-	// 	r->point1 = node_start->point;
-	// 	r->point2 = node_end->point;
+		r = roads.find(itIR->first)->second;
+		r->point1 = node_start->point;
+		r->point2 = node_end->point;
 
-	// 	n1.node = node_start;
-	// 	n1.road = r;
+		n1.node = node_start;
+		n1.road = r;
 
-	// 	n2.node = node_end;
-	// 	n2.road = r;
+		n2.node = node_end;
+		n2.road = r;
 
-	// 	node_start->neighbors.push_back(n2);
-	// 	node_end->neighbors.push_back(n1);
-	// }
-
-
-	str[0] = 0;
-	strcat(str,PATH_FILE);
-	strcat(str, ROADS_FILE);
-	
-	file.open(str);
-
-
-
-	if(file.is_open()) {
-		while(getline(file, line)) {
-			std::istringstream is (line);
-			std::string part;
-			unsigned int i = 0;
-			unsigned int id_start = 0;
-			unsigned int id_end = 0;
-			unsigned int id_road = 0;
-
-			PathNode* node_start;
-			PathNode* node_end;
-			Neighbor n1;
-			Neighbor n2;
-			Road* r;
-
-			while(getline(is, part,',')) {
-				switch (i) {
-					case 0:
-						id_road = ParseUint(part);
-						break;
-					case 2:
-						id_start = ParseUint(part);
-						break;
-					case 3:
-						id_end = ParseUint(part);
-						break;
-					default:
-						break;
-				}
-				i++;
-			}
-			node_start = nodesNoNeighbor.find(id_start)->second;
-			node_end = nodesNoNeighbor.find(id_end)->second;
-
-			r = roads.find(id_road)->second;
-			r->point1 = node_start->point;
-			r->point2 = node_end->point;
-
-			n1.node = node_start;
-			n1.road = r;
-
-			n2.node = node_end;
-			n2.road = r;
-
-			node_start->neighbors.push_back(n2);
-			node_end->neighbors.push_back(n1);
-		}
+		node_start->neighbors.push_back(n2);
+		node_end->neighbors.push_back(n1);
 	}
-	file.close();
 }
