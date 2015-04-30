@@ -51,20 +51,23 @@ static void *clientRoutine(void* clientSocket)
 
 	// BUILD PATH
 	std::vector<Coordinates> path;
-	if(!PF_FindPath(pr.path.pointA, pr.path.pointB, path))
+	if(PF_FindPath(pr.path.pointA, pr.path.pointB, path))
 	{
 		// ANSWER !!!!
 		int32_t type = 1;
-		int32_t size = 8 + 8 * path.size();
+		int32_t size = 8 + 8 * path.size() * 2;
 		char* answer = new char[size];
 		memcpy(answer, (char*) &type, 4);
-		memcpy(answer, (char*) &size, 4);
+		memcpy(answer + 4, (char*) &size, 4);
 
-		for(int i = 0; i < size; ++i)
-			printf("%02x", answer[i]);
+		for(int i = 0; i < path.size(); ++i) 
+		{
+			memcpy(answer + 8 + i * 16, (char*) &(path[i].longitude), 8);
+			memcpy(answer + 8 + i * 16 + 8, (char*) &(path[i].longitude), 8);
+		}
 
-		n = write(cs, answer, strlen(answer));
-		printf("sent : %d\n", n);
+		n = write(cs, answer, size);
+		printf("sent : %d %d\n", n, size);
 		delete[] answer;
 	} else {
 		// Send error?
