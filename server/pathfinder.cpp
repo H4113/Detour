@@ -291,7 +291,6 @@ static double testHeuristic(const PathNode *a, const PathNode *b)
 {
 	return testDistance(a, b);
 }
-*/
 
 static void testInitRoad(Road *road)
 {
@@ -311,7 +310,6 @@ static void testInitRoad(Road *road)
 	}
 }
 
-/*
 void TestPathfinder(void)
 {
 	const unsigned int W = 100;

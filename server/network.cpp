@@ -3,9 +3,9 @@
 #include "general.h"
 #include "pathfinder.h"
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <iostream>
+#include <cstdlib>
+#include <cstring>
 #include <unistd.h>
 #include <sys/types.h> 
 #include <sys/socket.h>
@@ -18,7 +18,7 @@
 
 static int portNumber;
 
-void siginthandler(int param)
+void siginthandler(int)
 {
 	close(portNumber);
 	exit(1);
@@ -43,7 +43,8 @@ static void splitArray(char* c, const char* s, char* first, char* second)
 
 static void *clientRoutine(void* clientSocket)
 {
-	printf("\n\tB - %d\n", RLIMIT_FSIZE);
+	//?
+	//printf("\n\tB - %d\n", RLIMIT_FSIZE);
 	int cs = *(reinterpret_cast<int*>(clientSocket));
 	PathRequest pr;
 	char first[256], 
@@ -64,19 +65,26 @@ static void *clientRoutine(void* clientSocket)
 	std::vector<Coordinates> path;
 	if(PF_FindPath(pr.path.pointA, pr.path.pointB, path))
 	{
-		printf("%d\n", path.size());
 		// ANSWER !!!!
 		int32_t type = 1;
-		int32_t size = 8 + 8 * path.size() * 2;
+		int32_t size = 2 * sizeof(int32_t) + sizeof(double) * path.size() * 2;
 		int32_t nbDouble = path.size();
-		char* answer = new char[size];
-		memcpy(answer, (char*) &type, 4);
-		memcpy(answer + 4, (char*) &(nbDouble), 4);
+		int8_t* answer = new int8_t[size];
+		int8_t* ptr;
+		
+		std::cout << path.size() << std::endl;
+		
+		memcpy(answer, &type, sizeof(int32_t));
+		memcpy(answer + sizeof(int32_t), (char*) &(nbDouble), sizeof(int32_t));
 
-		for(int i = 0; i < path.size(); ++i) 
+		ptr = answer + 2 * sizeof(int32_t);
+
+		for(std::vector<Coordinates>::iterator it = path.begin();
+			it != path.end();
+			++it, ptr += 2 * sizeof(double)) 
 		{
-			memcpy(answer + 8 + i * 16, &(path[i].longitude), 8);
-			memcpy(answer + 8 + i * 16 + 8, &(path[i].latitude), 8);
+			memcpy(ptr, &(it->longitude), sizeof(double));
+			memcpy(ptr + sizeof(double), &(it->latitude), sizeof(double));
 		}
 
 		// std::ofstream myfile;
@@ -87,7 +95,7 @@ static void *clientRoutine(void* clientSocket)
 		// myfile.close();
 
 		n = write(cs, answer, size);
-		printf("sent : %d %d\n", n, size);
+		std::cout << "sent : " << n << " " << (size * sizeof(int8_t)) << std::endl;
 		delete[] answer;
 	} else {
 		// Send error?
