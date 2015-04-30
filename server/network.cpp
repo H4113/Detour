@@ -12,6 +12,8 @@
 #include <netinet/in.h>
 #include <pthread.h>
 #include <vector>
+#include <iostream>
+#include <fstream>
 
 static void splitArray(char* c, const char* s, char* first, char* second)
 {
@@ -65,6 +67,11 @@ static void *clientRoutine(void* clientSocket)
 			memcpy(answer + 8 + i * 16, (char*) &(path[i].longitude), 8);
 			memcpy(answer + 8 + i * 16 + 8, (char*) &(path[i].longitude), 8);
 		}
+
+		std::ofstream myfile;
+		myfile.open ("buff.bin");
+		myfile << answer;
+		myfile.close();
 
 		n = write(cs, answer, size);
 		printf("sent : %d %d\n", n, size);

@@ -36,4 +36,5 @@ function drawPathOnMap(map, path){
 	var polyline = L.polyline(pointList, {color: 'blue',
 		opacity: 0.9,
 		smoothFactor: 1 }).addTo(map);
+	map.fitBounds(polyline.getBounds());
 }
