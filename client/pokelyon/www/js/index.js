@@ -46,8 +46,8 @@ function sendQuery(buf) {
 							var path = parseData(readInfo.data);
 							var str = "";
 							for(var i=0;i<path.length;i++){
-								if(path[i] !== undefined){
-									str += path[i].x+" "+path[i].y+"\n";
+								if(path[i] !== undefined) {
+									str += i+") "+path[i].x+" "+path[i].y+"\n";
 								}
 							}
 

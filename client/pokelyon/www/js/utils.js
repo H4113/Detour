@@ -28,12 +28,12 @@ function parseData(buffer) {
 function drawPathOnMap(map, path){
 	var pointList = [];
 	for(var i=0;i<path.length;++i){
-		if(path[i] !== undefined){
+		if(path[i].x !== undefined){
 			pointList.push([path[i].x,path[i].y]);
 		}
 	}
-	
-	L.marker([path[0].x,path[0].y]).addTo(map);
+	if(path[0].x !== undefined)
+		L.marker([path[0].x,path[0].y]).addTo(map);
 	/*if(path[path.length-1] !== undefined)
 		L.marker([path[path.length-1].x,path[path.length-1].y]).addTo(map);*/
 	
