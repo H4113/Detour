@@ -8,9 +8,22 @@ var Map = {
 		});
 
 		this.layer.addTo(this.map);
+	},
+
+	onClick: function( callback ) {
+		this.map.addEventListener('click',callback);
+	},
+
+	offClick: function( callback ) {
+		this.map.removeEventListener('click',callback);
 	}
 };
 
 document.addEventListener('deviceready', function(e) {
 	Map.create();
+
+	Map.onClick(function(click){
+		console.log(click.latlng.lat, click.latlng.lng,click.layerPoint.x,click.containerPoint.x);
+		Map.offClick();
+	});
 });
