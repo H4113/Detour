@@ -21,6 +21,17 @@ function parseData(buffer) {
 	return path;
 }
 
+function parseData2(buffer) {
+	var sizeview = new Float64Array(buffer);
+	var path = [];
+	for(var i=0;i<buffer.byteLength/8/2;++i){
+		var p = {x:sizeview[2*i],y:sizeview[2*i+1]};
+		path.push(p);
+	}
+	
+	return path;
+}
+
 
 /* usage :
 	var path = parseData(buffer);

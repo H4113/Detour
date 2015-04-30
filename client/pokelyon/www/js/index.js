@@ -40,6 +40,44 @@ function sendQuery(buf) {
 				chrome.socket.write(socketId, buf, function(writeInfo) {
 					if(writeInfo.bytesWritten > 0) {
 						alert("ouiiiii ");
+						
+						// NEW
+						chrome.socket.read(socketId, 8, function(readInfo) {
+							var dataview = new Uint32Array(readInfo.data);
+							var type = sizeview[0];
+							var size = sizeview[1];
+							var buf = new ArrayBuffer(size+8);
+							buf
+							
+							var current_pos = 0;
+							// read all coordinates
+							while(current_pos < size){
+								chrome.socket.read(socketId, null, function(readInfo) {
+									var tmp = new Float64Array(readInfo.data);
+									var buf2 = new Float64Array(buf,current_pos,readInfo.data.byteLength);
+									current_pos += readInfo.data.byteLength;
+									buf2.set(tmp);
+									
+									if(readInfo.data.byteLength == 0){
+										current_pos = size; // security
+									}
+								}
+							}
+							alert("recu");
+							//alert(arrayBufferToString(readInfo.data));
+							var path = parseData(readInfo.data);
+							var str = "";
+							for(var i=0;i<path.length;i++){
+								if(path[i] !== undefined) {
+									str += i+") "+path[i].x+" "+path[i].y+"\n";
+								}
+							}
+
+							alert(str);
+							drawPathOnMap(Map.map,path);
+						}
+						// NEW 
+						/*
 						chrome.socket.read(socketId, 1000, function(readInfo) {
 							alert("recu");
 							//alert(arrayBufferToString(readInfo.data));
@@ -53,7 +91,7 @@ function sendQuery(buf) {
 
 							alert(str);
 							drawPathOnMap(Map.map,path);
-						});
+						});*/
 						//alert("TRALALALALALA");
 						//chrome.socket.disconnect(socketId);
 					} else {
