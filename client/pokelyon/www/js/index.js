@@ -90,19 +90,19 @@ var app = {
         type_junk2[0] = 42;
 
     		var onSuccess = function(position) {
-            alert('Latitude: '              + position.coords.latitude          + '\n' +
+            /*alert('Latitude: '              + position.coords.latitude          + '\n' +
                       'Longitude: '         + position.coords.longitude         + '\n' +
                       'Altitude: '          + position.coords.altitude          + '\n' +
                       'Accuracy: '          + position.coords.accuracy          + '\n' +
                       'Altitude Accuracy: ' + position.coords.altitudeAccuracy  + '\n' +
                       'Heading: '           + position.coords.heading           + '\n' +
                       'Speed: '             + position.coords.speed             + '\n' +
-                      'Timestamp: '         + position.timestamp                + '\n');
+                      'Timestamp: '         + position.timestamp                + '\n');*/
       			gpscoord[0] = position.coords.latitude;
       			gpscoord[1] = position.coords.longitude; 
       			gpscoord[2] = 45.6803042752;
       			gpscoord[3] = 4.92207816575;
-            alert(gpscoord[1]);
+            //alert(gpscoord[1]);
             sendQuery(buf);
         };
 
@@ -117,12 +117,12 @@ var app = {
     },
     // Update DOM on a Received Event
     receivedEvent: function(id) {
-        var parentElement = document.getElementById(id);
+        /*var parentElement = document.getElementById(id);
         var listeningElement = parentElement.querySelector('.listening');
         var receivedElement = parentElement.querySelector('.received');
 
         listeningElement.setAttribute('style', 'display:none;');
-        receivedElement.setAttribute('style', 'display:block;');
+        receivedElement.setAttribute('style', 'display:block;');*/
 
         console.log('Received Event: ' + id);
     }
