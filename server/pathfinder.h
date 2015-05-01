@@ -28,7 +28,8 @@ class PathFinder
 		bool BuildPath(std::vector<Coordinates> &path);
 	
 	protected:
-		PathNode *getClosestNode(const Coordinates &coord);
+		PathNode *getClosestNode(const Coordinates &coord) const;
+		PathNode *getClosestNode2(const Coordinates &coord, Coordinates **closestCoord) const;
 
 	private:
 		double (*heuristic)(const PathNode*, const PathNode*);

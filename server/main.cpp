@@ -67,10 +67,10 @@ int main(void)
 	std::cout << "NetworkProject server" << std::endl;
 	std::cout << ParseDouble(std::string("10.54")) << std::endl;
 
-	startServer();
+	//startServer();
 	//TestPathfinder();
 
-	//TestPathfinderRealData();
+	TestPathfinderRealData();
 	//test_des();
 
 	//ALEX TEST

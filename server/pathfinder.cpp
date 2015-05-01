@@ -97,12 +97,15 @@ bool PathFinder::Astar(const Coordinates &coordStart, const Coordinates &coordGo
 	std::set<AstarNode*> openSet;
 	std::map<PathNode*, AstarNode> nodeInfo;
 
-	if(!(start = getClosestNode(coordStart)))
+	Coordinates *closestCoordStart;
+	Coordinates *closestCoordGoal;
+
+	if(!(start = getClosestNode2(coordStart, &closestCoordStart)))
 	{
 		std::cerr << "[Pathfinder] Couldn't find a node close to start (" << coordStart.longitude << ", " << coordStart.latitude << ")" << std::endl;
 		return false;
 	}
-	if(!(goal = getClosestNode(coordGoal)))
+	if(!(goal = getClosestNode2(coordGoal, &closestCoordGoal)))
 	{
 		std::cerr << "[Pathfinder] Couldn't find a node close to goal (" << coordGoal.longitude << ", " << coordGoal.latitude << ")" << std::endl;
 		return false;
@@ -258,7 +261,7 @@ bool PathFinder::BuildPath(std::vector<Coordinates> &path)
 	return true;
 }
 
-PathNode *PathFinder::getClosestNode(const Coordinates &coord)
+PathNode *PathFinder::getClosestNode(const Coordinates &coord) const
 {
 	std::map<Coordinates, PathNode*>::const_iterator it = nodes.lower_bound(coord);
 	if(it != nodes.end())
@@ -272,6 +275,97 @@ PathNode *PathFinder::getClosestNode(const Coordinates &coord)
 			return itnext->second;
 		}
 		return it->second;
+	}
+
+	return 0;
+}
+
+static double squareDist2(const Coordinates &a, const Coordinates &b)
+{
+	double m = a.longitude - b.longitude;
+	double n = a.latitude - b.latitude;
+	return m*m + n*n;
+}
+
+static double minDistToRoad(const Coordinates &coord, const Road *road, Coordinates **closestNode, Coordinates **closestCoord)
+{
+	double distMin = squareDist2(coord, *(road->point1));
+	double tmp = squareDist2(coord, *(road->point2));
+
+	if(distMin <= tmp)
+		*closestCoord = road->point1;
+	else
+	{
+		*closestCoord = road->point2;
+		distMin = tmp;
+	}
+
+	*closestNode = *closestCoord;
+
+	for(std::vector<Coordinates>::const_iterator it = road->points.begin();
+		it != road->points.end();
+		++it)
+	{
+		tmp = squareDist2(coord, *it);
+		if(tmp < distMin)
+		{
+			*closestCoord = (Coordinates*)&(*it);
+			distMin = tmp;
+		}
+	}
+
+	return distMin;
+}
+
+PathNode *PathFinder::getClosestNode2(const Coordinates &coord, Coordinates **closestCoord) const
+{
+	std::map<unsigned int, Road*>::const_iterator it = roads.begin();
+	if(it != roads.end())
+	{
+		Coordinates *closestNode;
+		double distMin = minDistToRoad(coord, it->second, &closestNode, closestCoord);
+
+		std::map<Coordinates, PathNode*>::const_iterator itnode;
+
+		for(; it != roads.end(); ++it)
+		{
+			Coordinates *tmpNode;
+			Coordinates *tmpCoord;
+			double tmp = minDistToRoad(coord, it->second, &tmpNode, &tmpCoord);
+			if(tmp < distMin)
+			{
+				closestNode = tmpNode;
+				*closestCoord = tmpCoord;
+
+				distMin = tmp;
+			}
+		}
+
+		itnode = nodes.find(*closestNode);
+		if(itnode != nodes.end()) // Should be always true
+		{
+			return itnode->second;
+		}
+		else // Perform a manual search
+		{
+			PathNode *pnode;
+			
+			itnode = nodes.begin();
+			pnode = itnode->second;
+			distMin = squareDist2(*closestNode, *(itnode->second->point));
+
+			for(; itnode != nodes.end(); ++itnode)
+			{
+				double tmp = squareDist2(*closestNode, *(itnode->second->point));
+				if(tmp < distMin)
+				{
+					pnode = itnode->second;
+					distMin = tmp;
+				}
+			}
+
+			return pnode;
+		}
 	}
 
 	return 0;
