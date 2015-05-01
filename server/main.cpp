@@ -72,7 +72,8 @@ int main(void)
 	//TestPathfinderRealData();
 	//test_des();
 
-	testSQLConnection();
+	//testSQLConnection();
+	DB_TestDatabase();
 
 	//ALEX TEST
 
