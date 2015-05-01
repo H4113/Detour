@@ -62,6 +62,19 @@ double PF_EarthDistance(const PathNode *a, const PathNode *b)
 	return PF_EarthDistance(*(a->point), *(b->point));
 }
 
+static double squareDist2(const Coordinates &a, const Coordinates &b)
+{
+	double m = a.longitude - b.longitude;
+	double n = a.latitude - b.latitude;
+	return m*m + n*n;
+}
+
+static bool operator==(const Coordinates &a, const Coordinates &b)
+{
+	const double EPSILON = 0.00001;
+	return squareDist2(a, b) <= EPSILON;
+}
+
 PathFinder::PathFinder():
 	heuristic(PF_EarthDistance),
 	loaded(false),
@@ -97,9 +110,6 @@ bool PathFinder::Astar(const Coordinates &coordStart, const Coordinates &coordGo
 	std::set<PathNode*> closedSet;
 	std::set<AstarNode*> openSet;
 	std::map<PathNode*, AstarNode> nodeInfo;
-
-	Coordinates *closestCoordStart;
-	Coordinates *closestCoordGoal;
 
 	if(!(start = getClosestNode2(coordStart, &closestCoordStart)))
 	{
@@ -137,6 +147,8 @@ bool PathFinder::Astar(const Coordinates &coordStart, const Coordinates &coordGo
 		{
 			ResultNode *rnode = 0;
 			Road *road = 0;
+
+			freeResult();
 
 			while(current)
 			{
@@ -212,12 +224,15 @@ bool PathFinder::Astar(const Coordinates &coordStart, const Coordinates &coordGo
 
 bool PathFinder::BuildPath(std::vector<Coordinates> &path)
 {
+	bool startReached = false;
+	bool goalReached = false;
+	
 	path.clear();
 
 	if(!result)
 		return false;	
 
-	while(result)
+	while(result && !goalReached)
 	{
 		path.push_back((*result->point));
 
@@ -233,19 +248,39 @@ bool PathFinder::BuildPath(std::vector<Coordinates> &path)
 			if(road->point1 == result->point && road->point2 == result->next->point) // 1 -> 2
 			{
 				for(std::vector<Coordinates>::const_iterator it = road->points.begin();
-					it != road->points.end();
+					it != road->points.end() && !goalReached;
 					++it)
 				{
-					path.push_back(*it);
+					if(startReached)
+					{
+						path.push_back(*it);
+						if(*it == *closestCoordGoal)
+							goalReached = true;
+					}
+					else if(*it == *closestCoordStart)
+					{
+						path.push_back(*it);
+						startReached = true;
+					}
 				}
 			}
 			else if(road->point1 == result->next->point && road->point2 == result->point) // 2 -> 1
 			{
 				for(std::vector<Coordinates>::const_reverse_iterator it = road->points.rbegin();
-					it != road->points.rend();
+					it != road->points.rend() && !goalReached;
 					++it)
 				{
-					path.push_back(*it);
+					if(startReached)
+					{
+						path.push_back(*it);
+						if(*it == *closestCoordGoal)
+							goalReached = true;
+					}
+					else if(*it == *closestCoordStart)
+					{
+						path.push_back(*it);
+						startReached = true;
+					}
 				}
 			}
 			else
@@ -260,11 +295,6 @@ bool PathFinder::BuildPath(std::vector<Coordinates> &path)
 	}
 
 	return true;
-}
-
-void PathFinder::ReinitPath(void)
-{
-	freeResult();
 }
 
 PathNode *PathFinder::getClosestNode(const Coordinates &coord) const
@@ -286,12 +316,6 @@ PathNode *PathFinder::getClosestNode(const Coordinates &coord) const
 	return 0;
 }
 
-static double squareDist2(const Coordinates &a, const Coordinates &b)
-{
-	double m = a.longitude - b.longitude;
-	double n = a.latitude - b.latitude;
-	return m*m + n*n;
-}
 
 static double minDistToRoad(const Coordinates &coord, const Road *road, Coordinates **closestNode, Coordinates **closestCoord)
 {

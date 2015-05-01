@@ -26,7 +26,6 @@ class PathFinder
 		
 		bool Astar(const Coordinates &coordStart, const Coordinates &coordGoal);
 		bool BuildPath(std::vector<Coordinates> &path);
-		void ReinitPath(void);
 
 		static PathFinder PF_instance;
 
@@ -42,6 +41,8 @@ class PathFinder
 		std::map<unsigned int, Road*> roads;
 		std::map<Coordinates, PathNode*> nodes;
 		ResultNode *result;
+		Coordinates *closestCoordStart;
+		Coordinates *closestCoordGoal;
 };
 
 void TestPathfinder(void);
