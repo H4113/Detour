@@ -61,3 +61,67 @@ function drawPathOnMap(map, path){
 		smoothFactor: 1 }).addTo(map);
 	map.fitBounds(polyline.getBounds());
 }
+
+// ---
+function concatAbuf(buf,data){
+	var tmp = new Uint8Array(data);
+	var buf2 = new Uint8Array(buf.buffer,buf.pos,data.byteLength);
+	buf.pos += data.byteLength;
+	buf2.set(tmp);
+	return buf;
+}
+
+
+function readHeader(data){
+	var sizeview = new Uint32Array(data);
+	var vtype = sizeview[0];
+	var vsize = sizeview[1];
+	return {type:vtype,size:vsize};
+}
+
+var abuffer = [];
+function magicTcpReceive(adata,fun) {
+	
+	console.log('Received SIZE: ' + adata.byteLength );
+
+	if(abuffer.length == 0){
+		var header = readHeader(adata);
+		size_packet = header.size;
+		abuffer[0] = {buffer :new ArrayBuffer(header.size),pos: 0,type:header.type};
+	}
+	
+	var i = 0;
+	while(abuffer[0].pos+adata.byteLength >= abuffer[0].buffer.byteLength){
+		var slice_pos = abuffer[0].buffer.byteLength-abuffer[0].pos;
+		var realdata = adata.slice(0,slice_pos);
+		abuffer[0] = concatAbuf(abuffer[0],realdata);
+		
+		fun(abuffer[0]);
+		abuffer.shift();
+		
+		adata = adata.slice(slice_pos,adata.byteLength);
+		if(adata.byteLength <= 0){
+			break;
+		}
+		var header2 = readHeader(adata);
+		abuffer[0] = {buffer: new ArrayBuffer(header2.size),pos:0,type:header2.type};
+	}
+	if(adata.byteLength > 0 && adata.byteLength >= 0){
+		abuffer[0] = concatAbuf(abuffer[0],adata);
+	}
+	
+}
+
+
+function str2ab(str) {
+	var buf = new ArrayBuffer(str.length);
+	var bufView = new Uint8Array(buf);
+	for (var i=0, strLen=str.length; i<strLen; i++) {
+		bufView[i] = str.charCodeAt(i);
+	}
+	return buf;
+}
+
+function arrayBufferToString(buffer) {
+	return String.fromCharCode.apply(null, new Uint8Array(buffer));
+}
