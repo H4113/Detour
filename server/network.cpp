@@ -75,7 +75,7 @@ static void *clientRoutine(void* clientSocket)
 		std::cout << path.size() << std::endl;
 		
 		memcpy(answer, &type, sizeof(int32_t));
-		memcpy(answer + sizeof(int32_t), (char*) &(nbDouble), sizeof(int32_t));
+		memcpy(answer + sizeof(int32_t), (char*) &(size), sizeof(int32_t));
 
 		ptr = answer + 2 * sizeof(int32_t);
 
