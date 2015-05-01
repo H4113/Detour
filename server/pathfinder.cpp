@@ -9,6 +9,8 @@
 #include "import.h"
 #include "utils.h"
 
+PathFinder PathFinder::PF_instance;
+
 struct AstarNode
 {
 	PathNode *node;
@@ -62,6 +64,7 @@ double PF_EarthDistance(const PathNode *a, const PathNode *b)
 
 PathFinder::PathFinder():
 	heuristic(PF_EarthDistance),
+	loaded(false),
 	result(0)
 {
 }
@@ -73,20 +76,18 @@ PathFinder::~PathFinder()
 	// Free nodes
 
 	// Free result
-	ResultNode *tmp;
-	while(result)
-	{
-		tmp = result;
-		result = result->next;
-		delete tmp;
-	}
+	freeResult();
 }
 		
 void PathFinder::Load(void)
 {
-	std::cout << "Importing data..." << std::endl;
-	ImportData(roads, nodes);
-	std::cout << "Data imported!" << std::endl;
+	if(!loaded)
+	{
+		std::cout << "Importing data..." << std::endl;
+		ImportData(roads, nodes);
+		std::cout << "Data imported!" << std::endl;
+		loaded = true;
+	}
 }
 
 bool PathFinder::Astar(const Coordinates &coordStart, const Coordinates &coordGoal)
@@ -261,6 +262,11 @@ bool PathFinder::BuildPath(std::vector<Coordinates> &path)
 	return true;
 }
 
+void PathFinder::ReinitPath(void)
+{
+	freeResult();
+}
+
 PathNode *PathFinder::getClosestNode(const Coordinates &coord) const
 {
 	std::map<Coordinates, PathNode*>::const_iterator it = nodes.lower_bound(coord);
@@ -369,6 +375,17 @@ PathNode *PathFinder::getClosestNode2(const Coordinates &coord, Coordinates **cl
 	}
 
 	return 0;
+}
+
+void PathFinder::freeResult(void)
+{
+	ResultNode *tmp;
+	while(result)
+	{
+		tmp = result;
+		result = result->next;
+		delete tmp;
+	}
 }
 
 // Test features
@@ -556,14 +573,12 @@ void TestPathfinderRealData(void)
 
 bool PF_FindPath(const Coordinates &coordStart, const Coordinates &coordGoal, std::vector<Coordinates> &path)
 {
-	PathFinder pf;
-
-	pf.Load();
-	if(pf.Astar(coordStart, coordGoal))
+	PathFinder::PF_instance.Load();
+	if(PathFinder::PF_instance.Astar(coordStart, coordGoal))
 	{
 		std::cout << "I found a path!" << std::endl;
 		std::cout << "Building path..." << std::endl;
-		if(pf.BuildPath(path))
+		if(PathFinder::PF_instance.BuildPath(path))
 		{
 			std::cout << "Path built!" << std::endl;
 			std::cout << "Path size: " << path.size() << std::endl;

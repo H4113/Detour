@@ -67,10 +67,12 @@ int main(void)
 	std::cout << "NetworkProject server" << std::endl;
 	std::cout << ParseDouble(std::string("10.54")) << std::endl;
 
-	//startServer();
+	PathFinder::PF_instance.Load();
+
+	startServer();
 	//TestPathfinder();
 
-	TestPathfinderRealData();
+	//TestPathfinderRealData();
 	//test_des();
 
 	//ALEX TEST
