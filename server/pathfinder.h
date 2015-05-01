@@ -26,14 +26,19 @@ class PathFinder
 		
 		bool Astar(const Coordinates &coordStart, const Coordinates &coordGoal);
 		bool BuildPath(std::vector<Coordinates> &path);
-	
+		void ReinitPath(void);
+
+		static PathFinder PF_instance;
+
 	protected:
 		PathNode *getClosestNode(const Coordinates &coord) const;
 		PathNode *getClosestNode2(const Coordinates &coord, Coordinates **closestCoord) const;
 
 	private:
-		double (*heuristic)(const PathNode*, const PathNode*);
+		void freeResult(void);
 
+		double (*heuristic)(const PathNode*, const PathNode*);
+		bool loaded;
 		std::map<unsigned int, Road*> roads;
 		std::map<Coordinates, PathNode*> nodes;
 		ResultNode *result;
