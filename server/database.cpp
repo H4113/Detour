@@ -1,5 +1,4 @@
 #include <iostream>
-#include <pqxx/pqxx>
 
 #include "database.h"
 
@@ -10,60 +9,11 @@ int testSQLConnection() {
 			std::cout << "We are connected to " << conn.dbname() << std::endl;
 
 			/* Create a transactional object. */
-			pqxx::work drop(conn);
-
-			char *sql = "DROP TABLE tourism;";
-			try {
-				drop.exec(sql);
-				drop.commit();
-				std::cout << "Table dropped successfully" << std::endl;
-			}
-			catch (const std::exception &e)
-			{
-				drop.abort();
-				std::cout << "Table not dropped" << std::endl;
-			}
+			pqxx::work w(conn);
+			pqxx::result r = w.exec("SELECT nom FROM tourism WHERE typ = 'PATRIMOINE_CULTUREL' AND typ_detail LIKE '%Musée%'");
+			w.commit();
 			
-			pqxx::work create(conn);
-
-			/* Create SQL statement */
-			sql ="CREATE TABLE tourism ("\
-				"id integer CONSTRAINT pkTourism PRIMARY KEY,"\
-				"typ varchar(32) not null,"\
-				"typ_detail varchar(1024) not null,"\
-				"nom varchar(1024) not null,"\
-				"adresse varchar(1024) not null,"\
-				"codepostal varchar(16) not null,"\
-				"commune varchar(32) not null,"\
-				"ouverture varchar(1024) not null,"\
-				"longitude double precision,"\
-				"latitude double precision"\
-				");";
-
-			/* Execute SQL query */
-			create.exec(sql);
-			create.commit();
-			std::cout << "Table created successfully" << std::endl;
-
-
-			pqxx::work select(conn);
-			pqxx::result r = select.exec("select * from tourism;");
-			select.commit();
-			
-			//Shows nothing --> table is empty
-			for (int rownum=0; rownum < r.size(); ++rownum)
- 			{
-				const pqxx::result::tuple row = r[rownum];
-
-				for (int colnum=0; colnum < row.size(); ++colnum)
-				{
-					const pqxx::result::field field = row[colnum];
-
-					std::cout << field.c_str() << '\t';
-				}
-
-				std::cout << std::endl;
-			}
+			displayResult(r);
 			
 			conn.disconnect ();
 		}
@@ -77,4 +27,21 @@ int testSQLConnection() {
 		return 1;
 	}
 	return 0;
+}
+
+void displayResult(pqxx::result &r) {
+
+	std::cout << "*************************" << std::endl;
+	unsigned int rownum, colnum;
+	for (rownum = 0; rownum < r.size(); ++rownum)
+	{
+		const pqxx::result::tuple row = r[rownum];
+		for (colnum = 0; colnum < row.size(); ++colnum)
+		{
+			const pqxx::result::field field = row[colnum];
+			std::cout << field.c_str() << '\t';
+		}
+		std::cout << std::endl;
+	}
+	std::cout << "*************************" << std::endl;
 }
