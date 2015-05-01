@@ -82,8 +82,8 @@ function arrayBufferToString(buffer) {
 }
 
 function processData(data){
-	var path = parseData(buffer);
-	drawPathOnMap(map, path);
+	var path = parseData(data);
+	drawPathOnMap(Map.map, path);
 }
 
 function sendQuery(buf) {

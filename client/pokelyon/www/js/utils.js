@@ -18,6 +18,13 @@ function parseData(buffer) {
 		path.push(p);
 	}
 	
+	// var str = "";
+	// for(var i = 0; i < path.length; ++i)
+	// {
+	// 	str += i += ") " + path[i].x + " " + path[i].y + '\n';
+	// }
+	// alert(str);
+
 	return path;
 }
 
