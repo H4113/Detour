@@ -81,13 +81,18 @@ function arrayBufferToString(buffer) {
 	return String.fromCharCode.apply(null, new Uint8Array(buffer));
 }
 
+function processData(data){
+	var path = parseData(buffer);
+	drawPathOnMap(map, path);
+}
+
 function sendQuery(buf) {
 	chrome.socket.create('tcp', {}, function(createInfo) {
 		//alert(createInfo);
 		var socketId = createInfo.socketId;
 		function readPackets(readInfo) {
 			alert("packet magique, taille:"+readInfo.data.byteLength);
-			magicTcpReceive(readInfo.data,processData);
+			magicTcpReceive(readInfo.data, processData);
 			chrome.socket.read(socketId, null, readPackets);
 		}
 		chrome.socket.connect(socketId, "192.168.1.199", 6666, function(result) {
