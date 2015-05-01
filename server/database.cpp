@@ -47,15 +47,41 @@ struct TouristicPlace
 };
 */
 
-bool Database::QueryTouristicLocations(const Coordinates &pointA, const Coordinates &pointB, std::vector<TouristicPlace> &places)
+bool Database::QueryTouristicLocations(const QTouristicLocationsOptions &options, std::vector<TouristicPlace> &places)
 {
 	if(connected)
 	{
 		bool ret = false;
 		std::ostringstream oss;
+		std::ostringstream detail;
+		bool hasDetail = false;
+		
 		oss << "SELECT typ, typ_detail, nom, adresse, ouverture, longitude, latitude FROM tourism WHERE ";
-		oss << "longitude <= " << pointA.longitude << " AND longitude >= " << pointB.longitude;
-		oss << " AND latitude >= " << pointA.latitude << " AND latitude <= " << pointB.latitude;
+		oss << "longitude <= " << options.pointA.longitude << " AND longitude >= " << options.pointB.longitude;
+		oss << " AND latitude >= " << options.pointA.latitude << " AND latitude <= " << options.pointB.latitude;
+
+		if(options.patrimony)
+		{
+			detail << "typ='PATRIMOINE_CULTUREL' OR typ='PATRIMOINE_NATUREL' ";
+			hasDetail = true;
+		}
+		if(options.gastronomy)
+		{
+			if(hasDetail)
+				detail << "OR ";
+			detail << "typ='RESTAURATION' OR typ='DEGUSTATION' ";
+			hasDetail = true;
+		}
+		if(options.accomodation)
+		{
+			if(hasDetail)
+				detail << "OR ";
+			detail << "typ='HEBERGEMENT_COLLECTIF' OR typ='HEBERGEMENT_LOCATIF' OR typ='HOTELLERIE' ";
+			hasDetail = true;
+		}
+		if(hasDetail)
+			oss << " AND (" << detail.str() << ")";
+
 		oss << ";";
 
 		pqxx::work query(*connection);
@@ -95,9 +121,19 @@ void DB_TestDatabase(void)
 		const Coordinates POINTA = {45.83, 4.65};
 		const Coordinates POINTB = {45.62, 4.92};
 
+		QTouristicLocationsOptions options =
+		{
+			POINTA,
+			POINTB,
+
+			true,
+			false,
+			false
+		};
+
 		std::vector<TouristicPlace> places;
 
-		db.QueryTouristicLocations(POINTA, POINTB, places);
+		db.QueryTouristicLocations(options, places);
 	}
 	else
 	{

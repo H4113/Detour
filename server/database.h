@@ -6,6 +6,16 @@
 
 #include "general.h"
 
+struct QTouristicLocationsOptions
+{
+	const Coordinates &pointA;
+	const Coordinates &pointB;
+
+	bool patrimony;
+	bool gastronomy;
+	bool accomodation;
+};
+
 struct TouristicPlace
 {
 	char *type;
@@ -26,7 +36,7 @@ class Database
 
 		// pointA and pointB must define a rectangle such as A is the upper-left point and B the bottom-right point.
 		// IMPORTANT: works only in Lyon
-		bool QueryTouristicLocations(const Coordinates &pointA, const Coordinates &pointB, std::vector<TouristicPlace> &places);
+		bool QueryTouristicLocations(const QTouristicLocationsOptions &options, std::vector<TouristicPlace> &places);
 
 	protected:
 		pqxx::connection *connection;
