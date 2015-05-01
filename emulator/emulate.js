@@ -41,6 +41,16 @@ function toArrayBuffer(buffer) {
     return ab;
 }
 
+function objtofile(obj,outputFilename){
+	fs.writeFile(outputFilename, JSON.stringify(obj, null), function(err) {
+		if(err) {
+			console.log(err);
+		} else {
+			console.log("JSON saved to " + outputFilename);
+		}
+	}); 
+}
+
 // ----------------------------------------------------------------------------
 
 // create fake data
@@ -62,6 +72,7 @@ function processData(obj){
 	var data = obj.buffer;
 	if(obj.type == 1){ // type == 1 -> PATH sent
 		var path = parseData(data);
+		objtofile(path,"data/path.json");
 		//drawPathOnMap(Map.map, path);
 	}
 }
