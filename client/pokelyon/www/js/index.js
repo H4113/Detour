@@ -86,6 +86,7 @@ function sendQuery(buf) {
 		var socketId = createInfo.socketId;
 		function readPackets(readInfo) {
 			magicTcpReceive(readInfo.data,processData);
+			chrome.socket.read(socketId, null, readPackets);
 		}
 		chrome.socket.connect(socketId, "192.168.1.199", 6666, function(result) {
 			if(result >= 0) {
