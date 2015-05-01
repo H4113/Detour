@@ -34,6 +34,7 @@ function readHeader(data){
 	return {type:vtype,size:vsize};
 }
 
+var abuffer = [];
 function magicTcpReceive(adata,fun) {
 	
 	console.log('Received SIZE: ' + adata.byteLength );
@@ -85,6 +86,7 @@ function sendQuery(buf) {
 		//alert(createInfo);
 		var socketId = createInfo.socketId;
 		function readPackets(readInfo) {
+			alert("packet magique, taille:"+readInfo.data.byteLength);
 			magicTcpReceive(readInfo.data,processData);
 			chrome.socket.read(socketId, null, readPackets);
 		}
