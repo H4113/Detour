@@ -104,6 +104,7 @@ static void *clientRoutine(void* clientSocket)
 	printf("\n\tE\n");
 
 	close(cs);
+	delete clientSocket;
 	pthread_exit(NULL);
 }
 
@@ -112,6 +113,7 @@ void startServer(void)
 	pthread_t thread;
 	int serverSocket, 
 		clientSocket;
+	int* clso;
 	struct sockaddr_in serverAddress,
 		clientAddress;
 	socklen_t clientLength;
@@ -141,7 +143,10 @@ void startServer(void)
 		if(clientSocket < 0) 
 			error("ERROR on accepting client socket");
 
-		pthread_create(&thread, NULL, clientRoutine, (void *)&clientSocket);
+		clso = new int;
+		*clso = clientSocket;
+		if(pthread_create(&thread, NULL, clientRoutine, (void *)clso) < 0)
+			error("ERROR creating thread");
 	}
 
 	pthread_exit(NULL);
