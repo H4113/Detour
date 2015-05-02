@@ -2,7 +2,7 @@ var Map = {
 	create: function(options) {
 
 		this.map = L.map('map').setView([45.757927, 4.847598],15);
-		this.map.locate({setView: true, maxZoom:16});
+		this.map.locate({setView: true, maxZoom:100});
 
 		this.layer = L.tileLayer('https://{s}.tiles.mapbox.com/v3/examples.map-i875mjb7/{z}/{x}/{y}.png', {
 			attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
@@ -29,6 +29,18 @@ document.addEventListener('deviceready', function(e) {
 		console.log(click.latlng.lat, click.latlng.lng,click.layerPoint.x,click.containerPoint.x);
 		Map.offClick();
 	});
+
+	var onSuccess = function(position) {
+		var circle = L.circleMarker([position.coords.latitude, position.coords.longitude], 10, {}).addTo(Map.map);
+	};
+
+	// onError Callback receives a PositionError object
+	//
+	function onError(error) {
+		alert("No GPS");
+	}
+
+	navigator.geolocation.getCurrentPosition(onSuccess, onError);
 });
 
 $(window).on('hashchange', function() {

@@ -53,13 +53,13 @@ function drawPathOnMap(map, path){
 	}
 	if(path[0].x !== undefined)
 		L.marker([path[0].x,path[0].y]).addTo(map);
-	/*if(path[path.length-1] !== undefined)
-		L.marker([path[path.length-1].x,path[path.length-1].y]).addTo(map);*/
+	if(path[path.length-1] !== undefined)
+		L.marker([path[path.length-1].x,path[path.length-1].y]).addTo(map);
 	
 	var polyline = L.polyline(pointList, {color: 'blue',
 		opacity: 0.9,
 		smoothFactor: 1 }).addTo(map);
-	map.fitBounds(polyline.getBounds());
+	//map.fitBounds(polyline.getBounds());
 }
 
 // ---
