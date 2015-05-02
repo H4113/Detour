@@ -1,7 +1,7 @@
 
  
 function processData(obj){
-	alert("packet entier, taille: "+obj.buffer.byteLength);
+	//alert("packet entier, taille: "+obj.buffer.byteLength);
 	var data = obj.buffer;
 	if(obj.type == 1){ // type == 1 -> PATH sent
 		var path = parseData(data);
@@ -14,16 +14,16 @@ function sendQuery(buf) {
 		//alert(createInfo);
 		var socketId = createInfo.socketId;
 		function readPackets(readInfo) {
-			alert("packet partiel, taille:"+readInfo.data.byteLength);
+			//alert("packet partiel, taille:"+readInfo.data.byteLength);
 			magicTcpReceive(readInfo.data, processData);
 			chrome.socket.read(socketId, null, readPackets);
 		}
 		chrome.socket.connect(socketId, "151.80.143.42", 6666, function(result) {
 			if(result >= 0) {
-				alert("prout " + result);
+				//alert("prout " + result);
 				chrome.socket.write(socketId, buf, function(writeInfo) {
 					if(writeInfo.bytesWritten > 0) {
-						alert("ouiiiii ");
+						//alert("ouiiiii ");
 						chrome.socket.read(socketId, null, readPackets);
 						//chrome.socket.disconnect(socketId);
 					} else {
