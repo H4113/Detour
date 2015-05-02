@@ -3,15 +3,15 @@
 
 #include "database.h"
 
-Database::Database():
-	connection(0),
-	connected(false)
+pqxx::connection *Database::connection(0);
+bool Database::connected(false);
+
+Database::Database()
 {
 }
 
 Database::~Database()
 {
-	delete connection;
 }
 
 bool Database::Connect(void)
@@ -48,19 +48,19 @@ bool Database::QueryTouristicLocations(const QTouristicLocationsOptions &options
 		oss << "longitude >= " << options.minLongitude << " AND longitude <= " << options.maxLongitude;
 		oss << " AND latitude >= " << options.minLatitude << " AND latitude <= " << options.maxLatitude;
 
-		if(options.patrimony)
+		if(options.filter.patrimony)
 		{
 			detail << "typ='PATRIMOINE_CULTUREL' OR typ='PATRIMOINE_NATUREL' ";
 			hasDetail = true;
 		}
-		if(options.gastronomy)
+		if(options.filter.gastronomy)
 		{
 			if(hasDetail)
 				detail << "OR ";
 			detail << "typ='RESTAURATION' OR typ='DEGUSTATION' ";
 			hasDetail = true;
 		}
-		if(options.accomodation)
+		if(options.filter.accomodation)
 		{
 			if(hasDetail)
 				detail << "OR ";
@@ -80,6 +80,8 @@ bool Database::QueryTouristicLocations(const QTouristicLocationsOptions &options
 		{
 			pqxx::result r = query.exec(oss.str());
 			std::cout << "The query returned " << r.size() << " results" << std::endl;
+
+			places.clear();
 
 			for(pqxx::result::const_iterator it = r.begin(); it != r.end(); ++it)
 			{
@@ -118,8 +120,7 @@ void DB_TestDatabase(void)
 		max(latitude) = 5.086112
 	*/
 	
-	Database db;
-	if(db.Connect())
+	if(Database::Connect())
 	{
 		QTouristicLocationsOptions options =
 		{
@@ -128,14 +129,14 @@ void DB_TestDatabase(void)
 			4.65,
 			4.92,
 
-			true,
+			{true,
 			false,
-			false
+			false}
 		};
 
 		std::vector<TouristicPlace> places;
 
-		db.QueryTouristicLocations(options, places);
+		Database::QueryTouristicLocations(options, places);
 		
 		std::cout << places.size() << " places were created successfully!" << std::endl;
 	}

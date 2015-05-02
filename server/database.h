@@ -6,6 +6,14 @@
 #include <pqxx/pqxx>
 
 #include "general.h"
+#include "tourism.h"
+
+struct TouristicFilter
+{
+	bool patrimony;
+	bool gastronomy;
+	bool accomodation;
+};
 
 struct QTouristicLocationsOptions
 {
@@ -14,34 +22,22 @@ struct QTouristicLocationsOptions
 	double minLatitude;
 	double maxLatitude;
 
-	bool patrimony;
-	bool gastronomy;
-	bool accomodation;
-};
-
-struct TouristicPlace
-{
-	std::string type;
-	std::string typeDetail;
-	std::string name;
-	std::string address;
-	std::string workingHours;
-	Coordinates location;
+	TouristicFilter filter;
 };
 
 class Database
 {
 	public:
-		Database();
 		virtual ~Database();
 
-		bool Connect(void);
-
-		bool QueryTouristicLocations(const QTouristicLocationsOptions &options, std::vector<TouristicPlace> &places);
+		static bool Connect(void);
+		static bool QueryTouristicLocations(const QTouristicLocationsOptions &options, std::vector<TouristicPlace> &places);
 
 	protected:
-		pqxx::connection *connection;
-		bool connected;
+		Database();
+		
+		static pqxx::connection *connection;
+		static bool connected;
 
 };
 
