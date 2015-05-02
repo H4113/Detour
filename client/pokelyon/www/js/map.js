@@ -35,10 +35,17 @@ $(window).on('hashchange', function() {
   	var hash = location.hash;
   	switch( hash ) {
   		case '#menu':
-  			$('#menugui').removeClass('hidden',400,'swing',function() {});
+  			var width = $('#menugui').css("width");
+
+  			$('#menugui').transition({x:'-'+width});
+  			break;
+  		case '#directions':
+  			var height = $('#directionsgui').css("height");
+  			$('#directionsgui').transition({y:'-'+height});
   			break;
   		default:
-  			$('#menugui').addClass('hidden',400,'swing',function() {});
+  			$('#menugui').transition({x:0});
+  			$('#directionsgui').transition({y:0});
   			break;
   	}
 });

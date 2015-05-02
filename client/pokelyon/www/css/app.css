@@ -87,14 +87,21 @@ html, body, #app-container, #map {
  }
 
 
- .hidden.right {
- 	right: -300px;
+ .hidden-right {
+ 	left: 100%;
+ }
+
+ .hidden-bottom {
+ 	top: 100%;
+ }
+
+ .fullscreen {
+ 	height: 100%;
+ 	width: 100%;
  }
 
  .menu {
  	z-index: 200;
-
- 	width: 300px;
 
  	background: white;
  	border: 1px solid #ddd;
