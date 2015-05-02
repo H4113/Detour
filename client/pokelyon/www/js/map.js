@@ -1,3 +1,5 @@
+var circlePosUser = null;
+
 var Map = {
 	create: function(options) {
 
@@ -25,22 +27,27 @@ document.addEventListener('deviceready', function(e) {
 	
 	Map.create();
 
+	circlePosUser = L.circleMarker([0, 0], 10, {}).addTo(Map.map);
+
 	Map.onClick(function(click){
 		console.log(click.latlng.lat, click.latlng.lng,click.layerPoint.x,click.containerPoint.x);
 		Map.offClick();
 	});
 
-	var onSuccess = function(position) {
-		var circle = L.circleMarker([position.coords.latitude, position.coords.longitude], 10, {}).addTo(Map.map);
+	var onGeoSuccess = function(position) {
+		circlePosUser.setLatLng([position.coords.latitude, position.coords.longitude]);
+		circlePosUser.redraw();
 	};
 
 	// onError Callback receives a PositionError object
 	//
-	function onError(error) {
+	function onGeoError(error) {
 		alert("No GPS");
 	}
 
-	navigator.geolocation.getCurrentPosition(onSuccess, onError);
+	setInterval(function () {
+		navigator.geolocation.getCurrentPosition(onGeoSuccess, onGeoError);
+	}, 500);
 });
 
 $(window).on('hashchange', function() {
