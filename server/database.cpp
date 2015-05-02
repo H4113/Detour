@@ -80,7 +80,22 @@ bool Database::QueryTouristicLocations(const QTouristicLocationsOptions &options
 		{
 			pqxx::result r = query.exec(oss.str());
 			std::cout << "The query returned " << r.size() << " results" << std::endl;
-			
+
+			for(pqxx::result::const_iterator it = r.begin(); it != r.end(); ++it)
+			{
+				TouristicPlace place;
+				if(!(*it)["typ"].to(place.type)
+				|| !(*it)["typ_detail"].to(place.typeDetail)
+				|| !(*it)["nom"].to(place.name)
+				|| !(*it)["adresse"].to(place.address)
+				|| !(*it)["ouverture"].to(place.workingHours)
+				|| !(*it)["longitude"].to(place.location.longitude)
+				|| !(*it)["latitude"].to(place.location.latitude))
+					std::cerr << "Could not interpret properly data from one row." << std::endl;
+				else
+					places.push_back(place);
+			}
+
 			ret = true;
 		}
 		catch(const std::exception &e)
@@ -121,6 +136,8 @@ void DB_TestDatabase(void)
 		std::vector<TouristicPlace> places;
 
 		db.QueryTouristicLocations(options, places);
+		
+		std::cout << places.size() << " places were created successfully!" << std::endl;
 	}
 	else
 	{
@@ -166,3 +183,4 @@ int testSQLConnection() {
 	}
 	return 0;
 }
+

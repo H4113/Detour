@@ -2,6 +2,7 @@
 #define DATABASE_H
 
 #include <vector>
+#include <string>
 #include <pqxx/pqxx>
 
 #include "general.h"
@@ -20,11 +21,11 @@ struct QTouristicLocationsOptions
 
 struct TouristicPlace
 {
-	char *type;
-	char *typeDetail;
-	char *name;
-	char *address;
-	char *workingHours;
+	std::string type;
+	std::string typeDetail;
+	std::string name;
+	std::string address;
+	std::string workingHours;
 	Coordinates location;
 };
 
