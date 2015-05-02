@@ -110,7 +110,6 @@ static void *clientRoutine(void* clientSocket)
 
 void startServer(void)
 {
-	pthread_t thread;
 	int serverSocket, 
 		clientSocket;
 	int* clso;
@@ -145,8 +144,12 @@ void startServer(void)
 
 		clso = new int;
 		*clso = clientSocket;
-		if(pthread_create(&thread, NULL, clientRoutine, (void *)clso) < 0)
+		pthread_t thread;
+		if(pthread_create(&thread, NULL, clientRoutine, (void *)clso) < 0) {
+			close(*clso);
+			delete clso;
 			error("ERROR creating thread");
+		}
 	}
 
 	pthread_exit(NULL);
