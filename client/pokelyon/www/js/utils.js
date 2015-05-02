@@ -9,7 +9,7 @@ function parseData(buffer) {
 	var sizeview = new Uint32Array(buffer);
 	var size = sizeview[1];
 	var size_buf = (buffer.byteLength-8)/8/2;
-	alert("size: "+size+"\n buffer: "+size_buf + "\ntotal buffer size : " + buffer.byteLength);
+	//alert("size: "+size+"\n buffer: "+size_buf + "\ntotal buffer size : " + buffer.byteLength);
 	buffer = buffer.slice(8);
 	var sizeview = new Float64Array(buffer);
 	var path = [];
@@ -82,7 +82,7 @@ function readHeader(data){
 var abuffer = [];
 function magicTcpReceive(adata,fun) {
 	
-	console.log('Received SIZE: ' + adata.byteLength );
+	//console.log('Received SIZE: ' + adata.byteLength );
 
 	if(abuffer.length == 0){
 		var header = readHeader(adata);

@@ -39,11 +39,33 @@
     </head>
     <body>
         <div id="app-container">
+            <div id="menu" class='link'></div>
+            <div id="directions" class='link'></div>
             <div id="map">
+            </div>
+            <div class='gui-layer'>
+                    <div class='gui top right'>
+                        <div class="gui-btn-holder">
+                            <a href="#menu" id="menu-btn" class='reveal'><img src='img/menu.png'/></a>
+                        </div>
+                    </div>
+                    <div class="gui bottom right">
+                        <div class="gui-btn-holder">
+                            <a href="#directions" id="directions-btn"><img src='img/directions.png'/></a>
+                        </div>
+                    </div>
+                    <div id="menugui" class='hidden-right gui menu fullscreen'>
+                        <h1>Awesome menu</h1>
+                    </div>
+                    <div id="directionsgui" class='hidden-bottom gui menu fullscreen'>
+                        <h1>Awesome Directions</h1>
+                    </div>
             </div>
         </div>
         <script type="text/javascript" src="cordova.js"></script>
         <script type="text/javascript" src="js/leaflet.js"></script>
+        <script type="text/javascript" src="js/jquery-2.1.3.min.js"></script>
+        <script type="text/javascript" src="js/jquery.transit.min.js"></script>
         <script type="text/javascript" src="js/map.js"></script>
         <script type="text/javascript" src="js/utils.js"></script>
         <script type="text/javascript" src="js/index.js"></script>
