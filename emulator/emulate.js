@@ -53,6 +53,12 @@ function objtofile(obj,outputFilename){
 	}); 
 }
 
+
+function isNumber(n) {
+	return !isNaN(parseFloat(n)) && isFinite(n);
+}
+
+
 // ----------------------------------------------------------------------------
 
 // create fake data
@@ -120,10 +126,10 @@ function launchClient(id){
 	});
 	
 	client.on('timeout', function() {
-		endstate = 2;
+		/*endstate = 2;
 		client.emit('error','timeout');
 		
-		client.destroy();
+		client.destroy();*/
 	});
 
 	client.on('error', function(e) {
@@ -134,6 +140,16 @@ function launchClient(id){
 
 }
 
+function showHelp(){
+	console.log("Usage:");
+	console.log("\tnode emulate.js <nb client>");
+	console.log("\tnode emulate.js [Option]");
+	console.log("");
+	console.log("Options");
+	console.log("\tclean : clean data/benchmark.json");
+	console.log("\t--help or -h : show this help");
+}
+
 function main(){
 	var nbend = 0;
 	var nbclient = 1;
@@ -141,8 +157,20 @@ function main(){
 	var statebench = 0;
 	
 	process.argv.forEach(function (val, index, array) {
+		if(index >= 2 && (val == "--help" || val == "-h")){
+			showHelp();
+			process.exit(0);
+		}
 		if(index == 2){
-			nbclient = val;
+			if(isNumber(val)){
+				nbclient = val;
+			}else if(val == "clean"){
+				fs.writeFile("data/benchmark.json", "[]", function(err) {
+					if(err) return console.log(err);
+					else console.log("cleaning benchmark data done !");
+					process.exit(0);
+				}); 
+			}
 		}
 	});
 	

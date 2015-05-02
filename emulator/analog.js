@@ -16,7 +16,6 @@ function include(f) {
 }
 
 
-
 // utils ---------------------------------------------------------------------
 
 function toBuffer(ab) {
@@ -52,13 +51,13 @@ function objtofile(obj,outputFilename){
 function getInfoTab(tab)
 {
 	var max = 0.0;
-	var min = 0.0;
+	var min = Infinity;
 	var avg = 0.0;
 	var count = 0;
 	if(tab !== undefined)
 	for(subtab of tab){
 		for(val of subtab){
-			if(val !== undefined){
+			if(val !== undefined && val.time != 0){
 				if(val.time > max)
 					max = val.time;
 				if(val.time < min)
@@ -68,21 +67,50 @@ function getInfoTab(tab)
 			}
 		}
 	}
-	avg /= count;
+	if(min == Infinity){
+		min = 0;
+	}
+	if(count != 0)
+		avg /= count;
 	return {max:max,min:min,avg:avg};
 }
 
+function id(x,m){return x;}
+function debit(num, max){
+	num = 1.0/num;
+	if(num == Infinity){
+		num = max;
+	}
+	return num;
+}
 
 function main(){
+	var options = {debit:false}
+	process.argv.forEach(function (val, index, array) {
+		if(index >= 2){
+			if(val == "-d" || val =="--debit"){
+				options.debit = true;
+			}
+		}
+	});
+	
+	var f = id;
+	if(options.debit){
+		f = debit;
+		console.log("Mode debit");
+	}else{
+		console.log("Mode response time");
+	}
+	
 	var bench = JSON.parse(fs.readFileSync('data/benchmark.json', 'utf8'));
 	strfinal = "nb,min,max,avg\n"
 	for(var nbuser=0;nbuser<bench.length;++nbuser){
 		if(bench[nbuser] !== null && bench[nbuser].length > 0){
 			strfinal += nbuser +",";
 			var info = getInfoTab(bench[nbuser]);
-			strfinal += info.min+",";
-			strfinal += info.max+",";
-			strfinal += info.avg;
+			strfinal += f(info.min,10)+",";
+			strfinal += f(info.max,10)+",";
+			strfinal += f(info.avg,10);
 			strfinal += "\n"
 		}
 	}
@@ -95,10 +123,6 @@ function main(){
 
 		console.log("The file was saved here: "+outputpath);
 	}); 
-	
-	//objtofile(bench,"data/benchmark_analysis.json");
 }
-
-
 
 main();
