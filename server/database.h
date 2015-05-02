@@ -8,13 +8,6 @@
 #include "general.h"
 #include "tourism.h"
 
-struct TouristicFilter
-{
-	bool patrimony;
-	bool gastronomy;
-	bool accomodation;
-};
-
 struct QTouristicLocationsOptions
 {
 	double minLongitude;

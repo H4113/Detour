@@ -16,20 +16,13 @@ struct ResultNode
 struct Path
 {
 	ResultNode *result;
+	const Coordinates *realStart;
+	const Coordinates *realGoal;
 	Coordinates *closestCoordStart;
 	Coordinates *closestCoordGoal;
-
-	~Path()
-	{
-		ResultNode *tmp;
-		while(result)
-		{
-			tmp = result;
-			result = result->next;
-			delete tmp;
-		}
-	}
 };
+
+void FreePathResult(Path *path);
 
 double PF_EarthDistance(const Coordinates &a, const Coordinates &b);
 double PF_EarthDistance(const PathNode *a, const PathNode *b);
@@ -41,6 +34,7 @@ class PathFinder
 		
 		static void Load(void);
 		static bool Astar(const Coordinates &coordStart, const Coordinates &coordGoal, Path &resultPath);
+		
 		static bool BuildPath(const Path &resultPath, std::vector<Coordinates> &path);
 
 	protected:
@@ -57,7 +51,7 @@ class PathFinder
 void TestPathfinder(void);
 void TestPathfinderRealData(void);
 
-bool PF_FindPath(const Coordinates &coordStart, const Coordinates &coordGoal, std::vector<Coordinates> &path);
+bool PF_FindPath(const Coordinates &coordStart, const Coordinates &coordGoal, std::vector<Coordinates> &path, std::vector<struct TouristicPlace> &places);
 
 #endif
 

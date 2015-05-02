@@ -8,6 +8,8 @@
 #include "pathfinder.h"
 #include "import.h"
 #include "utils.h"
+#include "tourism.h"
+#include "database.h"
 
 double (*PathFinder::heuristic)(const PathNode*, const PathNode*) = PF_EarthDistance;
 bool PathFinder::loaded = false;
@@ -52,6 +54,17 @@ static AstarNode *minNode(const std::set<AstarNode*> &openSet)
 	return 0;
 }
 
+void FreePathResult(Path *path)
+{
+	ResultNode *result = path->result;
+	ResultNode *tmp;
+	while(result)
+	{
+		tmp = result;
+		result = result->next;
+		delete tmp;
+	}
+}
 double PF_EarthDistance(const Coordinates &a, const Coordinates &b)
 {
 	double ta = M_PI * (90. - a.latitude) / 180.;
@@ -141,7 +154,7 @@ bool PathFinder::Astar(const Coordinates &coordStart, const Coordinates &coordGo
 
 	std::cout << "start: (" << start->point->longitude << ", " << start->point->latitude << ")" << std::endl;
 	std::cout << "goal: (" << goal->point->longitude << ", " << goal->point->latitude << ")" << std::endl;
-	
+
 	// Init
 	nodeInfo.insert(std::pair<PathNode*, AstarNode>(start, AstarNode(start, 0, 0, heuristic(start, goal))));	
 	openSet.insert(&(nodeInfo.begin()->second));
@@ -180,6 +193,8 @@ bool PathFinder::Astar(const Coordinates &coordStart, const Coordinates &coordGo
 			}
 
 			resultPath.result = rnode;
+			resultPath.realStart = &coordStart;
+			resultPath.realGoal = &coordGoal;
 
 			return true;
 		}
@@ -243,8 +258,6 @@ bool PathFinder::BuildPath(const Path &resultPath, std::vector<Coordinates> &pat
 	bool goalReached = false;
 	
 	ResultNode *result = resultPath.result;
-
-	path.clear();
 
 	if(!result)
 		return false;	
@@ -376,8 +389,9 @@ void TestPathfinderRealData(void)
 	const Coordinates COORD_GOAL = {45.6803042752, 4.92207816575};
 	
 	std::vector<Coordinates> path;
-	
-	if(PF_FindPath(COORD_START, COORD_GOAL, path))
+	std::vector<TouristicPlace> places;
+
+	if(PF_FindPath(COORD_START, COORD_GOAL, path, places))
 	{
 		unsigned int n = 1;
 		for(std::vector<Coordinates>::const_iterator it = path.begin();
@@ -389,7 +403,7 @@ void TestPathfinderRealData(void)
 	}
 }
 
-bool PF_FindPath(const Coordinates &coordStart, const Coordinates &coordGoal, std::vector<Coordinates> &path)
+bool PF_FindPath(const Coordinates &coordStart, const Coordinates &coordGoal, std::vector<Coordinates> &path, std::vector<TouristicPlace> &places)
 {
 	Path resultPath;
 
@@ -400,8 +414,18 @@ bool PF_FindPath(const Coordinates &coordStart, const Coordinates &coordGoal, st
 		std::cout << "Building path..." << std::endl;
 		if(PathFinder::BuildPath(resultPath, path))
 		{
+			TouristicFilter filter = {true, false, false};
+			std::vector<Coordinates> finalPath;
+
 			std::cout << "Path built!" << std::endl;
 			std::cout << "Path size: " << path.size() << std::endl;
+			std::cout << "Searching for a touristic path..." << std::endl;
+
+			if(BuildTouristicPath(resultPath, path, finalPath, places, filter))
+			{
+				path = finalPath;
+				FreePathResult(&resultPath);
+			}
 		}
 		else
 		{
