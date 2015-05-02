@@ -61,10 +61,13 @@ void test_des()
 	print_data("\n Decrypted",text,sizeof(input_data));
 }
 
+
 int main(void)
 {
 	std::cout << "NetworkProject server" << std::endl;
 	std::cout << ParseDouble(std::string("10.54")) << std::endl;
+
+	//PathFinder::PF_instance.Load();
 
 	//startServer();
 	//TestPathfinder();

@@ -9,6 +9,8 @@
 #include "import.h"
 #include "utils.h"
 
+PathFinder PathFinder::PF_instance;
+
 struct AstarNode
 {
 	PathNode *node;
@@ -60,8 +62,22 @@ double PF_EarthDistance(const PathNode *a, const PathNode *b)
 	return PF_EarthDistance(*(a->point), *(b->point));
 }
 
+static double squareDist2(const Coordinates &a, const Coordinates &b)
+{
+	double m = a.longitude - b.longitude;
+	double n = a.latitude - b.latitude;
+	return m*m + n*n;
+}
+
+static bool operator==(const Coordinates &a, const Coordinates &b)
+{
+	const double EPSILON = 0.00001;
+	return squareDist2(a, b) <= EPSILON;
+}
+
 PathFinder::PathFinder():
 	heuristic(PF_EarthDistance),
+	loaded(false),
 	result(0)
 {
 }
@@ -73,20 +89,18 @@ PathFinder::~PathFinder()
 	// Free nodes
 
 	// Free result
-	ResultNode *tmp;
-	while(result)
-	{
-		tmp = result;
-		result = result->next;
-		delete tmp;
-	}
+	freeResult();
 }
 		
 void PathFinder::Load(void)
 {
-	std::cout << "Importing data..." << std::endl;
-	ImportData(roads, nodes);
-	std::cout << "Data imported!" << std::endl;
+	if(!loaded)
+	{
+		std::cout << "Importing data..." << std::endl;
+		ImportData(roads, nodes);
+		std::cout << "Data imported!" << std::endl;
+		loaded = true;
+	}
 }
 
 bool PathFinder::Astar(const Coordinates &coordStart, const Coordinates &coordGoal)
@@ -97,12 +111,12 @@ bool PathFinder::Astar(const Coordinates &coordStart, const Coordinates &coordGo
 	std::set<AstarNode*> openSet;
 	std::map<PathNode*, AstarNode> nodeInfo;
 
-	if(!(start = getClosestNode(coordStart)))
+	if(!(start = getClosestNode2(coordStart, &closestCoordStart)))
 	{
 		std::cerr << "[Pathfinder] Couldn't find a node close to start (" << coordStart.longitude << ", " << coordStart.latitude << ")" << std::endl;
 		return false;
 	}
-	if(!(goal = getClosestNode(coordGoal)))
+	if(!(goal = getClosestNode2(coordGoal, &closestCoordGoal)))
 	{
 		std::cerr << "[Pathfinder] Couldn't find a node close to goal (" << coordGoal.longitude << ", " << coordGoal.latitude << ")" << std::endl;
 		return false;
@@ -133,6 +147,8 @@ bool PathFinder::Astar(const Coordinates &coordStart, const Coordinates &coordGo
 		{
 			ResultNode *rnode = 0;
 			Road *road = 0;
+
+			freeResult();
 
 			while(current)
 			{
@@ -208,12 +224,15 @@ bool PathFinder::Astar(const Coordinates &coordStart, const Coordinates &coordGo
 
 bool PathFinder::BuildPath(std::vector<Coordinates> &path)
 {
+	bool startReached = false;
+	bool goalReached = false;
+	
 	path.clear();
 
 	if(!result)
 		return false;	
 
-	while(result)
+	while(result && !goalReached)
 	{
 		path.push_back((*result->point));
 
@@ -229,19 +248,39 @@ bool PathFinder::BuildPath(std::vector<Coordinates> &path)
 			if(road->point1 == result->point && road->point2 == result->next->point) // 1 -> 2
 			{
 				for(std::vector<Coordinates>::const_iterator it = road->points.begin();
-					it != road->points.end();
+					it != road->points.end() && !goalReached;
 					++it)
 				{
-					path.push_back(*it);
+					if(startReached)
+					{
+						path.push_back(*it);
+						if(*it == *closestCoordGoal)
+							goalReached = true;
+					}
+					else if(*it == *closestCoordStart)
+					{
+						path.push_back(*it);
+						startReached = true;
+					}
 				}
 			}
 			else if(road->point1 == result->next->point && road->point2 == result->point) // 2 -> 1
 			{
 				for(std::vector<Coordinates>::const_reverse_iterator it = road->points.rbegin();
-					it != road->points.rend();
+					it != road->points.rend() && !goalReached;
 					++it)
 				{
-					path.push_back(*it);
+					if(startReached)
+					{
+						path.push_back(*it);
+						if(*it == *closestCoordGoal)
+							goalReached = true;
+					}
+					else if(*it == *closestCoordStart)
+					{
+						path.push_back(*it);
+						startReached = true;
+					}
 				}
 			}
 			else
@@ -258,7 +297,7 @@ bool PathFinder::BuildPath(std::vector<Coordinates> &path)
 	return true;
 }
 
-PathNode *PathFinder::getClosestNode(const Coordinates &coord)
+PathNode *PathFinder::getClosestNode(const Coordinates &coord) const
 {
 	std::map<Coordinates, PathNode*>::const_iterator it = nodes.lower_bound(coord);
 	if(it != nodes.end())
@@ -277,6 +316,102 @@ PathNode *PathFinder::getClosestNode(const Coordinates &coord)
 	return 0;
 }
 
+
+static double minDistToRoad(const Coordinates &coord, const Road *road, Coordinates **closestNode, Coordinates **closestCoord)
+{
+	double distMin = squareDist2(coord, *(road->point1));
+	double tmp = squareDist2(coord, *(road->point2));
+
+	if(distMin <= tmp)
+		*closestCoord = road->point1;
+	else
+	{
+		*closestCoord = road->point2;
+		distMin = tmp;
+	}
+
+	*closestNode = *closestCoord;
+
+	for(std::vector<Coordinates>::const_iterator it = road->points.begin();
+		it != road->points.end();
+		++it)
+	{
+		tmp = squareDist2(coord, *it);
+		if(tmp < distMin)
+		{
+			*closestCoord = (Coordinates*)&(*it);
+			distMin = tmp;
+		}
+	}
+
+	return distMin;
+}
+
+PathNode *PathFinder::getClosestNode2(const Coordinates &coord, Coordinates **closestCoord) const
+{
+	std::map<unsigned int, Road*>::const_iterator it = roads.begin();
+	if(it != roads.end())
+	{
+		Coordinates *closestNode;
+		double distMin = minDistToRoad(coord, it->second, &closestNode, closestCoord);
+
+		std::map<Coordinates, PathNode*>::const_iterator itnode;
+
+		for(; it != roads.end(); ++it)
+		{
+			Coordinates *tmpNode;
+			Coordinates *tmpCoord;
+			double tmp = minDistToRoad(coord, it->second, &tmpNode, &tmpCoord);
+			if(tmp < distMin)
+			{
+				closestNode = tmpNode;
+				*closestCoord = tmpCoord;
+
+				distMin = tmp;
+			}
+		}
+
+		itnode = nodes.find(*closestNode);
+		if(itnode != nodes.end()) // Should be always true
+		{
+			return itnode->second;
+		}
+		else // Perform a manual search
+		{
+			PathNode *pnode;
+			
+			itnode = nodes.begin();
+			pnode = itnode->second;
+			distMin = squareDist2(*closestNode, *(itnode->second->point));
+
+			for(; itnode != nodes.end(); ++itnode)
+			{
+				double tmp = squareDist2(*closestNode, *(itnode->second->point));
+				if(tmp < distMin)
+				{
+					pnode = itnode->second;
+					distMin = tmp;
+				}
+			}
+
+			return pnode;
+		}
+	}
+
+	return 0;
+}
+
+void PathFinder::freeResult(void)
+{
+	ResultNode *tmp;
+	while(result)
+	{
+		tmp = result;
+		result = result->next;
+		delete tmp;
+	}
+}
+
 // Test features
 
 /*
@@ -291,7 +426,6 @@ static double testHeuristic(const PathNode *a, const PathNode *b)
 {
 	return testDistance(a, b);
 }
-*/
 
 static void testInitRoad(Road *road)
 {
@@ -311,7 +445,6 @@ static void testInitRoad(Road *road)
 	}
 }
 
-/*
 void TestPathfinder(void)
 {
 	const unsigned int W = 100;
@@ -464,14 +597,12 @@ void TestPathfinderRealData(void)
 
 bool PF_FindPath(const Coordinates &coordStart, const Coordinates &coordGoal, std::vector<Coordinates> &path)
 {
-	PathFinder pf;
-
-	pf.Load();
-	if(pf.Astar(coordStart, coordGoal))
+	PathFinder::PF_instance.Load();
+	if(PathFinder::PF_instance.Astar(coordStart, coordGoal))
 	{
 		std::cout << "I found a path!" << std::endl;
 		std::cout << "Building path..." << std::endl;
-		if(pf.BuildPath(path))
+		if(PathFinder::PF_instance.BuildPath(path))
 		{
 			std::cout << "Path built!" << std::endl;
 			std::cout << "Path size: " << path.size() << std::endl;

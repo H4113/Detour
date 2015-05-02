@@ -35,18 +35,6 @@ bool Database::Connect(void)
 	return connected;
 }
 
-/*
-struct TouristicPlace
-{
-	char *type;
-	char *typeDetail;
-	char *name;
-	char *address;
-	char *workingHours;
-	Coordinates location;
-};
-*/
-
 bool Database::QueryTouristicLocations(const QTouristicLocationsOptions &options, std::vector<TouristicPlace> &places)
 {
 	if(connected)
@@ -57,8 +45,8 @@ bool Database::QueryTouristicLocations(const QTouristicLocationsOptions &options
 		bool hasDetail = false;
 		
 		oss << "SELECT typ, typ_detail, nom, adresse, ouverture, longitude, latitude FROM tourism WHERE ";
-		oss << "longitude <= " << options.pointA.longitude << " AND longitude >= " << options.pointB.longitude;
-		oss << " AND latitude >= " << options.pointA.latitude << " AND latitude <= " << options.pointB.latitude;
+		oss << "longitude >= " << options.minLongitude << " AND longitude <= " << options.maxLongitude;
+		oss << " AND latitude >= " << options.minLatitude << " AND latitude <= " << options.maxLatitude;
 
 		if(options.patrimony)
 		{
@@ -118,13 +106,12 @@ void DB_TestDatabase(void)
 	Database db;
 	if(db.Connect())
 	{
-		const Coordinates POINTA = {45.83, 4.65};
-		const Coordinates POINTB = {45.62, 4.92};
-
 		QTouristicLocationsOptions options =
 		{
-			POINTA,
-			POINTB,
+			45.62,
+			45.83,
+			4.65,
+			4.92,
 
 			true,
 			false,

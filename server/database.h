@@ -8,8 +8,10 @@
 
 struct QTouristicLocationsOptions
 {
-	const Coordinates &pointA;
-	const Coordinates &pointB;
+	double minLongitude;
+	double maxLongitude;
+	double minLatitude;
+	double maxLatitude;
 
 	bool patrimony;
 	bool gastronomy;
@@ -34,8 +36,6 @@ class Database
 
 		bool Connect(void);
 
-		// pointA and pointB must define a rectangle such as A is the upper-left point and B the bottom-right point.
-		// IMPORTANT: works only in Lyon
 		bool QueryTouristicLocations(const QTouristicLocationsOptions &options, std::vector<TouristicPlace> &places);
 
 	protected:

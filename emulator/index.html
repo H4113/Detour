@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+    <head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">.
+        <!--meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *">-->
+        <meta name="format-detection" content="telephone=no">
+        <meta name="msapplication-tap-highlight" content="no">
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+		<link rel="stylesheet" type="text/css" href="../client/pokelyon/www/css/index.css">
+        <link rel="stylesheet" type="text/css" href="../client/pokelyon/www/css/app.css">
+		<link rel="stylesheet" type="text/css" href="../client/pokelyon/www/css/leaflet.css">
+        <title>Pokelyon</title>
+    </head>
+    <body>
+
+		<div id="map" style="float:right;width: 80%;height: 100%;background-color:#DDD;"></div>
+		<div id="merde">MERDE</div>
+		
+		
+        <script type="text/javascript" src="../client/pokelyon/www/js/cordova.js"></script>
+        <script type="text/javascript" src="../client/pokelyon/www/js/leaflet.js"></script>
+        <script type="text/javascript" src="../client/pokelyon/www/js/map.js"></script>
+		<script type="text/javascript" src="../client/pokelyon/www/js/utils.js"></script>
+		<script type="text/javascript" src="jquery.js"></script>
+        <script type="text/javascript">
+			
+			var merde = document.getElementById("merde");
+			
+			Map.create();
+			var map = Map.map;
+			function loadJSON(){
+				$.getJSON("data/path.json", function(json) {
+					var str="<h3>Coordonées gps</h3><br/>";
+					for(var i=0;i<json.length;++i){
+						str += json[i].x+" "+json[i].y+"<br />";
+					}
+					console.log("ok");
+					merde.innerHTML = str;
+					drawPathOnMap(map, json);
+				});
+			}
+			setInterval(loadJSON, 10*1000);
+			
+		</script>
+		
+		 
+    </body>
+</html>
