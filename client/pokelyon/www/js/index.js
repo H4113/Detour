@@ -18,7 +18,7 @@ function sendQuery(buf) {
 			magicTcpReceive(readInfo.data, processData);
 			chrome.socket.read(socketId, null, readPackets);
 		}
-		chrome.socket.connect(socketId, "192.168.1.199", 6666, function(result) {
+		chrome.socket.connect(socketId, "151.80.143.42", 6666, function(result) {
 			if(result >= 0) {
 				alert("prout " + result);
 				chrome.socket.write(socketId, buf, function(writeInfo) {
