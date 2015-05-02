@@ -70,7 +70,7 @@ static void *clientRoutine(void* clientSocket)
 		// ANSWER !!!!
 		int32_t type = 1;
 		int32_t size = 2 * sizeof(int32_t) + sizeof(double) * path.size() * 2;
-		int32_t nbDouble = path.size();
+		//int32_t nbDouble = path.size();
 		int8_t* answer = new int8_t[size];
 		int8_t* ptr;
 		

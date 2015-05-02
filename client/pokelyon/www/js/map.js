@@ -1,8 +1,10 @@
+var circlePosUser = null;
+
 var Map = {
 	create: function(options) {
 
 		this.map = L.map('map').setView([45.757927, 4.847598],15);
-		this.map.locate({setView: true, maxZoom:16});
+		this.map.locate({setView: true, maxZoom:100});
 
 		this.layer = L.tileLayer('https://{s}.tiles.mapbox.com/v3/examples.map-i875mjb7/{z}/{x}/{y}.png', {
 			attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
@@ -25,10 +27,27 @@ document.addEventListener('deviceready', function(e) {
 	
 	Map.create();
 
+	circlePosUser = L.circleMarker([0, 0], 10, {}).addTo(Map.map);
+
 	Map.onClick(function(click){
 		console.log(click.latlng.lat, click.latlng.lng,click.layerPoint.x,click.containerPoint.x);
 		Map.offClick();
 	});
+
+	var onGeoSuccess = function(position) {
+		circlePosUser.setLatLng([position.coords.latitude, position.coords.longitude]);
+		circlePosUser.redraw();
+	};
+
+	// onError Callback receives a PositionError object
+	//
+	function onGeoError(error) {
+		alert("No GPS");
+	}
+
+	setInterval(function () {
+		navigator.geolocation.getCurrentPosition(onGeoSuccess, onGeoError);
+	}, 500);
 });
 
 $(window).on('hashchange', function() {
