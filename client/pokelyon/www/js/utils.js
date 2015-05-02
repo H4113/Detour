@@ -45,6 +45,7 @@ function parseData2(buffer) {
 	drawPathOnMap(map, path);
 */
 function drawPathOnMap(map, path){
+	alert(path.length);
 	var pointList = [];
 	for(var i=0;i<path.length;++i){
 		if(path[i].x !== undefined){
@@ -59,6 +60,8 @@ function drawPathOnMap(map, path){
 	var polyline = L.polyline(pointList, {color: 'blue',
 		opacity: 0.9,
 		smoothFactor: 1 }).addTo(map);
+
+	L.marker([45.7703, 4.87558]).addTo(map);
 	//map.fitBounds(polyline.getBounds());
 }
 

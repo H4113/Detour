@@ -80,8 +80,8 @@ var app = {
 					  'Timestamp: '			+ position.timestamp				+ '\n');*/
 			gpscoord[0] = position.coords.latitude;
 			gpscoord[1] = position.coords.longitude; 
-			gpscoord[2] = 45.6803042752;
-			gpscoord[3] = 4.92207816575;
+			gpscoord[2] = 45.770235;
+			gpscoord[3] = 4.875494;
 			sendQuery(buf);
 		};
 	
