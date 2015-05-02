@@ -4,4 +4,98 @@ body {
 }
 html, body, #app-container, #map {
 	height: 100%;
+	width: 100%;
 }
+
+
+
+/*
+ * GUI
+ */
+
+#map {
+ 	position: absolute;
+}
+
+ #gui {
+ 	z-index: 1000;
+ 	position: relative;
+
+ 	width: 100%;
+ 	height: 100%;
+    /*-moz-box-sizing: border-box; 
+    -webkit-box-sizing: border-box;     
+    box-sizing: border-box; 
+ 	padding: 10px 10px 10px 10px;*/
+ }
+
+ #app-container {
+ 	height: 100%;
+ }
+
+ .link {
+ 	visibility: none;
+ }
+
+ .gui-layer {
+ 	z-index: 1000;
+ 	position: relative;
+ 	overflow: hidden;
+
+ 	pointer-events: none;
+
+ 	margin: 0;
+ 	padding: 0;
+
+ 	width: 100%;
+ 	height: 100%;
+ }
+
+ .gui-layer * {
+ 	pointer-events:all;
+ }
+
+
+ .gui-btn-holder {
+ 	width: 80px;
+ 	height: 80px;
+ }
+
+ .gui-btn-holder img {
+ 	width: 100%;
+ 	height: auto;
+ }
+
+ .gui {
+ 	position: absolute;
+ }
+
+ .gui.bottom {
+ 	bottom: 10px;
+ }
+
+ .gui.right {
+ 	right: 10px;
+ }
+
+ .gui.left {
+ 	left: 10px;
+ }
+
+ .gui.top {
+ 	top: 10px;
+ }
+
+
+ .hidden.right {
+ 	right: -300px;
+ }
+
+ .menu {
+ 	z-index: 200;
+
+ 	width: 300px;
+
+ 	background: white;
+ 	border: 1px solid #ddd;
+ }

@@ -30,3 +30,15 @@ document.addEventListener('deviceready', function(e) {
 		Map.offClick();
 	});
 });
+
+$(window).on('hashchange', function() {
+  	var hash = location.hash;
+  	switch( hash ) {
+  		case '#menu':
+  			$('#menugui').removeClass('hidden',400,'swing',function() {});
+  			break;
+  		default:
+  			$('#menugui').addClass('hidden',400,'swing',function() {});
+  			break;
+  	}
+});
