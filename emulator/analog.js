@@ -77,7 +77,7 @@ function getInfoTab(tab)
 
 function id(x,m){return x;}
 function debit(num, max){
-	num = 1.0/num;
+	num = 60.0/num;
 	if(num == Infinity){
 		num = max;
 	}
@@ -108,9 +108,9 @@ function main(){
 		if(bench[nbuser] !== null && bench[nbuser].length > 0){
 			strfinal += nbuser +",";
 			var info = getInfoTab(bench[nbuser]);
-			strfinal += f(info.min,10)+",";
-			strfinal += f(info.max,10)+",";
-			strfinal += f(info.avg,10);
+			strfinal += f(info.min,60)+",";
+			strfinal += f(info.max,60)+",";
+			strfinal += f(info.avg,60);
 			strfinal += "\n"
 		}
 	}
