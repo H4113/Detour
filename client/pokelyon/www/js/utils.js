@@ -5,6 +5,11 @@
 		// do something smart with r[i].x and r[i].y
 	}
 */
+
+var map_start = null;
+var map_destination = null;
+var map_path = null;
+
 function parseData(buffer) {
 	var sizeview = new Uint32Array(buffer);
 	var size = sizeview[1];
@@ -45,23 +50,34 @@ function parseData2(buffer) {
 	drawPathOnMap(map, path);
 */
 function drawPathOnMap(map, path){
-	alert(path.length);
+	if(map_path != null)
+		map.removeLayer(map_path);
+	if(map_start != null)
+		map.removeLayer(map_start);
+	if(map_destination != null)
+		map.removeLayer(map_destination);
+
 	var pointList = [];
 	for(var i=0;i<path.length;++i){
 		if(path[i].x !== undefined){
 			pointList.push([path[i].x,path[i].y]);
 		}
 	}
-	if(path[0].x !== undefined)
-		L.marker([path[0].x,path[0].y]).addTo(map);
-	if(path[path.length-1] !== undefined)
-		L.marker([path[path.length-1].x,path[path.length-1].y]).addTo(map);
+	if(path[0].x !== undefined) {
+		map_start = L.marker([path[0].x,path[0].y]).addTo(map);
+		map_start.addTo(map);
+	}
+	if(path[path.length-1] !== undefined) {
+		map_destination = L.marker([path[path.length-1].x,path[path.length-1].y]);
+		map_destination.addTo(map);
+	}
 	
-	var polyline = L.polyline(pointList, {color: 'blue',
+	map_path = L.polyline(pointList, {color: 'blue',
 		opacity: 0.9,
-		smoothFactor: 1 }).addTo(map);
+		smoothFactor: 1 });
+	map_path.addTo(map);
 
-	L.marker([45.7703, 4.87558]).addTo(map);
+	//L.marker([45.7703, 4.87558]).addTo(map);
 	//map.fitBounds(polyline.getBounds());
 }
 

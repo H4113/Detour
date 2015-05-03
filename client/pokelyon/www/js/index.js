@@ -69,7 +69,7 @@ var app = {
 		type_junk[0] = 42;
 		type_junk2[0] = 42;
 	
-	var onSuccess = function(position) {
+		var onSuccess = function(position) {
 			/*alert('Latitude: '			  + position.coords.latitude		  + '\n' +
 					  'Longitude: '			+ position.coords.longitude			+ '\n' +
 					  'Altitude: '			+ position.coords.altitude			+ '\n' +
@@ -79,9 +79,7 @@ var app = {
 					  'Speed: '				+ position.coords.speed				+ '\n' +
 					  'Timestamp: '			+ position.timestamp				+ '\n');*/
 			gpscoord[0] = position.coords.latitude;
-			gpscoord[1] = position.coords.longitude; 
-			gpscoord[2] = 45.770235;
-			gpscoord[3] = 4.875494;
+			gpscoord[1] = position.coords.longitude;
 			sendQuery(buf);
 		};
 	
@@ -92,7 +90,11 @@ var app = {
 				'message: ' + error.message + '\n');
 		}
 	
-		navigator.geolocation.getCurrentPosition(onSuccess, onError);
+		Map.map.on('dblclick', function(e) {
+			gpscoord[2] = e.latlng.lat;
+			gpscoord[3] = e.latlng.lng;
+			navigator.geolocation.getCurrentPosition(onSuccess, onError);
+		});
 	},
 	// Update DOM on a Received Event
 	receivedEvent: function(id) {
