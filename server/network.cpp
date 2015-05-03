@@ -2,6 +2,7 @@
 #include "utils.h"
 #include "general.h"
 #include "pathfinder.h"
+#include "tourism.h"
 
 #include <iostream>
 #include <cstdlib>
@@ -73,7 +74,8 @@ static void *clientRoutine(void* clientSocket)
 
 	// BUILD PATH
 	std::vector<Coordinates> path;
-	if(PF_FindPath(pr.path.pointA, pr.path.pointB, path))
+	std::vector<TouristicPlace> touristicPlaces;
+	if(PF_FindPath(pr.path.pointA, pr.path.pointB, path, touristicPlaces))
 	{
 		// ANSWER !!!!
 		int32_t type = 1;

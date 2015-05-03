@@ -30,15 +30,11 @@ void ImportRoads(std::map<unsigned int, ImportedRoad*> &roads) {
 		while(getline(file, line)) {
 			std::istringstream is (line);
 			std::string part;
-			unsigned int i = 0;
 			
 			ImportedRoad* road = new ImportedRoad();
 
-			unsigned int id = 0;
+			unsigned int i = 0, id = 0, id_start = 0, id_end = 0, nbr_points = 0;
 			double distance = 0;
-			unsigned int id_start = 0;
-			unsigned int id_end = 0;
-			unsigned int nbr_points = 0;
 			std::vector<Coordinates> points;
 			RoadDirection direction = RD_BOTH_DIRECTIONS;
 			Coordinates point = {0,0};
@@ -112,11 +108,9 @@ void ImportNodes(std::map<Coordinates, PathNode*> &nodes, std::map<unsigned int,
 		while(getline(file, line)) {
 			std::istringstream is (line);
 			std::string part;
-			unsigned int i = 0;
 
 			Coordinates* point = new Coordinates();
-			unsigned int id = 0;
-			unsigned int id_road = 0;
+			unsigned int i = 0, id = 0, id_road = 0;
 
 			PathNode* node = new PathNode();
 			
@@ -159,10 +153,8 @@ void ImportNodes(std::map<Coordinates, PathNode*> &nodes, std::map<unsigned int,
 
 	//Neighbors generation
 	std::map<unsigned int, ImportedRoad*>::const_iterator itIR;
-	PathNode* node_start;
-	PathNode* node_end;
-	Neighbor n1;
-	Neighbor n2;
+	PathNode *node_start, *node_end;
+	Neighbor n1, n2;
 	Road* r;
 
 	for(itIR = importedRoads.begin(); itIR != importedRoads.end(); ++itIR) {

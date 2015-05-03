@@ -7,7 +7,7 @@
 #include "network.h"
 #include "import.h"
 #include "utils.h"
-
+#include "database.h"
 
 /* Triple DES key for Encryption and Decryption */
 DES_cblock Key1 = { 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11 };
@@ -67,13 +67,17 @@ int main(void)
 	std::cout << "NetworkProject server" << std::endl;
 	std::cout << ParseDouble(std::string("10.54")) << std::endl;
 
-	PathFinder::PF_instance.Load();
+	PathFinder::Load();
+	Database::Connect();
 
 	startServer();
 	//TestPathfinder();
 
 	//TestPathfinderRealData();
 	//test_des();
+
+	//testSQLConnection();
+	//DB_TestDatabase();
 
 	//ALEX TEST
 
