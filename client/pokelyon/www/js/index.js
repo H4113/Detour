@@ -94,6 +94,10 @@ var app = {
 		Map.map.on('dblclick', function(e) {
 			gpscoord[2] = e.latlng.lat;
 			gpscoord[3] = e.latlng.lng;
+
+			// Change when buttons available
+			type_junk[0] = 1 + (1 << 1) + (1 << 2);
+
 			navigator.geolocation.getCurrentPosition(onSuccess, onError);
 		});
 	},

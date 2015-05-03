@@ -104,6 +104,8 @@ static void *clientRoutine(void* clientSocket)
 		// }
 		// myfile.close();
 
+		std::cout << "last : " << path[path.size() - 1].longitude << " " << path[path.size() - 1].latitude << std::endl; 
+
 		n = write(cs, answer, size);
 		std::cout << "sent : " << n << " " << (size * sizeof(int8_t)) << std::endl;
 		delete[] answer;
