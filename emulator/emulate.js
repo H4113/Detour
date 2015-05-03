@@ -61,6 +61,10 @@ function isNumber(n) {
 
 // ----------------------------------------------------------------------------
 
+var option_nojson = false;
+
+// ---
+
 // create fake data
 function getData(){
 	// GPS coords:
@@ -81,7 +85,8 @@ function processData(obj){
 	var data = obj.buffer;
 	if(obj.type == 1){ // type == 1 -> PATH sent
 		var path = parseData(data);
-		objtofile(path,"data/path.json");
+		if(!option_nojson)
+			objtofile(path,"data/path.json");
 		//drawPathOnMap(Map.map, path);
 	}
 }
@@ -94,6 +99,7 @@ var clientstate;
 function launchClient(id){
 	
 	var client = new net.Socket();
+	var abuffer = [];
 	
 	var starttime;
 	var endstate = 0;
@@ -114,7 +120,7 @@ function launchClient(id){
 
 
 	client.on('data', function(data){
-		magicTcpReceive( toArrayBuffer(data),processData );
+		magicTcpReceive(abuffer, toArrayBuffer(data),processData );
 		if(abuffer.length == 0){
 			eventclient.emit('time',id,process.hrtime(starttime));
 		}
@@ -163,6 +169,7 @@ function main(){
 		}
 		if(index == 2){
 			if(isNumber(val)){
+				option_nojson = true;
 				nbclient = val;
 			}else if(val == "clean"){
 				fs.writeFile("data/benchmark.json", "[]", function(err) {

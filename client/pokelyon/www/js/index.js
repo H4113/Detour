@@ -1,4 +1,5 @@
 
+
  
 function processData(obj){
 	//alert("packet entier, taille: "+obj.buffer.byteLength);
@@ -12,10 +13,11 @@ function processData(obj){
 function sendQuery(buf) {
 	chrome.socket.create('tcp', {}, function(createInfo) {
 		//alert(createInfo);
+		var abuffer = [];
 		var socketId = createInfo.socketId;
 		function readPackets(readInfo) {
 			//alert("packet partiel, taille:"+readInfo.data.byteLength);
-			magicTcpReceive(readInfo.data, processData);
+			magicTcpReceive(abuffer, readInfo.data, processData);
 			chrome.socket.read(socketId, null, readPackets);
 		}
 		chrome.socket.connect(socketId, "151.80.143.42", 6666, function(result) {
