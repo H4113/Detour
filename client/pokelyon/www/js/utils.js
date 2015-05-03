@@ -98,8 +98,8 @@ function readHeader(data){
 	return {type:vtype,size:vsize};
 }
 
-var abuffer = [];
-function magicTcpReceive(adata,fun) {
+
+function magicTcpReceive(abuffer, adata,fun) {
 	
 	//console.log('Received SIZE: ' + adata.byteLength );
 
