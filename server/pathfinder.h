@@ -13,42 +13,45 @@ struct ResultNode
 	Road *roadToNext;
 };
 
+struct Path
+{
+	ResultNode *result;
+	const Coordinates *realStart;
+	const Coordinates *realGoal;
+	Coordinates *closestCoordStart;
+	Coordinates *closestCoordGoal;
+};
+
+void FreePathResult(Path *path);
+
 double PF_EarthDistance(const Coordinates &a, const Coordinates &b);
 double PF_EarthDistance(const PathNode *a, const PathNode *b);
 
 class PathFinder
 {
 	public:
-		PathFinder();
 		virtual ~PathFinder();
 		
-		void Load(void);
+		static void Load(void);
+		static bool Astar(const Coordinates &coordStart, const Coordinates &coordGoal, Path &resultPath);
 		
-		bool Astar(const Coordinates &coordStart, const Coordinates &coordGoal);
-		bool BuildPath(std::vector<Coordinates> &path);
-
-		static PathFinder PF_instance;
+		static bool BuildPath(const Path &resultPath, std::vector<Coordinates> &path);
 
 	protected:
-		PathNode *getClosestNode(const Coordinates &coord) const;
-		PathNode *getClosestNode2(const Coordinates &coord, Coordinates **closestCoord) const;
+		PathFinder();
+		static PathNode *getClosestNode(const Coordinates &coord, Coordinates **closestCoord);
 
 	private:
-		void freeResult(void);
-
-		double (*heuristic)(const PathNode*, const PathNode*);
-		bool loaded;
-		std::map<unsigned int, Road*> roads;
-		std::map<Coordinates, PathNode*> nodes;
-		ResultNode *result;
-		Coordinates *closestCoordStart;
-		Coordinates *closestCoordGoal;
+		static double (*heuristic)(const PathNode*, const PathNode*);
+		static bool loaded;
+		static std::map<unsigned int, Road*> roads;
+		static std::map<Coordinates, PathNode*> nodes;
 };
 
 void TestPathfinder(void);
 void TestPathfinderRealData(void);
 
-bool PF_FindPath(const Coordinates &coordStart, const Coordinates &coordGoal, std::vector<Coordinates> &path);
+bool PF_FindPath(const Coordinates &coordStart, const Coordinates &coordGoal, std::vector<Coordinates> &path, std::vector<struct TouristicPlace> &places);
 
 #endif
 

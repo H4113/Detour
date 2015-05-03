@@ -35,4 +35,10 @@ unsigned int ParseUint(const std::string &s)
 	return ret;
 }
 
+double squareDist2(const Coordinates &a, const Coordinates &b)
+{
+	double m = a.longitude - b.longitude;
+	double n = a.latitude - b.latitude;
+	return m*m + n*n;
+}
 

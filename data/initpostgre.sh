@@ -1,2 +1,2 @@
 mkdir database
-initdb -U apero -D database
+initdb -U interlyon -D database
