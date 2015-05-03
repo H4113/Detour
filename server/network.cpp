@@ -24,6 +24,14 @@ void siginthandler(int)
 	exit(1);
 }
 
+static void paramFilter(PathRequest pr)
+{
+	bool patrimony = pr.junk & 1;
+	bool gastronomy = pr.junk & 2;
+	bool accomodation = pr.junk & 4;
+	std::cout << patrimony << " " << gastronomy << " " << accomodation << std::endl;
+}
+
 static void splitArray(char* c, const char* s, char* first, char* second)
 {
 	int i = 0;
@@ -60,6 +68,8 @@ static void *clientRoutine(void* clientSocket)
 		error("ERROR reading from client socket");
 	printf("Here is the request from the client: %d %d\n",pr.type,pr.junk);
 	printf("%.30f %.30f %.30f %.30f\n", pr.path.pointA.longitude, pr.path.pointA.latitude, pr.path.pointB.longitude, pr.path.pointB.latitude);
+
+	paramFilter(pr);
 
 	// BUILD PATH
 	std::vector<Coordinates> path;
