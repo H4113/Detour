@@ -1,0 +1,195 @@
+NetworkProject server
+10.54
+Importing data...
+Data imported!
+Successfully connected to interlyon!
+Here is the request from the client: 0 7
+45.783486299999999857845978112891 4.874131700000000400052613258595 45.782758567037269870070304023102 4.879817962646484375000000000000
+start: (45.7834, 4.87444)
+goal: (45.7829, 4.87921)
+I found a path!
+Building path...
+Path built!
+Path size: 6
+Searching for a touristic path...
+SELECT typ, typ_detail, nom, adresse, ouverture, longitude, latitude FROM tourism WHERE longitude >= 45.7719 AND longitude <= 45.7934 AND latitude >= 4.86444 AND latitude <= 4.887 AND (typ='PATRIMOINE_CULTUREL' OR typ='PATRIMOINE_NATUREL' );
+The query returned 4 results
+start: (45.7834, 4.87444)
+goal: (45.7878, 4.88233)
+start: (45.7878, 4.88233)
+goal: (45.7741, 4.86808)
+start: (45.7741, 4.86808)
+goal: (45.7843, 4.88665)
+start: (45.7843, 4.88665)
+goal: (45.7829, 4.87921)
+6
+sent : 104 104
+
+	E
+Here is the request from the client: 0 0
+45.783994999999997332906787050888 4.871559000000000416719103668584 45.751416474499997377733961911872 4.820629641080000027386631700210
+start: (45.7838, 4.87227)
+goal: (45.7513, 4.8209)
+I found a path!
+Building path...
+Path built!
+Path size: 150
+Searching for a touristic path...
+SELECT typ, typ_detail, nom, adresse, ouverture, longitude, latitude FROM tourism WHERE longitude >= 45.7419 AND longitude <= 45.794 AND latitude >= 4.8118 AND latitude <= 4.88227 AND (typ='PATRIMOINE_CULTUREL' OR typ='PATRIMOINE_NATUREL' );
+The query returned 315 results
+start: (45.7838, 4.87227)
+goal: (45.7718, 4.87005)
+start: (45.7718, 4.87005)
+goal: (45.7915, 4.84327)
+start: (45.7915, 4.84327)
+goal: (45.7796, 4.84013)
+start: (45.7796, 4.84013)
+goal: (45.7513, 4.8209)
+345
+sent : 5528 5528
+
+	E
+Here is the request from the client: 0 0
+45.783994999999997332906787050888 4.871559000000000416719103668584 45.751416474499997377733961911872 4.820629641080000027386631700210
+Here is the request from the client: 0 0
+45.783994999999997332906787050888 4.871559000000000416719103668584 45.751416474499997377733961911872 4.820629641080000027386631700210
+start: (45.7838, 4.87227)
+goal: (45.7513, 4.8209)
+start: (45.7838, 4.87227)
+goal: (45.7513, 4.8209)
+I found a path!
+Building path...
+Path built!
+Path size: 150
+Searching for a touristic path...
+SELECT typ, typ_detail, nom, adresse, ouverture, longitude, latitude FROM tourism WHERE longitude >= 45.7419 AND longitude <= 45.794 AND latitude >= 4.8118 AND latitude <= 4.88227 AND (typ='PATRIMOINE_CULTUREL' OR typ='PATRIMOINE_NATUREL' );
+The query returned 315 results
+I found a path!
+Building path...
+Path built!
+Path size: 150
+Searching for a touristic path...
+SELECT typ, typ_detail, nom, adresse, ouverture, longitude, latitude FROM tourism WHERE longitude >= 45.7419 AND longitude <= 45.794 AND latitude >= 4.8118 AND latitude <= 4.88227 AND (typ='PATRIMOINE_CULTUREL' OR typ='PATRIMOINE_NATUREL' );
+The query returned 315 results
+start: (45.7838, 4.87227)
+goal: (45.7718, 4.87005)
+start: (45.7838, 4.87227)
+goal: (45.7718, 4.87005)
+start: (45.7718, 4.87005)
+goal: (45.7915, 4.84327)
+start: (45.7718, 4.87005)
+goal: (45.7915, 4.84327)
+start: (45.7915, 4.84327)
+goal: (45.7796, 4.84013)
+start: (45.7915, 4.84327)
+goal: (45.7796, 4.84013)
+start: (start: (45.779645.7796, , 4.84013)4.84013)
+goal: (45.7513, 4.8209)
+
+goal: (45.7513, 4.8209)
+345
+sent : 5528 5528
+
+	E
+345
+sent : 5528 5528
+
+	E
+Here is the request from the client: 0 0
+45.783994999999997332906787050888 4.871559000000000416719103668584 45.751416474499997377733961911872 4.820629641080000027386631700210
+Here is the request from the client: 0 0
+45.783994999999997332906787050888 4.871559000000000416719103668584 45.751416474499997377733961911872 4.820629641080000027386631700210
+Here is the request from the client: 0 0
+45.783994999999997332906787050888 4.871559000000000416719103668584 45.751416474499997377733961911872 4.820629641080000027386631700210
+Here is the request from the client: 0 0
+45.783994999999997332906787050888 4.871559000000000416719103668584 45.751416474499997377733961911872 4.820629641080000027386631700210
+Here is the request from the client: 0 0
+45.783994999999997332906787050888 4.871559000000000416719103668584 45.751416474499997377733961911872 4.820629641080000027386631700210
+Here is the request from the client: 0 0
+45.783994999999997332906787050888 4.871559000000000416719103668584 45.751416474499997377733961911872 4.820629641080000027386631700210
+Here is the request from the client: 0 0
+45.783994999999997332906787050888 4.871559000000000416719103668584 45.751416474499997377733961911872 4.820629641080000027386631700210
+Here is the request from the client: 0 0
+45.783994999999997332906787050888 4.871559000000000416719103668584 45.751416474499997377733961911872 4.820629641080000027386631700210
+Here is the request from the client: 0 0
+45.783994999999997332906787050888 4.871559000000000416719103668584 45.751416474499997377733961911872 4.820629641080000027386631700210
+Here is the request from the client: 0 0
+45.783994999999997332906787050888 4.871559000000000416719103668584 45.751416474499997377733961911872 4.820629641080000027386631700210
+start: (45.7838, 4.87227)
+goal: (45.7513, 4.8209)
+start: (45.7838, 4.87227)
+goal: (45.7513, 4.8209)
+start: (45.7838, 4.87227)
+goal: (45.7513, 4.8209)
+start: (45.7838, 4.87227)
+goal: (45.7513, 4.8209)
+start: (45.7838, 4.87227)
+goal: (45.7513, 4.8209)
+start: (45.7838, 4.87227)
+goal: (45.7513, 4.8209)
+start: (45.7838, 4.87227)
+goal: (45.7513, 4.8209)
+start: (45.7838, 4.87227)
+goal: (45.7513, 4.8209)
+start: (45.7838, 4.87227)
+goal: (45.7513, 4.8209)
+start: (45.7838, 4.87227)
+goal: (45.7513, 4.8209)
+I found a path!
+Building path...
+Path built!
+Path size: 150
+Searching for a touristic path...
+SELECT typ, typ_detail, nom, adresse, ouverture, longitude, latitude FROM tourism WHERE longitude >= 45.7419 AND longitude <= 45.794 AND latitude >= 4.8118 AND latitude <= 4.88227 AND (typ='PATRIMOINE_CULTUREL' OR typ='PATRIMOINE_NATUREL' );
+The query returned 315 results
+I found a path!
+Building path...
+Path built!
+Path size: 150
+Searching for a touristic path...
+SELECT typ, typ_detail, nom, adresse, ouverture, longitude, latitude FROM tourism WHERE longitude >= 45.7419 AND longitude <= 45.794 AND latitude >= 4.8118 AND latitude <= 4.88227 AND (typ='PATRIMOINE_CULTUREL' OR typ='PATRIMOINE_NATUREL' );
+The query returned 315 results
+start: (45.7838, 4.87227)
+goal: (45.7718, 4.87005)
+start: (45.7838, 4.87227)
+goal: (45.7718, 4.87005)
+I found a path!
+Building path...
+Path built!
+Path size: 150
+Searching for a touristic path...
+SELECT typ, typ_detail, nom, adresse, ouverture, longitude, latitude FROM tourism WHERE longitude >= 45.7419 AND longitude <= 45.794 AND latitude >= 4.8118 AND latitude <= 4.88227 AND (typ='PATRIMOINE_CULTUREL' OR typ='PATRIMOINE_NATUREL' );
+The query returned 315 results
+start: (45.7838, 4.87227)
+goal: (45.7718, 4.87005)
+I found a path!
+Building path...
+Path built!
+Path size: 150
+Searching for a touristic path...
+SELECT typ, typ_detail, nom, adresse, ouverture, longitude, latitude FROM tourism WHERE longitude >= 45.7419 AND longitude <= 45.794 AND latitude >= 4.8118 AND latitude <= 4.88227 AND (typ='PATRIMOINE_CULTUREL' OR typ='PATRIMOINE_NATUREL' );
+The query returned 315 results
+I found a path!
+Building path...
+Path built!
+Path size: 150
+Searching for a touristic path...
+SELECT typ, typ_detail, nom, adresse, ouverture, longitude, latitude FROM tourism WHERE longitude >= 45.7419 AND longitude <= 45.794 AND latitude >= 4.8118 AND latitude <= 4.88227 AND (typ='PATRIMOINE_CULTUREL' OR typ='PATRIMOINE_NATUREL' );
+The query returned 315 results
+I found a path!
+Building path...
+Path built!
+Path size: 150
+Searching for a touristic path...
+SELECT typ, typ_detail, nom, adresse, ouverture, longitude, latitude FROM tourism WHERE longitude >= 45.7419 AND longitude <= 45.794 AND latitude >= 4.8118 AND latitude <= 4.88227 AND (typ='PATRIMOINE_CULTUREL' OR typ='PATRIMOINE_NATUREL' );
+start: (45.7718, 4.87005)
+goal: (45.7915, 4.84327)
+The query returned 315 results
+I found a path!
+Building path...
+Path built!
+Path size: 150
+Searching for a touristic path...
+terminate called after throwing an instance of 'pqxx::usage_error'
+  what():  Started transaction<READ COMMITTED> while transaction<READ COMMITTED> still active
+Abandon

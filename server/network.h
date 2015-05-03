@@ -8,6 +8,13 @@
 #define NET_PORT_NUMBER 6666
 #define NET_SEPARATOR (char*)'A'
 
+enum PacketType
+{
+	PT_PathQuery,
+	PT_PathAnswer,
+	PT_TourismAnswer
+};
+
 struct PathR
 {
 	Coordinates pointA;
