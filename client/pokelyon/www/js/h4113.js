@@ -26,9 +26,10 @@ var H = {
 		alert("packet entier, taille: "+obj.buffer.byteLength);
 		var data = obj.buffer;
 		if(obj.type == 1){ // type == 1 -> PATH sent
-			var obj = parseData(data);
+			var obj2 = parseData(data);
 
-			drawPathOnMap(Map.map, obj.path);
+			drawPathOnMap(Map.map, obj2.path);
+			drawTourismOnMap(Map.map, obj2.tourism);
 		}
 	},
 
@@ -38,8 +39,10 @@ var H = {
 			var abuffer = [];
 			var socketId = createInfo.socketId;
 			function readPackets(readInfo) {
-				//alert("packet partiel, taille:"+readInfo.data.byteLength);
-				magicTcpReceive(abuffer, readInfo.data, function(obj){callback(this.processData(obj))});
+				alert("packet partiel, taille:"+readInfo.data.byteLength);
+				var prout = readHeader(readInfo.data);
+				alert(prout.size);
+				magicTcpReceive(abuffer, readInfo.data, H.processData);
 				chrome.socket.read(socketId, null, readPackets);
 			}
 			chrome.socket.connect(socketId, "151.80.143.42", 6666, function(result) {
