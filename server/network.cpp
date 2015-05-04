@@ -80,11 +80,26 @@ static void *clientRoutine(void* clientSocket)
 		std::vector<TouristicPlace> touristicPlaces;
 		if(PF_FindPath(pr.path.pointA, pr.path.pointB, path, touristicPlaces))
 		{
+			int sizeType, sizeTypeDetail, sizeName, sizeAddress, sizeWorkingHours;
 			// ANSWER !!!!
 			int32_t type = 1;
 			// type + size + path_size + touristic_size + ... path ...
 			int32_t size = 4 * sizeof(int32_t) + sizeof(double) * path.size() * 2;
 			//int32_t nbDouble = path.size();
+
+			for(std::vector<TouristicPlace>::iterator it = touristicPlaces.begin();
+				it != touristicPlaces.end();
+				++it)
+			{
+				sizeType = it->type.size();
+				sizeTypeDetail = it->typeDetail.size();
+				sizeName = it->name.size();
+				sizeAddress = it->address.size();
+				sizeWorkingHours = it->workingHours.size();
+				size += sizeof(int32_t) + (sizeType + sizeTypeDetail + sizeWorkingHours + sizeAddress + sizeName) *
+					sizeof(char) + 2 * sizeof(double);
+			}
+
 			int8_t* answer = new int8_t[size];
 			int8_t* ptr;
 			int32_t pathSize = path.size();
@@ -108,7 +123,6 @@ static void *clientRoutine(void* clientSocket)
 			}
 
 			// Add touristic places
-			int sizeType, sizeTypeDetail, sizeName, sizeAddress, sizeWorkingHours;
 			for(std::vector<TouristicPlace>::iterator it = touristicPlaces.begin();
 				it != touristicPlaces.end();
 				++it)
