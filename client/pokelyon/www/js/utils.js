@@ -28,54 +28,46 @@ function parseData(buffer) {
 		path.push(p);
 	}
 	
-	return path;
+	//return path;
 	
 	var NB_STRING = 5;
 	var touri = [];
 	// Touri size
-	console.log(view.byteLength);
 	buffer = buffer.slice(view.byteLength);
-	view = new Int16Array(buffer,0,size_touri*NB_STRING);
+	
 	for(var i=0;i<size_touri;++i){
+		view = new Int16Array(buffer,0,NB_STRING);
 		var tab = [];
+		var total_str_size = 0;
 		for(var j=0;j<NB_STRING;++j){
-			tab[j] = view[5*i+j];
+			tab[j] = view[j];
 			if(tab[j] < 0){
 				tab[j] = 0;
 			}
+			total_str_size += tab[j];
 		}
-		touri.push({size:tab,string:[],x:0,y:0});
-	}
-	
-	// Touri coord
-	buffer = buffer.slice(view.byteLength);
-	view = new Float64Array(buffer,0,size_touri*2);
-	for(var i=0;i<size_touri;++i){
-		touri[i].x = view[2*i];
-		touri[i].y = view[2*i+1];
-	}
-	
-	// Touri string
-	/*buffer = buffer.slice(view.byteLength);
-	for(var i=0;i<size_touri;++i){
+		buffer = buffer.slice(view.byteLength);
+		view = new Float64Array(buffer,0,2);
+		
+		touri.push({size:tab,str:[],x:view[0],y:view[1]});
+		buffer = buffer.slice(view.byteLength);
 		for(var j=0;j<NB_STRING;++j){
-			view = new Uint8Array(buffer,0,touri[i].size[j]);
-			buffer.slice(view.byteLength);
-			touri[i].str[j] = String.fromCharCode.apply(null, view);
+			touri[i].str[j] = String.fromCharCode.apply(null,
+					new Uint8Array(buffer,0,touri[i].size[j]));
+			buffer = buffer.slice(touri[i].size[j]);
 		}
-	}*/
+		buffer = buffer.slice(touri[i].size[NB_STRING-1]);
+	}
 	
 	for(var i=0;i<size_touri;++i){
 		console.log("TOURI "+i);
 		console.log("coord: "+touri[i].x+" "+touri[i].y);
 		for(var j=0;j<NB_STRING;++j){
-			console.log(" "+j+") "+touri[i].size[j]);
-			//console.log(" "+j+") "+touri[i].str[j]);
+			console.log(" "+j+")"+touri[i].str[j]);
 		}
 	}
-	console.log(JSON.stringify(touri));
 
-	return path;
+	return {path:path,tourism:touri};
 }
 /*
 int 32 * 4 // type size path_size touri_size
@@ -118,6 +110,12 @@ function drawPathOnMap(map, path){
 	map_path.addTo(map);
 
 	//map.fitBounds(polyline.getBounds());
+}
+
+function drawTourismOnMap(map, obj){
+	for(var i=0;i<obj.length;++i){
+		L.circle([obj[i].x, obj[i].y], 100, {color:'#F00',fillColor: '#FF0000', fillOpacity:0.9}).addTo(map);
+	}
 }
 
 // ---
