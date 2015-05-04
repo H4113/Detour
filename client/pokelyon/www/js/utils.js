@@ -10,6 +10,10 @@ var map_start = null;
 var map_destination = null;
 var map_path = null;
 
+String.prototype.decode = function(){
+    return decodeURIComponent(escape(this));
+}
+
 function parseData(buffer) {
 	
 	// Header
@@ -53,7 +57,7 @@ function parseData(buffer) {
 		buffer = buffer.slice(view.byteLength);
 		for(var j=0;j<NB_STRING;++j){
 			touri[i].str[j] = String.fromCharCode.apply(null,
-					new Uint8Array(buffer,0,touri[i].size[j]));
+					new Uint8Array(buffer,0,touri[i].size[j])).decode();
 			buffer = buffer.slice(touri[i].size[j]);
 		}
 		buffer = buffer.slice(touri[i].size[NB_STRING-1]);
