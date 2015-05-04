@@ -4,7 +4,6 @@
         "uninstalled": []
     },
     "config_munge": {
-<<<<<<< HEAD
         "files": {
             "res/xml/config.xml": {
                 "parents": {
@@ -74,10 +73,4 @@
             "PACKAGE_NAME": "com.h4113.pokelyon"
         }
     }
-=======
-        "files": {}
-    },
-    "installed_plugins": {},
-    "dependent_plugins": {}
->>>>>>> origin/master
 }
