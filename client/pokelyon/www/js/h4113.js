@@ -35,6 +35,8 @@ var H = {
 
 	sendQuery: function (buf, callback, error) {
 
+		//this.sendMessage("Hellooooooo", null, null);
+
 		chrome.socket.create('tcp', {}, function(createInfo) {
 			
 			var abuffer = [];
@@ -70,22 +72,24 @@ var H = {
 			});
 		});
 
-		// --> WebSocket is the new black
-		
-		/*var ws = new WebSocket('ws://151.80.143.42:4853', 'tcp');
+	},
+
+	// --> WebSocket is the new black
+	sendMessage: function( message, callback, error ) {
+		//ws = new WebSocket('ws://151.80.143.42:4853', 'tcp');
+		var ws = new WebSocket('ws://echo.websocket.org');
 		ws.onopen = function() {
-			ws.send("Hello from the app");
-			alert('message sent');
+			ws.send( message );
 		};
 
 		ws.onmessage = function(evt) {
-			alert(evt.data);
+			console.log(evt.data);
+			alert( "answer : "+evt.data);
 		};
+
 		ws.onclose = function() {
 			alert('connection closed');
-		};*/
-
-
+		};
 	},
 
 	requestWay: function( params, callback, error ) {
