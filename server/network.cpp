@@ -89,14 +89,14 @@ static void *clientRoutine(void* clientSocket)
 			int32_t pathSize = path.size();
 			int32_t touriSize = touristicPlaces.size();
 			
-			std::cout << path.size() << std::endl;
+			std::cout << pathSize << " " << touriSize << std::endl;
 			
 			memcpy(answer, &type, sizeof(int32_t));
-			memcpy(answer + sizeof(int32_t), (char*) &(size), sizeof(int32_t));
-			memcpy(answer + sizeof(int32_t) * 2, (char*) &pathSize, sizeof(int32_t));
-			memcpy(answer + sizeof(int32_t) * 3, (char*) &touriSize, sizeof(int32_t));
+			memcpy(answer + sizeof(int32_t), &size, sizeof(int32_t));
+			memcpy(answer + sizeof(int32_t) * 2, &pathSize, sizeof(int32_t));
+			memcpy(answer + sizeof(int32_t) * 3, &touriSize, sizeof(int32_t));
 
-			ptr = answer + 2 * sizeof(int32_t);
+			ptr = answer + 4 * sizeof(int32_t);
 
 			for(std::vector<Coordinates>::iterator it = path.begin();
 				it != path.end();
