@@ -134,6 +134,7 @@ static void *clientRoutine(void* clientSocket)
 				sizeWorkingHours = it->workingHours.size();
 
 				std::cout << sizeType << " " << sizeTypeDetail << " " << sizeName << " " << sizeAddress << " " << sizeWorkingHours << std::endl;
+				std::cout << strlen(it->type.c_str()) << " " << strlen(it->typeDetail.c_str()) << std::endl;
 				memcpy(ptr, &sizeType, sizeof(int16_t));
 				memcpy(ptr + sizeof(int16_t), &sizeTypeDetail, sizeof(int16_t));
 				memcpy(ptr + sizeof(int16_t) * 2, &sizeName, sizeof(int16_t));
@@ -159,6 +160,7 @@ static void *clientRoutine(void* clientSocket)
 				ptr += sizeAddress * sizeof(char);
 				memcpy(ptr, it->workingHours.c_str(), sizeWorkingHours * sizeof(char));
 				ptr += sizeWorkingHours * sizeof(char);
+				std::cout << it->type << "\n" << it->typeDetail << "\n" << it->name << "\n" << it->address << "\n" << it->workingHours << std::endl;
 			}
 
 			std::cout << "last : " << path[path.size() - 1].longitude << " " << path[path.size() - 1].latitude << std::endl; 

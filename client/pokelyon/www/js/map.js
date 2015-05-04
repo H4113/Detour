@@ -1,4 +1,6 @@
 var circlePosUser = null;
+var interval_GPS;
+var bool_gps = true;
 
 var Map = {
 	create: function(options) {
@@ -54,10 +56,13 @@ document.addEventListener('deviceready', function(e) {
 	// onError Callback receives a PositionError object
 	//
 	function onGeoError(error) {
-		alert("No GPS");
+		if(bool_gps)
+			alert("No GPS");
+		clearInterval(interval_GPS);
+		bool_gps = false;
 	}
 
-	setInterval(function () {
+	interval_GPS = setInterval(function () {
 		navigator.geolocation.getCurrentPosition(onGeoSuccess, onGeoError);
 	}, 500);
 
