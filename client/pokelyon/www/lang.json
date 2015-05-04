@@ -1,0 +1,14 @@
+{
+	"0" : {
+		"en" : "Menu",
+		"fr" : "Menu",
+		"es" : "Menú",
+		"de" : "Menü"
+	},
+	"1" : {
+		"en" : "Route",
+		"fr" : "Itinéraire",
+		"es" : "Itinerario",
+		"de" : "Strecke"
+	}
+}
