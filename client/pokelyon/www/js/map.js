@@ -12,6 +12,9 @@ var Map = {
 		});
 
 		this.layer.addTo(this.map);
+
+		var mapevt = H.createEvent('map-created',{Map:this});
+		document.dispatchEvent( mapevt );
 	},
 
 	onClick: function( callback ) {
@@ -23,16 +26,25 @@ var Map = {
 	}
 };
 
+// On click Popup
+document.addEventListener('map-created', function(e) {
+
+	var popup = L.popup();
+			
+	e.Map.onClick(function(click){
+		popup.setLatLng(click.latlng)
+			 .setContent("<a href='#go?&lat="+click.latlng.lat+"&lng="+click.latlng.lng+"' class='gps-btn'>Aller ici</a>")
+			 .openOn(e.Map.map);
+	});
+});
+
 document.addEventListener('deviceready', function(e) {
 	
 	Map.create();
 
-	circlePosUser = L.circleMarker([0, 0], 10, {}).addTo(Map.map);
+	//alert('deviceready');
 
-	Map.onClick(function(click){
-		console.log(click.latlng.lat, click.latlng.lng,click.layerPoint.x,click.containerPoint.x);
-		Map.offClick();
-	});
+	circlePosUser = L.circleMarker([0, 0], 10, {}).addTo(Map.map);
 
 	var onGeoSuccess = function(position) {
 		circlePosUser.setLatLng([position.coords.latitude, position.coords.longitude]);
@@ -48,10 +60,15 @@ document.addEventListener('deviceready', function(e) {
 	setInterval(function () {
 		navigator.geolocation.getCurrentPosition(onGeoSuccess, onGeoError);
 	}, 500);
+
+	document.dispatchEvent( H.createEvent('hashchange') );
 });
 
 $(window).on('hashchange', function() {
   	var hash = location.hash;
+  	var index = hash.indexOf('?');
+  	if( index > -1 ) hash = hash.substring(0,index);
+
   	switch( hash ) {
   		case '#menu':
   			var width = $('#menugui').css("width");
@@ -61,6 +78,12 @@ $(window).on('hashchange', function() {
   		case '#directions':
   			var height = $('#directionsgui').css("height");
   			$('#directionsgui').transition({y:'-'+height});
+  			break;
+  		case '#go':
+  			{
+  				var close = $(".leaflet-popup-close-button")[0];
+  				if(close)close.click();
+  			}
   			break;
   		default:
   			$('#menugui').transition({x:0});

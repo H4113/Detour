@@ -1,48 +1,5 @@
 
 
- 
-function processData(obj){
-	//alert("packet entier, taille: "+obj.buffer.byteLength);
-	var data = obj.buffer;
-	if(obj.type == 1){ // type == 1 -> PATH sent
-		var path = parseData(data);
-		drawPathOnMap(Map.map, path);
-	}
-}
-
-function sendQuery(buf) {
-	chrome.socket.create('tcp', {}, function(createInfo) {
-		//alert(createInfo);
-		var abuffer = [];
-		var socketId = createInfo.socketId;
-		function readPackets(readInfo) {
-			//alert("packet partiel, taille:"+readInfo.data.byteLength);
-			magicTcpReceive(abuffer, readInfo.data, processData);
-			chrome.socket.read(socketId, null, readPackets);
-		}
-		chrome.socket.connect(socketId, "151.80.143.42", 6666, function(result) {
-		//chrome.socket.connect(socketId, "192.168.1.199", 6666, function(result) {
-			if(result >= 0) {
-				//alert("prout " + result);
-				chrome.socket.write(socketId, buf, function(writeInfo) {
-					if(writeInfo.bytesWritten > 0) {
-						//alert("ouiiiii ");
-						chrome.socket.read(socketId, null, readPackets);
-						//chrome.socket.disconnect(socketId);
-					} else {
-						// Cannot send data
-						// Do something smart 
-					}
-				});
-			} else {
-				alert("pas de serveur");
-				// Cannot connect
-				// Do something smart
-			}
-
-		});
-	});
-}
 
 var app = {
 	// Application Constructor
@@ -62,7 +19,7 @@ var app = {
 	// function, we must explicitly call 'app.receivedEvent(...);'
 	onDeviceReady: function() {
 		app.receivedEvent('deviceready');
-		var buf = new ArrayBuffer(8+4*8);
+		/*var buf = new ArrayBuffer(8+4*8);
 		var type_req = new Int16Array(buf,0,1);
 		var type_junk = new Int16Array(buf,2,1);
 		var type_junk2 = new Int32Array(buf,4,1);
@@ -70,8 +27,15 @@ var app = {
 		
 		type_req[0] = 0;
 		type_junk[0] = 42;
-		type_junk2[0] = 42;
+		type_junk2[0] = 42;*/
 	
+		var params = {
+			fromlat: null,
+			fromlng: null,
+			tolat: null,
+			tolng: null
+		};
+
 		var onSuccess = function(position) {
 			/*alert('Latitude: '			  + position.coords.latitude		  + '\n' +
 					  'Longitude: '			+ position.coords.longitude			+ '\n' +
@@ -81,9 +45,9 @@ var app = {
 					  'Heading: '			+ position.coords.heading			+ '\n' +
 					  'Speed: '				+ position.coords.speed				+ '\n' +
 					  'Timestamp: '			+ position.timestamp				+ '\n');*/
-			gpscoord[0] = position.coords.latitude;
-			gpscoord[1] = position.coords.longitude;
-			sendQuery(buf);
+			params.fromlat = position.coords.latitude;
+			params.fromlng = position.coords.longitude;
+			H.sendQuery(params, function(path){drawPathOnMap(Map.map, path);},function(){});
 		};
 	
 		// onError Callback receives a PositionError object
@@ -94,11 +58,11 @@ var app = {
 		}
 	
 		Map.map.on('dblclick', function(e) {
-			gpscoord[2] = e.latlng.lat;
-			gpscoord[3] = e.latlng.lng;
+			params.tolat = e.latlng.lat;
+			params.tolng = e.latlng.lng;
 
 			// Change when buttons available
-			type_junk[0] = 1 + (1 << 1) + (1 << 2);
+			//type_junk[0] = 1 + (1 << 1) + (1 << 2);
 
 			navigator.geolocation.getCurrentPosition(onSuccess, onError);
 		});
