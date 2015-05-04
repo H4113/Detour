@@ -59,13 +59,13 @@ function parseData(buffer) {
 		buffer = buffer.slice(touri[i].size[NB_STRING-1]);
 	}
 	
-	for(var i=0;i<size_touri;++i){
+	/*for(var i=0;i<size_touri;++i){
 		console.log("TOURI "+i);
 		console.log("coord: "+touri[i].x+" "+touri[i].y);
 		for(var j=0;j<NB_STRING;++j){
 			console.log(" "+j+")"+touri[i].str[j]);
 		}
-	}
+	}*/
 
 	return {path:path,tourism:touri};
 }
