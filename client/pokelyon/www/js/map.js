@@ -178,7 +178,10 @@ State
 	// launch
 	function() {
 		var close = $(".leaflet-popup-close-button")[0];
-		if(close)close.click();
+		if(close) {
+			close.dispatchEvent( H.createEvent('click') );
+		}
+
 
 		var params = {
 			fromlat: Map.map.getCenter().lat,
@@ -186,6 +189,7 @@ State
 			tolat: getParameterByName('lat'),
 			tolng: getParameterByName('lng')
 		};
+		
 		console.log(params);
 		H.requestWay( params, function(path){drawPathOnMap(Map.map, path);},function(){});
 	});
