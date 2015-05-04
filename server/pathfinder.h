@@ -6,6 +6,8 @@
 
 #include "general.h"
 
+class Database;
+
 struct ResultNode
 {
 	Coordinates *point;
@@ -49,9 +51,9 @@ class PathFinder
 };
 
 void TestPathfinder(void);
-void TestPathfinderRealData(void);
+void TestPathfinderRealData(Database *db);
 
-bool PF_FindPath(const Coordinates &coordStart, const Coordinates &coordGoal, std::vector<Coordinates> &path, std::vector<struct TouristicPlace> &places);
+bool PF_FindPath(const Coordinates &coordStart, const Coordinates &coordGoal, std::vector<Coordinates> &path, std::vector<struct TouristicPlace> &places, Database *database);
 
 #endif
 

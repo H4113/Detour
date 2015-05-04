@@ -2,9 +2,9 @@
 #include <map>
 
 #include "tourism.h"
-#include "database.h"
 #include "pathfinder.h"
 #include "utils.h"
+#include "database.h"
 
 struct TouristicClosestNode
 {
@@ -72,7 +72,7 @@ static bool getTouristicClosestNodeOf(const TouristicPlace &place, const Path &r
 	return true;
 }
 
-bool BuildTouristicPath(const Path &resultPath, const std::vector<Coordinates> &initialPath, std::vector<Coordinates> &finalPath, std::vector<TouristicPlace> &places, const TouristicFilter &filter)
+bool BuildTouristicPath(const Path &resultPath, const std::vector<Coordinates> &initialPath, std::vector<Coordinates> &finalPath, std::vector<TouristicPlace> &places, const TouristicFilter &filter, Database *db)
 {
 	const unsigned int N_TOURISTIC_PLACES = 3;
 
@@ -83,94 +83,103 @@ bool BuildTouristicPath(const Path &resultPath, const std::vector<Coordinates> &
 		return false;
 
 	getBoundingCoords(initialPath, options);
-	if(Database::QueryTouristicLocations(options, touristicPlaces))
+
+	pthread_mutex_t m;
+	QuerySQL query;
+	query.options = options;
+	query.places = &touristicPlaces;
+	query.mutex = &m;
+
+	pthread_mutex_init(&m, 0);
+	pthread_mutex_lock(&m);
+	db->AddQuery(query);
+	pthread_mutex_lock(&m);
+
+	if(touristicPlaces.size() > 0)
 	{
-		if(touristicPlaces.size() > 0)
-		{
-			std::multimap<double, TouristicClosestNode> orderedPlaces;
-			std::multimap<double, TouristicClosestNode*> orderedPlacesFromStart;
-			unsigned int i = 0;
-			const Coordinates **points;
-			bool error = false;
-			Path newPath;
-			
-			// Find the minimal distance between each place and all the intersections
-			for(std::vector<TouristicPlace>::const_iterator it = touristicPlaces.begin();
-				it != touristicPlaces.end();
-				++it)
-			{
-				TouristicClosestNode closestNode;
-				if(getTouristicClosestNodeOf(*it, resultPath, closestNode))
-					orderedPlaces.insert(std::pair<double, TouristicClosestNode>(closestNode.distance, closestNode));
-			}
-
-			// Choose only the closest ones
-			places.clear();
-			places.resize(N_TOURISTIC_PLACES);
-			for(std::multimap<double, TouristicClosestNode>::iterator it = orderedPlaces.begin();
-				it != orderedPlaces.end() && i < N_TOURISTIC_PLACES;
-				++it, ++i)
-			{
-				double dist = squareDist2(*(resultPath.realStart), it->second.place->location);
-				orderedPlacesFromStart.insert(std::pair<double, TouristicClosestNode*>(dist, &(it->second)));
-				places[i] = *(it->second.place);
-			}
+		std::multimap<double, TouristicClosestNode> orderedPlaces;
+		std::multimap<double, TouristicClosestNode*> orderedPlacesFromStart;
+		unsigned int i = 0;
+		const Coordinates **points;
+		bool error = false;
+		Path newPath;
 		
-			// Create points array	
-			points = new const Coordinates*[2 + orderedPlacesFromStart.size()]; // +2 because of start and goal
-			points[0] = resultPath.realStart;
-			points[1 + orderedPlacesFromStart.size()] = resultPath.realGoal;
-			i = 1;
-			for(std::multimap<double, TouristicClosestNode*>::const_iterator it = orderedPlacesFromStart.begin();
-				it != orderedPlacesFromStart.end();
-				++it, ++i)
-			{
-				points[i] = &(it->second->place->location);
-			}
+		// Find the minimal distance between each place and all the intersections
+		for(std::vector<TouristicPlace>::const_iterator it = touristicPlaces.begin();
+			it != touristicPlaces.end();
+			++it)
+		{
+			TouristicClosestNode closestNode;
+			if(getTouristicClosestNodeOf(*it, resultPath, closestNode))
+				orderedPlaces.insert(std::pair<double, TouristicClosestNode>(closestNode.distance, closestNode));
+		}
 
-			// Create subpaths
-			for(i = 0; i < 1 + N_TOURISTIC_PLACES && !error; ++i)
+		// Choose only the closest ones
+		places.clear();
+		places.resize(N_TOURISTIC_PLACES);
+		for(std::multimap<double, TouristicClosestNode>::iterator it = orderedPlaces.begin();
+			it != orderedPlaces.end() && i < N_TOURISTIC_PLACES;
+			++it, ++i)
+		{
+			double dist = squareDist2(*(resultPath.realStart), it->second.place->location);
+			orderedPlacesFromStart.insert(std::pair<double, TouristicClosestNode*>(dist, &(it->second)));
+			places[i] = *(it->second.place);
+		}
+	
+		// Create points array	
+		points = new const Coordinates*[2 + orderedPlacesFromStart.size()]; // +2 because of start and goal
+		points[0] = resultPath.realStart;
+		points[1 + orderedPlacesFromStart.size()] = resultPath.realGoal;
+		i = 1;
+		for(std::multimap<double, TouristicClosestNode*>::const_iterator it = orderedPlacesFromStart.begin();
+			it != orderedPlacesFromStart.end();
+			++it, ++i)
+		{
+			points[i] = &(it->second->place->location);
+		}
+
+		// Create subpaths
+		for(i = 0; i < 1 + N_TOURISTIC_PLACES && !error; ++i)
+		{
+			Path subpath;
+			if(!PathFinder::Astar(*(points[i]), *(points[i+1]), i == 0 ? newPath : subpath))
+				error = true;
+			else if (i != 0) // Extend the first path
 			{
-				Path subpath;
-				if(!PathFinder::Astar(*(points[i]), *(points[i+1]), i == 0 ? newPath : subpath))
-					error = true;
-				else if (i != 0) // Extend the first path
+				ResultNode *node;
+				ResultNode *prec = 0;
+
+				for(node = newPath.result; node; node = node->next)
+					prec = node;
+
+				if(!prec) // Should be always false
 				{
-					ResultNode *node;
-					ResultNode *prec = 0;
-
-					for(node = newPath.result; node; node = node->next)
-						prec = node;
-
-					if(!prec) // Should be always false
-					{
-						std::cerr << "[TouristicPath] An unknown error has occurred..." << std::endl;
-						error = true;
-					}
-					else
-					{
-						prec->next = subpath.result;
-						newPath.realGoal = subpath.realGoal;
-						newPath.closestCoordGoal = subpath.closestCoordGoal;
-					}
+					std::cerr << "[TouristicPath] An unknown error has occurred..." << std::endl;
+					error = true;
+				}
+				else
+				{
+					prec->next = subpath.result;
+					newPath.realGoal = subpath.realGoal;
+					newPath.closestCoordGoal = subpath.closestCoordGoal;
 				}
 			}
-			delete [] points;
-		
-			if(error)
-				return false;
-
-			finalPath.clear();
-			if(!PathFinder::BuildPath(newPath, finalPath))
-				return false;
-			FreePathResult(&newPath);
-
-			return true;
 		}
-		else 
-		{
+		delete [] points;
+	
+		if(error)
 			return false;
-		}
+
+		finalPath.clear();
+		if(!PathFinder::BuildPath(newPath, finalPath))
+			return false;
+		FreePathResult(&newPath);
+
+		return true;
+	}
+	else 
+	{
+		return false;
 	}
 
 	return false;

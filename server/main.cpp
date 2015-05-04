@@ -68,9 +68,16 @@ int main(void)
 	std::cout << ParseDouble(std::string("10.54")) << std::endl;
 
 	PathFinder::Load();
-	Database::Connect();
+	Database *dbSql = new Database();
 
-	startServer();
+	pthread_t thread;
+	if(pthread_create(&thread, NULL, Database::Routine, (void *)dbSql) < 0) {
+		error("ERROR creating thread");
+	}
+
+	startServer(dbSql);
+
+	delete dbSql;
 	//TestPathfinder();
 
 	//TestPathfinderRealData();
@@ -104,7 +111,6 @@ int main(void)
 	// 	}		
 	// }
 	// std::cout << empty << std::endl;
-
 	return 0;
 }
 
