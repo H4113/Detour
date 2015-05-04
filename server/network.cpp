@@ -50,11 +50,14 @@ static void splitArray(char* c, const char* s, char* first, char* second)
 	printf("second : %s\n", second);
 }
 
-static void *clientRoutine(void* clientSocket)
+static void *clientRoutine(void* attr)
 {
 	//?
 	//printf("\n\tB - %d\n", RLIMIT_FSIZE);
-	int cs = *(reinterpret_cast<int*>(clientSocket));
+
+	SocketAndDB sdb = *(reinterpret_cast<SocketAndDB*>(attr));
+
+	int cs = sdb.clientSocket;
 	PathRequest pr;
 	char first[256], 
 		second[256];
@@ -77,7 +80,7 @@ static void *clientRoutine(void* clientSocket)
 		// BUILD PATH
 		std::vector<Coordinates> path;
 		std::vector<TouristicPlace> touristicPlaces;
-		if(PF_FindPath(pr.path.pointA, pr.path.pointB, path, touristicPlaces))
+		if(PF_FindPath(pr.path.pointA, pr.path.pointB, path, touristicPlaces, sdb.database))
 		{
 			// ANSWER !!!!
 			int32_t type = 1;
@@ -121,11 +124,10 @@ static void *clientRoutine(void* clientSocket)
 	printf("\n\tE\n");
 
 	close(cs);
-	delete clientSocket;
 	pthread_exit(NULL);
 }
 
-void startServer(void)
+void startServer(Database *db)
 {
 	int serverSocket, 
 		clientSocket;
@@ -159,10 +161,13 @@ void startServer(void)
 		if(clientSocket < 0) 
 			error("ERROR on accepting client socket");
 
+		SocketAndDB attr;
 		clso = new int;
 		*clso = clientSocket;
+		attr.clientSocket = clientSocket;
+		attr.database = db;
 		pthread_t thread;
-		if(pthread_create(&thread, NULL, clientRoutine, (void *)clso) < 0) {
+		if(pthread_create(&thread, NULL, clientRoutine, (void *)&attr) < 0) {
 			close(*clso);
 			delete clso;
 			error("ERROR creating thread");
