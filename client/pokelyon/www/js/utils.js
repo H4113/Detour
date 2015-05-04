@@ -11,19 +11,78 @@ var map_destination = null;
 var map_path = null;
 
 function parseData(buffer) {
-	var sizeview = new Uint32Array(buffer);
-	var size = sizeview[1];
-	var size_buf = (buffer.byteLength-8)/8/2;
-	buffer = buffer.slice(8);
-	var sizeview = new Float64Array(buffer);
+	
+	// Header
+	var view = new Uint32Array(buffer,0,4);
+	var size = view[1];
+	var size_path = view[2];
+	var size_touri = view[3];
+	
+	// Coords
+	buffer = buffer.slice(view.byteLength);
+	view = new Float64Array(buffer,0,size_path*2);
+	
 	var path = [];
-	for(var i=0;i<size_buf;++i){
-		var p = {x:sizeview[2*i],y:sizeview[2*i+1]};
+	for(var i=0;i<size_path;++i){
+		var p = {x:view[2*i],y:view[2*i+1]};
 		path.push(p);
 	}
+	
+	return path;
+	
+	var NB_STRING = 5;
+	var touri = [];
+	// Touri size
+	console.log(view.byteLength);
+	buffer = buffer.slice(view.byteLength);
+	view = new Int16Array(buffer,0,size_touri*NB_STRING);
+	for(var i=0;i<size_touri;++i){
+		var tab = [];
+		for(var j=0;j<NB_STRING;++j){
+			tab[j] = view[5*i+j];
+			if(tab[j] < 0){
+				tab[j] = 0;
+			}
+		}
+		touri.push({size:tab,string:[],x:0,y:0});
+	}
+	
+	// Touri coord
+	buffer = buffer.slice(view.byteLength);
+	view = new Float64Array(buffer,0,size_touri*2);
+	for(var i=0;i<size_touri;++i){
+		touri[i].x = view[2*i];
+		touri[i].y = view[2*i+1];
+	}
+	
+	// Touri string
+	/*buffer = buffer.slice(view.byteLength);
+	for(var i=0;i<size_touri;++i){
+		for(var j=0;j<NB_STRING;++j){
+			view = new Uint8Array(buffer,0,touri[i].size[j]);
+			buffer.slice(view.byteLength);
+			touri[i].str[j] = String.fromCharCode.apply(null, view);
+		}
+	}*/
+	
+	for(var i=0;i<size_touri;++i){
+		console.log("TOURI "+i);
+		console.log("coord: "+touri[i].x+" "+touri[i].y);
+		for(var j=0;j<NB_STRING;++j){
+			console.log(" "+j+") "+touri[i].size[j]);
+			//console.log(" "+j+") "+touri[i].str[j]);
+		}
+	}
+	console.log(JSON.stringify(touri));
 
 	return path;
 }
+/*
+int 32 * 4 // type size path_size touri_size
+double * path_size
+	int_16 * 5
+	string * 5			--> * touri_size
+	double * 2
 
 
 /* usage :

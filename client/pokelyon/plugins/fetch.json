@@ -46,5 +46,13 @@
         },
         "is_top_level": true,
         "variables": {}
+    },
+    "org.chromium.iossocketscommon": {
+        "source": {
+            "type": "registry",
+            "id": "org.chromium.iossocketscommon"
+        },
+        "is_top_level": false,
+        "variables": {}
     }
 }

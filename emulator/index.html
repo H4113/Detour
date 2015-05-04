@@ -16,12 +16,13 @@
 		<div id="map" style="float:right;width: 80%;height: 100%;background-color:#DDD;"></div>
 		<div id="merde">MERDE</div>
 		
-		
+		<script type="text/javascript" src="../client/pokelyon/www/js/jquery-2.1.3.min.js"></script>
+        <script type="text/javascript" src="../client/pokelyon/www/js/jquery.transit.min.js"></script>
         <script type="text/javascript" src="../client/pokelyon/www/js/cordova.js"></script>
         <script type="text/javascript" src="../client/pokelyon/www/js/leaflet.js"></script>
+		<script type="text/javascript" src="../client/pokelyon/www/js/H4113.js"></script>
         <script type="text/javascript" src="../client/pokelyon/www/js/map.js"></script>
 		<script type="text/javascript" src="../client/pokelyon/www/js/utils.js"></script>
-		<script type="text/javascript" src="jquery.js"></script>
         <script type="text/javascript">
 			
 			var merde = document.getElementById("merde");
@@ -39,6 +40,7 @@
 					drawPathOnMap(map, json);
 				});
 			}
+			loadJSON();
 			setInterval(loadJSON, 10*1000);
 			
 		</script>

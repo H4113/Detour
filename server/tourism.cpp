@@ -104,29 +104,28 @@ bool BuildTouristicPath(const Path &resultPath, const std::vector<Coordinates> &
 					orderedPlaces.insert(std::pair<double, TouristicClosestNode>(closestNode.distance, closestNode));
 			}
 
-
 			// Choose only the closest ones
+			places.clear();
+			places.resize(N_TOURISTIC_PLACES);
 			for(std::multimap<double, TouristicClosestNode>::iterator it = orderedPlaces.begin();
 				it != orderedPlaces.end() && i < N_TOURISTIC_PLACES;
 				++it, ++i)
 			{
 				double dist = squareDist2(*(resultPath.realStart), it->second.place->location);
 				orderedPlacesFromStart.insert(std::pair<double, TouristicClosestNode*>(dist, &(it->second)));
+				places[i] = *(it->second.place);
 			}
 		
 			// Create points array	
 			points = new const Coordinates*[2 + orderedPlacesFromStart.size()]; // +2 because of start and goal
 			points[0] = resultPath.realStart;
 			points[1 + orderedPlacesFromStart.size()] = resultPath.realGoal;
-			places.clear();
-			places.resize(N_TOURISTIC_PLACES);
 			i = 1;
 			for(std::multimap<double, TouristicClosestNode*>::const_iterator it = orderedPlacesFromStart.begin();
 				it != orderedPlacesFromStart.end();
 				++it, ++i)
 			{
 				points[i] = &(it->second->place->location);
-				places.push_back(*(it->second->place));
 			}
 
 			// Create subpaths
