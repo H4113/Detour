@@ -35,9 +35,10 @@
 					for(var i=0;i<json.length;++i){
 						str += json[i].x+" "+json[i].y+"<br />";
 					}
-					console.log("ok");
+					//console.log("ok");
 					merde.innerHTML = str;
-					drawPathOnMap(map, json);
+					drawPathOnMap(map, json.path);
+					drawTourismOnMap(map,json.tourism);
 				});
 			}
 			loadJSON();

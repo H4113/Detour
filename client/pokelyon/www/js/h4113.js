@@ -16,9 +16,8 @@ var H = {
 		//alert("packet entier, taille: "+obj.buffer.byteLength);
 		var data = obj.buffer;
 		if(obj.type == 1){ // type == 1 -> PATH sent
-			var path = parseData(data);
-			return path;
-			drawPathOnMap(Map.map, path);
+			var obj = parseData(data);
+			drawPathOnMap(Map.map, obj.path);
 		}
 	},
 
