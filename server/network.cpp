@@ -16,6 +16,7 @@
 #include <iostream>
 #include <fstream>
 #include <signal.h>
+#include <string.h>
 
 static int portNumber;
 
@@ -82,19 +83,39 @@ static void *clientRoutine(void* attr)
 		std::vector<TouristicPlace> touristicPlaces;
 		if(PF_FindPath(pr.path.pointA, pr.path.pointB, path, touristicPlaces, sdb.database))
 		{
+			int16_t sizeType, sizeTypeDetail, sizeName, sizeAddress, sizeWorkingHours;
 			// ANSWER !!!!
 			int32_t type = 1;
-			int32_t size = 2 * sizeof(int32_t) + sizeof(double) * path.size() * 2;
+			// type + size + path_size + touristic_size + ... path ...
+			int32_t size = 4 * sizeof(int32_t) + sizeof(double) * path.size() * 2;
 			//int32_t nbDouble = path.size();
+
+			for(std::vector<TouristicPlace>::iterator it = touristicPlaces.begin();
+				it != touristicPlaces.end();
+				++it)
+			{
+				sizeType = it->type.size();
+				sizeTypeDetail = it->typeDetail.size();
+				sizeName = it->name.size();
+				sizeAddress = it->address.size();
+				sizeWorkingHours = it->workingHours.size();
+				size += sizeof(int16_t) * 5 + (sizeType + sizeTypeDetail + sizeWorkingHours + sizeAddress + sizeName) *
+					sizeof(char) + 2 * sizeof(double);
+			}
+
 			int8_t* answer = new int8_t[size];
 			int8_t* ptr;
+			int32_t pathSize = path.size();
+			int32_t touriSize = touristicPlaces.size();
 			
-			std::cout << path.size() << std::endl;
+			std::cout << pathSize << " " << touriSize << std::endl;
 			
 			memcpy(answer, &type, sizeof(int32_t));
-			memcpy(answer + sizeof(int32_t), (char*) &(size), sizeof(int32_t));
+			memcpy(answer + sizeof(int32_t), &size, sizeof(int32_t));
+			memcpy(answer + sizeof(int32_t) * 2, &pathSize, sizeof(int32_t));
+			memcpy(answer + sizeof(int32_t) * 3, &touriSize, sizeof(int32_t));
 
-			ptr = answer + 2 * sizeof(int32_t);
+			ptr = answer + 4 * sizeof(int32_t);
 
 			for(std::vector<Coordinates>::iterator it = path.begin();
 				it != path.end();
@@ -104,17 +125,50 @@ static void *clientRoutine(void* attr)
 				memcpy(ptr + sizeof(double), &(it->latitude), sizeof(double));
 			}
 
-			// std::ofstream myfile;
-			// myfile.open ("buff.bin");
-			// for(int i = 0; i < size; ++i) {
-			// 	myfile << answer[i];
-			// }
-			// myfile.close();
+			// Add touristic places
+			for(std::vector<TouristicPlace>::iterator it = touristicPlaces.begin();
+				it != touristicPlaces.end();
+				++it)
+			{
+				sizeType = it->type.size();
+				sizeTypeDetail = it->typeDetail.size();
+				sizeName = it->name.size();
+				sizeAddress = it->address.size();
+				sizeWorkingHours = it->workingHours.size();
+
+				std::cout << sizeType << " " << sizeTypeDetail << " " << sizeName << " " << sizeAddress << " " << sizeWorkingHours << std::endl;
+				memcpy(ptr, &sizeType, sizeof(int16_t));
+				memcpy(ptr + sizeof(int16_t), &sizeTypeDetail, sizeof(int16_t));
+				memcpy(ptr + sizeof(int16_t) * 2, &sizeName, sizeof(int16_t));
+				memcpy(ptr + sizeof(int16_t) * 3, &sizeAddress, sizeof(int16_t));
+				memcpy(ptr + sizeof(int16_t) * 4, &sizeWorkingHours, sizeof(int16_t));
+
+				ptr += sizeof(int16_t) * 5;
+
+				memcpy(ptr, &(it->location.longitude), sizeof(double));
+				memcpy(ptr + sizeof(double), &(it->location.latitude), sizeof(double));
+
+				std::cout << it->location.longitude << " " << it->location.latitude << std::endl;
+
+				ptr += 2 * sizeof(double);
+
+				memcpy(ptr, it->type.c_str(), sizeType * sizeof(char));
+				ptr += sizeType * sizeof(char);
+				memcpy(ptr, it->typeDetail.c_str(), sizeTypeDetail * sizeof(char));
+				ptr += sizeTypeDetail * sizeof(char);
+				memcpy(ptr, it->name.c_str(), sizeName * sizeof(char));
+				ptr += sizeName * sizeof(char);
+				memcpy(ptr, it->address.c_str(), sizeAddress * sizeof(char));
+				ptr += sizeAddress * sizeof(char);
+				memcpy(ptr, it->workingHours.c_str(), sizeWorkingHours * sizeof(char));
+				ptr += sizeWorkingHours * sizeof(char);
+			}
 
 			std::cout << "last : " << path[path.size() - 1].longitude << " " << path[path.size() - 1].latitude << std::endl; 
 
 			n = write(cs, answer, size);
 			std::cout << "sent : " << n << " " << (size * sizeof(int8_t)) << std::endl;
+
 			delete[] answer;
 		} else {
 			// Send error?
