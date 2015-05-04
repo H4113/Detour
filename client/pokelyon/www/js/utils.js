@@ -113,8 +113,21 @@ function drawPathOnMap(map, path){
 }
 
 function drawTourismOnMap(map, obj){
+	var markerIcon = L.Icon.extend({
+		options: {
+			//shadowUrl: 'img/marker-icon-t.png',
+			iconSize:     [25, 41],
+			shadowSize:   [25, 41],
+			iconAnchor:   [12, 41],
+			shadowAnchor: [12, 41],
+			popupAnchor:  [0, -30]
+		}
+	});
+	var redIcon = new markerIcon({iconUrl: 'img/marker-icon-t.png'});
 	for(var i=0;i<obj.length;++i){
 		L.circle([obj[i].x, obj[i].y], 100, {color:'#F00',fillColor: '#FF0000', fillOpacity:0.9}).addTo(map);
+		var strall = obj[i].str.join("<br />\n");
+		L.marker([obj[i].x, obj[i].y], {icon: redIcon}).addTo(map).bindPopup(strall);
 	}
 }
 
