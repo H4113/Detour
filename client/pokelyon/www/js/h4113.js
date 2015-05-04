@@ -26,9 +26,8 @@ var H = {
 		//alert("packet entier, taille: "+obj.buffer.byteLength);
 		var data = obj.buffer;
 		if(obj.type == 1){ // type == 1 -> PATH sent
-			var path = parseData(data);
-			return path;
-			drawPathOnMap(Map.map, path);
+			var obj = parseData(data);
+			drawPathOnMap(Map.map, obj.path);
 		}
 	},
 
@@ -39,7 +38,7 @@ var H = {
 			var socketId = createInfo.socketId;
 			function readPackets(readInfo) {
 				//alert("packet partiel, taille:"+readInfo.data.byteLength);
-				magicTcpReceive(abuffer, readInfo.data, function(obj){callback(processData(obj))});
+				magicTcpReceive(abuffer, readInfo.data, function(obj){callback(this.processData(obj))});
 				chrome.socket.read(socketId, null, readPackets);
 			}
 			chrome.socket.connect(socketId, "151.80.143.42", 6666, function(result) {
@@ -67,6 +66,8 @@ var H = {
 	},
 
 	requestWay: function( params, callback, error ) {
+
+		console.log(params);
 		
 		if( ! params.fromlat ) throw 'required fromlat param is missing.';
 		if( ! params.fromlng ) throw 'required fromlng param is missing.';
@@ -91,7 +92,7 @@ var H = {
 		// Change when buttons available
 		type_junk[0] = 1 + (1 << 1) + (1 << 2);
 
-		sendQuery(buf);
+		this.sendQuery(buf);
 	} 
 
 
