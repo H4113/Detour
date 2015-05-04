@@ -132,6 +132,8 @@ static void *clientRoutine(void* clientSocket)
 				sizeName = it->name.size();
 				sizeAddress = it->address.size();
 				sizeWorkingHours = it->workingHours.size();
+
+				std::cout << sizeType << " " << sizeTypeDetail << " " << sizeName << " " << sizeAddress << " " << sizeWorkingHours << std::endl;
 				memcpy(ptr, &sizeType, sizeof(int16_t));
 				memcpy(ptr + sizeof(int16_t), &sizeTypeDetail, sizeof(int16_t));
 				memcpy(ptr + sizeof(int16_t) * 2, &sizeName, sizeof(int16_t));
@@ -142,6 +144,8 @@ static void *clientRoutine(void* clientSocket)
 
 				memcpy(ptr, &(it->location.longitude), sizeof(double));
 				memcpy(ptr + sizeof(double), &(it->location.latitude), sizeof(double));
+
+				std::cout << it->location.longitude << " " << it->location.latitude << std::endl;
 
 				ptr += 2 * sizeof(double);
 
