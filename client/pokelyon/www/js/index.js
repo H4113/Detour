@@ -47,7 +47,7 @@ var app = {
 					  'Timestamp: '			+ position.timestamp				+ '\n');*/
 			params.fromlat = position.coords.latitude;
 			params.fromlng = position.coords.longitude;
-			H.sendQuery(params, function(path){drawPathOnMap(Map.map, path);},function(){});
+			//H.requestWay(params, function(path){drawPathOnMap(Map.map, path);},function(){});
 		};
 	
 		// onError Callback receives a PositionError object
