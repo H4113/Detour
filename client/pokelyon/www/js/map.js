@@ -42,8 +42,6 @@ document.addEventListener('deviceready', function(e) {
 	
 	Map.create();
 
-	//alert('deviceready');
-
 	circlePosUser = L.circleMarker([0, 0], 10, {}).addTo(Map.map);
 
 	var onGeoSuccess = function(position) {
@@ -64,30 +62,96 @@ document.addEventListener('deviceready', function(e) {
 	document.dispatchEvent( H.createEvent('hashchange') );
 });
 
+var State = {
+	last: null,
+	defaultState: null,
+
+	launch: function( state ) {
+		if( ! this.states[state] ) throw state + ' is not a valid state name.';
+		if( this.states[state].init ) {
+			this.states[state].init();
+		} else {
+			this.clear();
+		}
+		if( this.states[state].launch ) this.states[state].launch();
+		this.last = state;
+	},
+	clearLast: function() {
+		if( ! this.last ) {
+			//if( ! this.defaultState ) throw 'missing default state to clear';
+			//this.last = this.defaultState;
+			return;
+		}
+		this.clear(this.last);
+	},
+	clear: function( state ) {
+		if( ! state ) return this.clearLast();
+		if( ! this.states[state] ) throw state + ' is not a valid state name.';
+		if( this.states[state].clear ) this.states[state].clear();
+	},
+
+	states : {},
+
+	hashTable : {},
+
+  	hashToState : function( hash ) {
+  		if( this.hashTable[hash] ) {
+  			return this.hashTable[hash];
+  		}
+  		return this.defaultState;
+  	},
+
+  	setDefaultState : function( stateName ) {
+  		this.defaultState = stateName;
+  	},
+
+  	voidFunc: function(){},
+
+  	addState : function( name, hash, init, launch, clear){
+
+  		this.hashTable[hash] = name;
+  		var state = {
+  			init: init,
+  			launch: launch,
+  			clear: clear
+  		};
+  		this.states[name] = state;
+
+  		if( ! this.defaultState ) {
+  			this.defaultState = name;
+  			this.last = name;
+  		}
+
+  		return this;
+  	}
+};
+
+State
+	.addState('home','#', null )
+	.addState('itinary','#directions', null,
+		function() {
+			H.jQueryMoveTopLeft('#directionsgui');
+		},
+		function() {
+			H.jQueryResetPos('#directionsgui');
+		})
+	.addState('menu','#menu', null,
+		function() {
+			H.jQueryMoveTopLeft('#menugui');
+		},
+		function() {
+			H.jQueryResetPos('#menugui');
+		})
+	.addState('go','#go', null,
+		function() {
+			var close = $(".leaflet-popup-close-button")[0];
+  			if(close)close.click();
+		});
+
 $(window).on('hashchange', function() {
   	var hash = location.hash;
   	var index = hash.indexOf('?');
   	if( index > -1 ) hash = hash.substring(0,index);
 
-  	switch( hash ) {
-  		case '#menu':
-  			var width = $('#menugui').css("width");
-
-  			$('#menugui').transition({x:'-'+width});
-  			break;
-  		case '#directions':
-  			var height = $('#directionsgui').css("height");
-  			$('#directionsgui').transition({y:'-'+height});
-  			break;
-  		case '#go':
-  			{
-  				var close = $(".leaflet-popup-close-button")[0];
-  				if(close)close.click();
-  			}
-  			break;
-  		default:
-  			$('#menugui').transition({x:0});
-  			$('#directionsgui').transition({y:0});
-  			break;
-  	}
+  	State.launch( State.hashToState(hash) );
 });

@@ -1,6 +1,16 @@
 
 var H = {
 
+	jQueryMoveTopLeft: function(selector) {
+		var offy = $(selector).offset().top +1;
+  		var offx = $(selector).offset().left +1;
+  		$(selector).transition({y:'-'+offy, x:'-'+offx});
+	},
+
+	jQueryResetPos: function( selector ) {
+		$(selector).transition({y: 0, x: 0});
+	},
+
 	createEvent: function(name, properties) {
 		var evt = document.createEvent("Event");
 		evt.initEvent(name,true,true);
