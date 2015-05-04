@@ -146,13 +146,15 @@ static void *clientRoutine(void* clientSocket)
 				ptr += 2 * sizeof(double);
 
 				memcpy(ptr, it->type.c_str(), sizeType * sizeof(char));
+				ptr += sizeType * sizeof(char);
 				memcpy(ptr, it->typeDetail.c_str(), sizeTypeDetail * sizeof(char));
+				ptr += sizeTypeDetail * sizeof(char);
 				memcpy(ptr, it->name.c_str(), sizeName * sizeof(char));
+				ptr += sizeName * sizeof(char);
 				memcpy(ptr, it->address.c_str(), sizeAddress * sizeof(char));
+				ptr += sizeAddress * sizeof(char);
 				memcpy(ptr, it->workingHours.c_str(), sizeWorkingHours * sizeof(char));
-
-				ptr += sizeType * sizeof(char) + sizeTypeDetail * sizeof(char) + sizeName * sizeof(char) +
-					sizeAddress * sizeof(char) + sizeWorkingHours * sizeof(char);
+				ptr += sizeWorkingHours * sizeof(char);
 			}
 
 			std::cout << "last : " << path[path.size() - 1].longitude << " " << path[path.size() - 1].latitude << std::endl; 
