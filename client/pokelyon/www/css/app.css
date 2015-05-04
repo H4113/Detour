@@ -106,3 +106,21 @@ html, body, #app-container, #map {
  	background: white;
  	border: 1px solid #ddd;
  }
+
+ .menu-header {
+ 	min-height: 50px;
+ 	background: #0080FF;
+ 	color: white;
+ }
+
+ .menu-header .return {
+ 	text-decoration: none;
+ 	color: white;
+ 	font-size: 3em;
+ }
+
+ .menu-header h1 {
+ 	padding-top: 10px;
+ 	padding-bottom: 10px;
+ 	font-size: 2em;
+ }
