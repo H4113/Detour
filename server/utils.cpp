@@ -37,8 +37,9 @@ unsigned int ParseUint(const std::string &s)
 
 double squareDist2(const Coordinates &a, const Coordinates &b)
 {
-	double m = a.longitude - b.longitude;
-	double n = a.latitude - b.latitude;
+	const double FACTOR = 1000;
+	double m = FACTOR * a.longitude - FACTOR * b.longitude;
+	double n = FACTOR * a.latitude - FACTOR * b.latitude;
 	return m*m + n*n;
 }
 
