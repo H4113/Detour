@@ -34,6 +34,7 @@ var H = {
 	},
 
 	sendQuery: function (buf, callback, error) {
+
 		chrome.socket.create('tcp', {}, function(createInfo) {
 			
 			var abuffer = [];
@@ -68,6 +69,23 @@ var H = {
 
 			});
 		});
+
+		// --> WebSocket is the new black
+		
+		/*var ws = new WebSocket('ws://151.80.143.42:4853', 'tcp');
+		ws.onopen = function() {
+			ws.send("Hello from the app");
+			alert('message sent');
+		};
+
+		ws.onmessage = function(evt) {
+			alert(evt.data);
+		};
+		ws.onclose = function() {
+			alert('connection closed');
+		};*/
+
+
 	},
 
 	requestWay: function( params, callback, error ) {
