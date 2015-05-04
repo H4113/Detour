@@ -81,15 +81,20 @@ static void *clientRoutine(void* clientSocket)
 		{
 			// ANSWER !!!!
 			int32_t type = 1;
-			int32_t size = 2 * sizeof(int32_t) + sizeof(double) * path.size() * 2;
+			// type + size + path_size + touristic_size + ... path ...
+			int32_t size = 4 * sizeof(int32_t) + sizeof(double) * path.size() * 2;
 			//int32_t nbDouble = path.size();
 			int8_t* answer = new int8_t[size];
 			int8_t* ptr;
+			int32_t pathSize = path.size();
+			int32_t touriSize = touristicPlaces.size();
 			
 			std::cout << path.size() << std::endl;
 			
 			memcpy(answer, &type, sizeof(int32_t));
 			memcpy(answer + sizeof(int32_t), (char*) &(size), sizeof(int32_t));
+			memcpy(answer + sizeof(int32_t) * 2, (char*) &pathSize, sizeof(int32_t));
+			memcpy(answer + sizeof(int32_t) * 3, (char*) &touriSize, sizeof(int32_t));
 
 			ptr = answer + 2 * sizeof(int32_t);
 
@@ -101,17 +106,34 @@ static void *clientRoutine(void* clientSocket)
 				memcpy(ptr + sizeof(double), &(it->latitude), sizeof(double));
 			}
 
-			// std::ofstream myfile;
-			// myfile.open ("buff.bin");
-			// for(int i = 0; i < size; ++i) {
-			// 	myfile << answer[i];
+			// Add touristic places
+			// int size_offset = 0;
+			// int sizeType, sizeTypeDetail, sizeName, sizeAddress, sizeWorkingHours;
+			// for(std::vector<TouristicPlace>::iterator it = path.begin();
+			// 	it != path.end();
+			// 	++it)
+			// {
+			// 	sizeType = strlen(it->type);
+			// 	sizeTypeDetail = strlen(it->typeDetail);
+			// 	sizeName = strlen(it->name);
+			// 	sizeAddress = strlen(it->address);
+			// 	sizeWorkingHours = strlen(it->workingHours);
+			// 	memcpy(ptr, &sizeType, sizeof(int32_t));
+			// 	memcpy(ptr + sizeof(int32_t), &sizeTypeDetail, sizeof(int32_t));
+			// 	memcpy(ptr + sizeof(int32_t) * 2, &sizeName, sizeof(int32_t));
+			// 	memcpy(ptr + sizeof(int32_t) * 3, &sizeAddress, sizeof(int32_t));
+			// 	memcpy(ptr + sizeof(int32_t) * 4, &sizeWorkingHours, sizeof(int32_t));
+
+			// 	ptr += sizeof(int32_t) * 5;
+
+			// 	memcpy(ptr, it)
 			// }
-			// myfile.close();
 
 			std::cout << "last : " << path[path.size() - 1].longitude << " " << path[path.size() - 1].latitude << std::endl; 
 
 			n = write(cs, answer, size);
 			std::cout << "sent : " << n << " " << (size * sizeof(int8_t)) << std::endl;
+
 			delete[] answer;
 		} else {
 			// Send error?
