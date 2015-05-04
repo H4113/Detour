@@ -80,7 +80,7 @@ static void *clientRoutine(void* clientSocket)
 		std::vector<TouristicPlace> touristicPlaces;
 		if(PF_FindPath(pr.path.pointA, pr.path.pointB, path, touristicPlaces))
 		{
-			int sizeType, sizeTypeDetail, sizeName, sizeAddress, sizeWorkingHours;
+			int16_t sizeType, sizeTypeDetail, sizeName, sizeAddress, sizeWorkingHours;
 			// ANSWER !!!!
 			int32_t type = 1;
 			// type + size + path_size + touristic_size + ... path ...
@@ -96,7 +96,7 @@ static void *clientRoutine(void* clientSocket)
 				sizeName = it->name.size();
 				sizeAddress = it->address.size();
 				sizeWorkingHours = it->workingHours.size();
-				size += sizeof(int32_t) + (sizeType + sizeTypeDetail + sizeWorkingHours + sizeAddress + sizeName) *
+				size += sizeof(int16_t) * 5 + (sizeType + sizeTypeDetail + sizeWorkingHours + sizeAddress + sizeName) *
 					sizeof(char) + 2 * sizeof(double);
 			}
 
@@ -132,13 +132,18 @@ static void *clientRoutine(void* clientSocket)
 				sizeName = it->name.size();
 				sizeAddress = it->address.size();
 				sizeWorkingHours = it->workingHours.size();
-				memcpy(ptr, &sizeType, sizeof(int32_t));
-				memcpy(ptr + sizeof(int32_t), &sizeTypeDetail, sizeof(int32_t));
-				memcpy(ptr + sizeof(int32_t) * 2, &sizeName, sizeof(int32_t));
-				memcpy(ptr + sizeof(int32_t) * 3, &sizeAddress, sizeof(int32_t));
-				memcpy(ptr + sizeof(int32_t) * 4, &sizeWorkingHours, sizeof(int32_t));
+				memcpy(ptr, &sizeType, sizeof(int16_t));
+				memcpy(ptr + sizeof(int16_t), &sizeTypeDetail, sizeof(int16_t));
+				memcpy(ptr + sizeof(int16_t) * 2, &sizeName, sizeof(int16_t));
+				memcpy(ptr + sizeof(int16_t) * 3, &sizeAddress, sizeof(int16_t));
+				memcpy(ptr + sizeof(int16_t) * 4, &sizeWorkingHours, sizeof(int16_t));
 
-				ptr += sizeof(int32_t) * 5;
+				ptr += sizeof(int16_t) * 5;
+
+				memcpy(ptr, &(it->location.longitude), sizeof(double));
+				memcpy(ptr + sizeof(double), &(it->location.latitude), sizeof(double));
+
+				ptr += 2 * sizeof(double);
 
 				memcpy(ptr, it->type.c_str(), sizeType * sizeof(char));
 				memcpy(ptr, it->typeDetail.c_str(), sizeTypeDetail * sizeof(char));
@@ -148,11 +153,6 @@ static void *clientRoutine(void* clientSocket)
 
 				ptr += sizeType * sizeof(char) + sizeTypeDetail * sizeof(char) + sizeName * sizeof(char) +
 					sizeAddress * sizeof(char) + sizeWorkingHours * sizeof(char);
-
-				memcpy(ptr, &(it->location.longitude), sizeof(double));
-				memcpy(ptr + sizeof(double), &(it->location.latitude), sizeof(double));
-
-				ptr += 2 * sizeof(double);
 			}
 
 			std::cout << "last : " << path[path.size() - 1].longitude << " " << path[path.size() - 1].latitude << std::endl; 
