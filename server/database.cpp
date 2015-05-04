@@ -1,12 +1,10 @@
 #include <iostream>
 #include <sstream>
-#include <pthread.h>
 
 #include "database.h"
 
 pqxx::connection *Database::connection(0);
 bool Database::connected(false);
-pthread_mutex_t count_mutex;
 
 Database::Database()
 {
@@ -74,16 +72,14 @@ bool Database::QueryTouristicLocations(const QTouristicLocationsOptions &options
 
 		oss << ";";
 
-		pqxx::work query(*connection);
+		pqxx::nontransaction query(*connection);
 
 		std::cout << oss.str() << std::endl;
 		
 		try
 		{
-			pthread_mutex_lock(&count_mutex);
 			pqxx::result r = query.exec(oss.str());
-			pthread_mutex_unlock(&count_mutex);
-			
+
 			std::cout << "The query returned " << r.size() << " results" << std::endl;
 
 			places.clear();
