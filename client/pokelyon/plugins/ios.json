@@ -4,47 +4,62 @@
         "uninstalled": []
     },
     "config_munge": {
-<<<<<<< HEAD
         "files": {
-            "res/xml/config.xml": {
+            "config.xml": {
                 "parents": {
                     "/*": [
                         {
-                            "xml": "<feature name=\"Socket\"><param name=\"android-package\" value=\"com.tlantic.plugins.socket.SocketPlugin\" /></feature>",
+                            "xml": "<feature name=\"Socket\"><param name=\"ios-package\" value=\"CDVSocketPlugin\" /></feature>",
                             "count": 1
                         },
                         {
-                            "xml": "<feature name=\"Whitelist\"><param name=\"android-package\" value=\"org.apache.cordova.whitelist.WhitelistPlugin\" /><param name=\"onload\" value=\"true\" /></feature>",
+                            "xml": "<feature name=\"Geolocation\"><param name=\"ios-package\" value=\"CDVLocation\" /></feature>",
                             "count": 1
                         }
                     ],
                     "/widget": [
                         {
-                            "xml": "<feature name=\"ChromeSystemNetwork\"><param name=\"android-package\" value=\"org.chromium.ChromeSystemNetwork\" /></feature>",
+                            "xml": "<feature name=\"ChromeSystemNetwork\"><param name=\"ios-package\" value=\"ChromeSystemNetwork\" /></feature>",
                             "count": 1
                         },
                         {
-                            "xml": "<feature name=\"ChromeSocket\"><param name=\"android-package\" value=\"org.chromium.ChromeSocket\" /></feature>",
+                            "xml": "<feature name=\"IosSocketsCommon\"><param name=\"ios-package\" value=\"IosSocketsCommon\" /></feature>",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"ChromeSocket\"><param name=\"ios-package\" value=\"ChromeSocket\" /></feature>",
                             "count": 1
                         }
                     ]
                 }
             },
-            "AndroidManifest.xml": {
+            "framework": {
                 "parents": {
-                    "/manifest": [
+                    "CoreLocation.framework": [
                         {
-                            "xml": "<uses-permission android:name=\"android.permission.INTERNET\" />",
+                            "xml": false,
                             "count": 1
                         }
                     ],
-                    "/*": [
+                    "Security.framework": [
                         {
-                            "xml": "<uses-permission android:name=\"android.permission.ACCESS_COARSE_LOCATION\" />",
+                            "xml": false,
                             "count": 1
-                        },
+                        }
+                    ],
+                    "CFNetwork.framework": [
                         {
-                            "xml": "<uses-permission android:name=\"android.permission.ACCESS_FINE_LOCATION\" />",
+                            "xml": false,
+                            "count": 1
+                        }
+                    ]
+                }
+            },
+            "*-Info.plist": {
+                "parents": {
+                    "NSLocationWhenInUseUsageDescription": [
+                        {
+                            "xml": "<string />",
                             "count": 1
                         }
                     ]
@@ -72,12 +87,9 @@
     "dependent_plugins": {
         "org.chromium.system.network": {
             "PACKAGE_NAME": "com.h4113.pokelyon"
+        },
+        "org.chromium.iossocketscommon": {
+            "PACKAGE_NAME": "com.h4113.pokelyon"
         }
     }
-=======
-        "files": {}
-    },
-    "installed_plugins": {},
-    "dependent_plugins": {}
->>>>>>> origin/master
 }

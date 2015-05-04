@@ -1,19 +1,60 @@
 #include <iostream>
 #include <sstream>
-#include <pthread.h>
+#include <unistd.h>
 
 #include "database.h"
 
-pqxx::connection *Database::connection(0);
-bool Database::connected(false);
-pthread_mutex_t count_mutex;
-
 Database::Database()
 {
+	connection = 0;
+	connected = false;
+	pthread_mutex_init(&mutex, 0);
 }
 
 Database::~Database()
 {
+}
+
+void* Database::Routine(void* db)
+{
+	reinterpret_cast<Database*>(db)->Run();
+	return 0;
+} 
+
+void Database::Run(void)
+{
+	Connect();
+	while(connected)
+	{
+		int s = 0;
+		pthread_mutex_lock(&mutex);
+		s = fifo.size();
+		pthread_mutex_unlock(&mutex);
+
+		if(!s)
+		{
+			usleep(100);
+		}
+		else
+		{
+			pthread_mutex_t *m = fifo[0].mutex;
+			QueryTouristicLocations(fifo[0].options, *fifo[0].places);
+
+			pthread_mutex_lock(&mutex);
+			fifo.erase(fifo.begin());
+			pthread_mutex_unlock(&mutex);
+
+			pthread_mutex_unlock(m);
+		}
+
+	}
+}
+
+void Database::AddQuery(const QuerySQL &query)
+{
+	pthread_mutex_lock(&mutex);
+	fifo.push_back(query);
+	pthread_mutex_unlock(&mutex);
 }
 
 bool Database::Connect(void)
@@ -31,6 +72,7 @@ bool Database::Connect(void)
 	}
 	catch(const std::exception &e)
 	{
+		connected = false;
 		std::cerr << e.what() << std::endl;
 	}
 
@@ -74,16 +116,14 @@ bool Database::QueryTouristicLocations(const QTouristicLocationsOptions &options
 
 		oss << ";";
 
-		pqxx::work query(*connection);
+		pqxx::nontransaction query(*connection);
 
 		std::cout << oss.str() << std::endl;
 		
 		try
 		{
-			pthread_mutex_lock(&count_mutex);
 			pqxx::result r = query.exec(oss.str());
-			pthread_mutex_unlock(&count_mutex);
-			
+
 			std::cout << "The query returned " << r.size() << " results" << std::endl;
 
 			places.clear();
@@ -115,41 +155,41 @@ bool Database::QueryTouristicLocations(const QTouristicLocationsOptions &options
 	return false;
 }
 
-void DB_TestDatabase(void)
-{
-	/*
-	Tourism table:
-	    min(longitude) = 45.571755
-		max(longitude) = 45.900444
-		min(latitude) = 4.64653
-		max(latitude) = 5.086112
-	*/
+// void DB_TestDatabase(void)
+// {
+// 	/*
+// 	Tourism table:
+// 	    min(longitude) = 45.571755
+// 		max(longitude) = 45.900444
+// 		min(latitude) = 4.64653
+// 		max(latitude) = 5.086112
+// 	*/
 	
-	if(Database::Connect())
-	{
-		QTouristicLocationsOptions options =
-		{
-			45.62,
-			45.83,
-			4.65,
-			4.92,
+// 	if(Database::Connect())
+// 	{
+// 		QTouristicLocationsOptions options =
+// 		{
+// 			45.62,
+// 			45.83,
+// 			4.65,
+// 			4.92,
 
-			{true,
-			false,
-			false}
-		};
+// 			{true,
+// 			false,
+// 			false}
+// 		};
 
-		std::vector<TouristicPlace> places;
+// 		std::vector<TouristicPlace> places;
 
-		Database::QueryTouristicLocations(options, places);
+// 		Database::QueryTouristicLocations(options, places);
 		
-		std::cout << places.size() << " places were created successfully!" << std::endl;
-	}
-	else
-	{
-		std::cerr << "Cannot connect to database" << std::endl;
-	}
-}
+// 		std::cout << places.size() << " places were created successfully!" << std::endl;
+// 	}
+// 	else
+// 	{
+// 		std::cerr << "Cannot connect to database" << std::endl;
+// 	}
+// }
 
 int testSQLConnection() {
 	try {

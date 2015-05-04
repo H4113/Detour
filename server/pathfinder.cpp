@@ -9,7 +9,6 @@
 #include "import.h"
 #include "utils.h"
 #include "tourism.h"
-#include "database.h"
 
 double (*PathFinder::heuristic)(const PathNode*, const PathNode*) = PF_EarthDistance;
 bool PathFinder::loaded = false;
@@ -383,7 +382,7 @@ PathNode *PathFinder::getClosestNode(const Coordinates &coord, Coordinates **clo
 
 // Test features
 
-void TestPathfinderRealData(void)
+void TestPathfinderRealData(Database *db)
 {
 	const Coordinates COORD_START = {45.7825076, 4.8736838};
 	const Coordinates COORD_GOAL = {45.6803042752, 4.92207816575};
@@ -391,7 +390,7 @@ void TestPathfinderRealData(void)
 	std::vector<Coordinates> path;
 	std::vector<TouristicPlace> places;
 
-	if(PF_FindPath(COORD_START, COORD_GOAL, path, places))
+	if(PF_FindPath(COORD_START, COORD_GOAL, path, places, db))
 	{
 		unsigned int n = 1;
 		for(std::vector<Coordinates>::const_iterator it = path.begin();
@@ -403,7 +402,7 @@ void TestPathfinderRealData(void)
 	}
 }
 
-bool PF_FindPath(const Coordinates &coordStart, const Coordinates &coordGoal, std::vector<Coordinates> &path, std::vector<TouristicPlace> &places)
+bool PF_FindPath(const Coordinates &coordStart, const Coordinates &coordGoal, std::vector<Coordinates> &path, std::vector<TouristicPlace> &places, Database *database)
 {
 	Path resultPath;
 
@@ -421,7 +420,7 @@ bool PF_FindPath(const Coordinates &coordStart, const Coordinates &coordGoal, st
 			std::cout << "Path size: " << path.size() << std::endl;
 			std::cout << "Searching for a touristic path..." << std::endl;
 
-			if(BuildTouristicPath(resultPath, path, finalPath, places, filter))
+			if(BuildTouristicPath(resultPath, path, finalPath, places, filter, database))
 			{
 				path = finalPath;
 				FreePathResult(&resultPath);

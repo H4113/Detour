@@ -2,6 +2,7 @@
 #define NETWORK_H
 
 #include "general.h"
+#include "database.h"
 
 #include <stdint.h>
 
@@ -13,6 +14,12 @@ enum PacketType
 	PT_PathQuery,
 	PT_PathAnswer,
 	PT_TourismAnswer
+};
+
+struct SocketAndDB
+{
+	int clientSocket;
+	Database *database;
 };
 
 struct PathR
@@ -38,6 +45,6 @@ union PathRequest
 	};
 };
 
-void startServer(void);
+void startServer(Database *db);
 
 #endif // NETWORK_H
