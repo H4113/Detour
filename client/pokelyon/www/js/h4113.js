@@ -23,10 +23,11 @@ var H = {
 	},
 
 	processData: function (obj){
-		//alert("packet entier, taille: "+obj.buffer.byteLength);
+		alert("packet entier, taille: "+obj.buffer.byteLength);
 		var data = obj.buffer;
 		if(obj.type == 1){ // type == 1 -> PATH sent
 			var obj = parseData(data);
+
 			drawPathOnMap(Map.map, obj.path);
 		}
 	},
@@ -43,6 +44,7 @@ var H = {
 			}
 			chrome.socket.connect(socketId, "151.80.143.42", 6666, function(result) {
 			//chrome.socket.connect(socketId, "192.168.1.199", 6666, function(result) {
+				//alert(result);
 				if(result >= 0) {
 					//alert("prout " + result);
 					chrome.socket.write(socketId, buf, function(writeInfo) {

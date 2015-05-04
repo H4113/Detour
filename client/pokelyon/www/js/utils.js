@@ -195,3 +195,21 @@ function str2ab(str) {
 function arrayBufferToString(buffer) {
 	return String.fromCharCode.apply(null, new Uint8Array(buffer));
 }
+
+//addressToCoordinates('4 rue Armand', function(coords){ //Call a function using coords });
+function addressToCoordinates(address, ondone) {
+	var access_token = "pk.eyJ1IjoiaDQxMTMiLCJhIjoib3JScEdYMCJ9.hwB8vIlfpiQh49pkk8YRCA";
+	var city = "+Lyon+France";
+	var web = "http://api.tiles.mapbox.com/v4/geocode/mapbox.places/";
+	var web_end = ".json?access_token=";
+
+	address = address.split(' ').join('+');
+
+	var req = new XMLHttpRequest();
+	var url =  web+address+city+web_end+access_token;
+
+	$.getJSON(url, function(json) {
+		var coords = json['features'][0].center;
+		ondone(coords);
+	});
+}
