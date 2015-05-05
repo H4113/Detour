@@ -23,7 +23,7 @@ var H = {
 	},
 
 	processData: function (obj){
-		alert("packet entier, taille: "+obj.buffer.byteLength);
+		//alert("packet entier, taille: "+obj.buffer.byteLength);
 		var data = obj.buffer;
 		if(obj.type == 1){ // type == 1 -> PATH sent
 			var obj2 = parseData(data);
@@ -42,9 +42,9 @@ var H = {
 			var abuffer = [];
 			var socketId = createInfo.socketId;
 			function readPackets(readInfo) {
-				alert("packet partiel, taille:"+readInfo.data.byteLength);
+				//alert("packet partiel, taille:"+readInfo.data.byteLength);
 				var prout = readHeader(readInfo.data);
-				alert(prout.size);
+				//alert(prout.size);
 				magicTcpReceive(abuffer, readInfo.data, H.processData);
 				chrome.socket.read(socketId, null, readPackets);
 			}
@@ -94,7 +94,7 @@ var H = {
 
 	requestWay: function( params, callback, error ) {
 
-		console.log(params);
+		//console.log(params);
 		
 		if( ! params.fromlat ) throw 'required fromlat param is missing.';
 		if( ! params.fromlng ) throw 'required fromlng param is missing.';
@@ -120,10 +120,10 @@ var H = {
 		type_junk[0] = 1 + (1 << 1) + (1 << 2);
 
 		var geo_sendQuery = function(position) {
-			alert("prout");
+			//alert("prout");
 			gpscoord[0] = position.coords.latitude;
 			gpscoord[1] = position.coords.longitude;
-			console.log(buf);
+			//console.log(buf);
 			H.sendQuery(buf);
 		};
 

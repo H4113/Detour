@@ -9,6 +9,7 @@
 var map_start = null;
 var map_destination = null;
 var map_path = null;
+var tourism_array = [];
 
 String.prototype.decode = function(){
     return decodeURIComponent(escape(this));
@@ -32,7 +33,7 @@ function parseData(buffer) {
 		path.push(p);
 	}
 
-	alert("hello cutie");
+	//alert("hello cutie");
 	
 	//return path;
 	
@@ -40,9 +41,9 @@ function parseData(buffer) {
 	var touri = [];
 	// Touri size
 	buffer = buffer.slice(view.byteLength);
-	alert("lauwl");
+	//alert("lauwl");
 	for(var i=0;i<size_touri;++i){
-		console.log("---> " + i);
+		//console.log("---> " + i);
 		view = new Int16Array(buffer,0,NB_STRING);
 		var tab = [];
 		var total_str_size = 0;
@@ -58,11 +59,11 @@ function parseData(buffer) {
 		touri.push({size:tab,str:[],x:view[0],y:view[1]});
 		buffer = buffer.slice(view.byteLength);
 		for(var j=0;j<NB_STRING;++j){
-			console.log(touri[i].size[j]);
+			//console.log(touri[i].size[j]);
 			touri[i].str[j] = String.fromCharCode.apply(null,
 					new Uint8Array(buffer,0,touri[i].size[j])).decode();
 			buffer = buffer.slice(touri[i].size[j]);
-			console.log(touri[i]);
+			//console.log(touri[i]);
 		}
 		//buffer = buffer.slice(touri[i].size[NB_STRING-1]);
 	}
@@ -75,7 +76,7 @@ function parseData(buffer) {
 		}
 	}*/
 
-	alert("path size : " + path.length);
+	//alert("path size : " + path.length);
 
 	return {path:path,tourism:touri};
 }
@@ -134,10 +135,19 @@ function drawTourismOnMap(map, obj){
 		}
 	});
 	var redIcon = new markerIcon({iconUrl: 'img/marker-icon-t.png'});
+
+	for(var j = 0; j < tourism_array.length; ++j)
+	{
+		map.removeLayer(tourism_array[j]);
+	}
+
+	tourism_array = [];
+
+	var index = 0;
 	for(var i=0;i<obj.length;++i){
-		L.circle([obj[i].x, obj[i].y], 100, {color:'#F00',fillColor: '#FF0000', fillOpacity:0.9}).addTo(map);
+		tourism_array[index++] = L.circle([obj[i].x, obj[i].y], 100, {color:'#F00',fillColor: '#FF0000', fillOpacity:0.9}).addTo(map);
 		var strall = obj[i].str.join("<br />\n");
-		L.marker([obj[i].x, obj[i].y], {icon: redIcon}).addTo(map).bindPopup(strall);
+		tourism_array[index++] = L.marker([obj[i].x, obj[i].y], {icon: redIcon}).addTo(map).bindPopup(strall);
 	}
 }
 
