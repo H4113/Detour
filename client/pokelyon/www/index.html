@@ -84,18 +84,18 @@
                         <div class='menu-body'>
                             <form  id="itinaryForm">
                                 <div class='input-group'>
-                                    <span class='input-group-addon' id='fromaddon'>De</span>
-                                    <input type='text' name='from' id='from' class='form-control' aria-describedby='fromaddon' placeholder="Charpennes, '49.45673, 4.84753' "><br>
+                                    <span class='input-group-addon lang' data-lang="2" id='fromaddon'>De</span>
+                                    <input type='text' name='from' id='from' class='form-control' aria-describedby='fromaddon' placeholder="24 Cours Emile Zola, '45.770533, 4.864551'"><br>
                                 </div>
-                                <p id='alertTextFrom'></p>
+                                <div class='alert alert-danger lang' data-lang='4' role='alert' style='display:none' id='alertFrom'>Champ obligatoire</div>
                                 <br>
                                 <div class='input-group'>
-                                    <span class='input-group-addon' id='toaddon'>A</span>
-                                    <input type='text' name='to' id='to' class='form-control' aria-describedby='toaddon' placeholder="Tonkin, '48.45673, 4.8738'"><br>
+                                    <span class='input-group-addon lang' data-lang='3' id='toaddon'>A</span>
+                                    <input type='text' name='to' id='to' class='form-control' aria-describedby='toaddon' placeholder="Place Carnot, '45.7508139, 4.8288993'"><br>
                                 </div>
-                                <p id='alertTextTo'></p>
+                                <div class='alert alert-danger lang' data-lang='4' role='alert' style='display:none' id='alertTo'>Champ obligatoire</div>
                                 <br>
-                                <input class='submit btn btn-default' type='submit' id='search'>
+                                <button class="submit btn btn-default lang" type="submit" id='search' data-lang='5'></button>
                             </form> 
                         </div>
                     </div>
