@@ -169,11 +169,35 @@ var H = {
 };
 
 $("#itinaryForm").submit( function() {
+
 	var from = document.getElementById('from').value;
 	var to = document.getElementById('to').value;
 
-	function convertFieldTo(coordsFrom, to) {
-		if(to) {
+	var isOk = true;
+
+	if(!from) {
+		$('#from').addClass("red-border");
+		$('#alertTextFrom').text("Champ obligatoire");
+		isOk = false;
+	}
+	else {
+		$('#from').removeClass("red-border");
+		$('#alertTextFrom').text("");
+	}
+	if(!to) {
+		$('#to').addClass("red-border");
+		isOk = false;
+	}
+	else {
+		$('#to').removeClass("red-border");
+	}
+	if(isOk) {
+		convertFields(from, to);	
+	}
+	return false;
+
+	function convertFields(from, to) {
+		addressToCoordinates(from, function(coordsFrom){
 			addressToCoordinates(to, function(coordsTo){
 				var buf = new ArrayBuffer(8+4*8);
 				var type_req = new Int16Array(buf,0,1);
@@ -185,41 +209,17 @@ $("#itinaryForm").submit( function() {
 				type_junk[0] = 42;
 				type_junk2[0] = 42;
 
+				gpscoord[0] = coordsFrom.latitude;
+				gpscoord[1] = coordsFrom.longitude;
 				gpscoord[2] = coordsTo.latitude;
 				gpscoord[3] = coordsTo.longitude;
 
-				if(coordsFrom) {
-					gpscoord[0] = coordsFrom.latitude;
-					gpscoord[1] = coordsFrom.longitude;
+				// Change when buttons available
+				type_junk[0] = 1 + (1 << 1) + (1 << 2);
 
-					// Change when buttons available
-					type_junk[0] = 1 + (1 << 1) + (1 << 2);
-
-					State.launch('home');
-					H.sendQuery(buf);
-				}
-				else {
-					//GET GPS coordinates
-				}
+				State.launch('home');
+				H.sendQuery(buf);
 			});
-		}
-		else {
-			//POUET
-		}
+		});
 	}
-
-	function convertFields(from, to) {
-		if(from) {
-			addressToCoordinates(from, function(coordsFrom){
-				convertFieldTo(coordsFrom, to);
-			});
-		}
-		else {
-			convertFieldTo("", to);
-		}
-	}
-
-	convertFields(from, to);
-
-	return false;
 });
