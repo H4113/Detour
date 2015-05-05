@@ -176,12 +176,12 @@ State
 .addState('menu','#menu', null,
 	// launch
 	function() {
-		//H.jQueryMoveTopLeft('#menugui');
-		H.go(H.makeItinaryObj('45.757927','4.847598','45.782407','4.872925'));
+		H.jQueryMoveTopLeft('#menugui');
+		//H.go(H.makeItinaryObj('45.757927','4.847598','45.782407','4.872925'));
 	},
 	// clear
 	function() {
-		//H.jQueryResetPos('#menugui');
+		H.jQueryResetPos('#menugui');
 	})
 .addState('go','#go', null,
 	// launch
