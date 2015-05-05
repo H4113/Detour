@@ -33,15 +33,16 @@ var H = {
 	},
 
 	//   JQUERY RELATED
+	jQuery: {
+		moveTopLeft: function(selector) {
+			var offy = $(selector).offset().top +1;
+	  		var offx = $(selector).offset().left +1;
+	  		$(selector).transition({y:'-'+offy, x:'-'+offx});
+		},
 
-	jQueryMoveTopLeft: function(selector) {
-		var offy = $(selector).offset().top +1;
-  		var offx = $(selector).offset().left +1;
-  		$(selector).transition({y:'-'+offy, x:'-'+offx});
-	},
-
-	jQueryResetPos: function( selector ) {
-		$(selector).transition({y: 0, x: 0});
+		resetPos: function( selector ) {
+			$(selector).transition({y: 0, x: 0});
+		}
 	},
 
 	//   EVENTS
@@ -109,23 +110,30 @@ var H = {
 
 	},
 
-	// --> WebSocket is the new black
-	sendMessage: function( message, callback, error ) {
-		//ws = new WebSocket('ws://151.80.143.42:4853', 'tcp');
-		var ws = new WebSocket('ws://echo.websocket.org');
-		ws.onopen = function() {
-			ws.send( message );
-		};
+	/////////////////////////////////////////
+	//         ws - WEBSOCKETS             //
+	/////////////////////////////////////////
 
-		ws.onmessage = function(evt) {
-			console.log(evt.data);
-			alert( "answer : "+evt.data);
-		};
+	ws : {
+		// --> WebSocket is the new black
+		sendMessage: function( message, callback, error ) {
+			//ws = new WebSocket('ws://151.80.143.42:4853', 'tcp');
+			var ws = new WebSocket('ws://echo.websocket.org');
+			ws.onopen = function() {
+				ws.send( message );
+			};
 
-		ws.onclose = function() {
-			alert('connection closed');
-		};
+			ws.onmessage = function(evt) {
+				console.log(evt.data);
+				alert( "answer : "+evt.data);
+			};
+
+			ws.onclose = function() {
+				alert('connection closed');
+			};
+		}
 	},
+	
 
 	requestWay: function( params, callback, error ) {
 
@@ -178,17 +186,12 @@ var H = {
 		return url;
 	},
 
-	/*go : function( lat, lng ) {
-		//window.location.search = "?lat="+lat+"&lng="+lng+"#go";
-		window.location.search = this.objToUrl({'lat':lat,'lng':lng});
-	},*/
-
 	go : function( itinaryObj ) {
 		if( ! itinaryObj.fromlat ) throw 'requested fromlat parameter missing.';
 		if( ! itinaryObj.fromlng ) throw 'requested fromlng parameter missing.';
 		if( ! itinaryObj.tolat ) throw 'requested tolat parameter missing.';
 		if( ! itinaryObj.tolng ) throw 'requested tolng parameter missing.';
-		window.location.search = this.objToUrl(itinaryObj);
+		window.location.hash = '#go' + this.objToUrl(itinaryObj);
 	},
 
 	makeItinaryObj: function( fromlat, fromlng, tolat, tolng) {
@@ -199,7 +202,6 @@ var H = {
 			tolng: tolng
 		};
 	}
-
 
 };
 
@@ -234,26 +236,11 @@ $("#itinaryForm").submit( function() {
 	function convertFields(from, to) {
 		addressToCoordinates(from, function(coordsFrom){
 			addressToCoordinates(to, function(coordsTo){
-				var buf = new ArrayBuffer(8+4*8);
-				var type_req = new Int16Array(buf,0,1);
-				var type_junk = new Int16Array(buf,2,1);
-				var type_junk2 = new Int32Array(buf,4,1);
-				var gpscoord = new Float64Array(buf,8,4);
-				
-				type_req[0] = 0;
-				type_junk[0] = 42;
-				type_junk2[0] = 42;
 
-				gpscoord[0] = coordsFrom.latitude;
-				gpscoord[1] = coordsFrom.longitude;
-				gpscoord[2] = coordsTo.latitude;
-				gpscoord[3] = coordsTo.longitude;
-
-				// Change when buttons available
-				type_junk[0] = 1 + (1 << 1) + (1 << 2);
-
-				State.launch('home');
-				H.sendQuery(buf);
+				console.log('coordsFrom', from, coordsFrom, 'coordsTo', to, coordsTo);
+				var itinary = H.makeItinaryObj(coordsFrom.latitude,coordsFrom.longitude,
+												coordsTo.latitude,  coordsTo.longitude);
+				H.go(itinary);
 			});
 		});
 	}

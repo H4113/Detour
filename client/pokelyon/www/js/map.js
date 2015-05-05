@@ -174,21 +174,20 @@ State
 .addState('itinary','#directions', null,
 	// launch
 	function() {
-		H.jQueryMoveTopLeft('#directionsgui');
+		H.jQuery.moveTopLeft('#directionsgui');
 	},
 	// clear
 	function() {
-		H.jQueryResetPos('#directionsgui');
+		H.jQuery.resetPos('#directionsgui');
 	})
 .addState('menu','#menu', null,
 	// launch
 	function() {
-		H.jQueryMoveTopLeft('#menugui');
-		//H.go(H.makeItinaryObj('45.757927','4.847598','45.782407','4.872925'));
+		H.jQuery.moveTopLeft('#menugui');
 	},
 	// clear
 	function() {
-		H.jQueryResetPos('#menugui');
+		H.jQuery.resetPos('#menugui');
 	})
 .addState('go','#go', null,
 	// launch
@@ -199,8 +198,6 @@ State
 		}
 
 		var params = {
-			//fromlat: Map.map.getCenter().lat,
-			//fromlng: Map.map.getCenter().lng,
 			fromlat: getParameterByName('fromlat'),
 			fromlng: getParameterByName('fromlng'),
 			tolat: getParameterByName('tolat'),
