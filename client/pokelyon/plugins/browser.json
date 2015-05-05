@@ -6,6 +6,10 @@
     "config_munge": {
         "files": {}
     },
-    "installed_plugins": {},
+    "installed_plugins": {
+        "com.ququplay.websocket.WebSocket": {
+            "PACKAGE_NAME": "com.h4113.pokelyon"
+        }
+    },
     "dependent_plugins": {}
 }

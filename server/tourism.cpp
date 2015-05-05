@@ -69,6 +69,9 @@ static bool getTouristicClosestNodeOf(const TouristicPlace &place, const Path &r
 		}
 		node = node->next;
 	}
+
+	closestNode.distance = minDist;
+
 	return true;
 }
 
