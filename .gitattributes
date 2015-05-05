@@ -1,4 +1,2 @@
-data/* linguist-vendored
-data/* linguist-documentation
+data/*.json linguist-vendored
 client/pokelyon/plugins/* linguist-vendored
-client/pokelyon/plugins/* linguist-documentation
