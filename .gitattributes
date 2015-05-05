@@ -1,0 +1,3 @@
+./data/* linguist-vendored=false
+./client/pokelyon/plugins/* linguist-vendored=false
+
