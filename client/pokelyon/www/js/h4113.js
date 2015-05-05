@@ -119,8 +119,21 @@ var H = {
 		// Change when buttons available
 		type_junk[0] = 1 + (1 << 1) + (1 << 2);
 
-		this.sendQuery(buf);
+		var geo_sendQuery = function(position) {
+			alert("prout");
+			gpscoord[0] = position.coords.latitude;
+			gpscoord[1] = position.coords.longitude;
+			console.log(buf);
+			H.sendQuery(buf);
+		};
+
+		navigator.geolocation.getCurrentPosition(geo_sendQuery, function() {});
 	} 
 
 
 };
+
+$("#itinaryForm").submit( function() {
+	//alert('don\'t reload you fool');
+	return false;
+});
