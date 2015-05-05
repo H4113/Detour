@@ -31,6 +31,8 @@ function parseData(buffer) {
 		var p = {x:view[2*i],y:view[2*i+1]};
 		path.push(p);
 	}
+
+	alert("hello cutie");
 	
 	//return path;
 	
@@ -38,8 +40,9 @@ function parseData(buffer) {
 	var touri = [];
 	// Touri size
 	buffer = buffer.slice(view.byteLength);
-	
+	alert("lauwl");
 	for(var i=0;i<size_touri;++i){
+		console.log("---> " + i);
 		view = new Int16Array(buffer,0,NB_STRING);
 		var tab = [];
 		var total_str_size = 0;
@@ -52,15 +55,16 @@ function parseData(buffer) {
 		}
 		buffer = buffer.slice(view.byteLength);
 		view = new Float64Array(buffer,0,2);
-		
 		touri.push({size:tab,str:[],x:view[0],y:view[1]});
 		buffer = buffer.slice(view.byteLength);
 		for(var j=0;j<NB_STRING;++j){
+			console.log(touri[i].size[j]);
 			touri[i].str[j] = String.fromCharCode.apply(null,
 					new Uint8Array(buffer,0,touri[i].size[j])).decode();
 			buffer = buffer.slice(touri[i].size[j]);
+			console.log(touri[i]);
 		}
-		buffer = buffer.slice(touri[i].size[NB_STRING-1]);
+		//buffer = buffer.slice(touri[i].size[NB_STRING-1]);
 	}
 	
 	/*for(var i=0;i<size_touri;++i){
@@ -70,6 +74,8 @@ function parseData(buffer) {
 			console.log(" "+j+")"+touri[i].str[j]);
 		}
 	}*/
+
+	alert("path size : " + path.length);
 
 	return {path:path,tourism:touri};
 }
