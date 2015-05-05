@@ -1,3 +1,4 @@
 data/* linguist-vendored
+data/* linguist-documentation
 client/pokelyon/plugins/* linguist-vendored
-
+client/pokelyon/plugins/* linguist-documentation
