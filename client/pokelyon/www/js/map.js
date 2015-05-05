@@ -106,9 +106,16 @@ document.addEventListener('map-created', function(e) {
 	var popup = L.popup();
 			
 	e.Map.onClick(function(click){
-		popup.setLatLng(click.latlng)
-			 .setContent("<a href='?lat="+click.latlng.lat+"&lng="+click.latlng.lng+"#go' class='gps-btn'>Aller ici</a>")
+		if( H.user.locationKnown() ){
+			popup.setLatLng(click.latlng)
+			 .setContent("<a href='?fromlat="
+			 	+H.user.lastKnownLocation.lat
+			 	+"&fromlng="+H.user.lastKnownLocation.lng
+			 	+"&tolat="+click.latlng.lat
+			 	+"&tolng="+click.latlng.lng
+			 	+"#go' class='gps-btn'>Aller ici</a>")
 			 .openOn(e.Map.map);
+		}
 	});
 });
 
@@ -119,6 +126,7 @@ document.addEventListener('deviceready', function(e) {
 	circlePosUser = L.circleMarker([0, 0], 10, {}).addTo(Map.map);
 
 	var onGeoSuccess = function(position) {
+		H.user.updateLocation(position.coords.latitude, position.coords.longitude);
 		circlePosUser.setLatLng([position.coords.latitude, position.coords.longitude]);
 		circlePosUser.redraw();
 	};
@@ -168,12 +176,12 @@ State
 .addState('menu','#menu', null,
 	// launch
 	function() {
-		//H.jQueryMoveTopLeft('#menugui');
-		H.goFromTo(H.makeItinaryObj('45.757927','4.847598','45.782407','4.872925'));
+		H.jQueryMoveTopLeft('#menugui');
+		//H.go(H.makeItinaryObj('45.757927','4.847598','45.782407','4.872925'));
 	},
 	// clear
 	function() {
-		//H.jQueryResetPos('#menugui');
+		H.jQueryResetPos('#menugui');
 	})
 .addState('go','#go', null,
 	// launch
@@ -184,10 +192,12 @@ State
 		}
 
 		var params = {
-			fromlat: Map.map.getCenter().lat,
-			fromlng: Map.map.getCenter().lng,
-			tolat: getParameterByName('lat'),
-			tolng: getParameterByName('lng')
+			//fromlat: Map.map.getCenter().lat,
+			//fromlng: Map.map.getCenter().lng,
+			fromlat: getParameterByName('fromlat'),
+			fromlng: getParameterByName('fromlng'),
+			tolat: getParameterByName('tolat'),
+			tolng: getParameterByName('tolng')
 		};
 		
 		console.log(params);
