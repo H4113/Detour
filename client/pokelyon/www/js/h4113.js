@@ -138,14 +138,16 @@ var H = {
 	
 
 	requestWay: function( params, callback, error ) {
-		
+		console.log(params.patrimony);
+		console.log(params.gastronomy);
+		console.log(params.accomodity);
 		if( ! params.fromlat ) throw 'required fromlat param is missing.';
 		if( ! params.fromlng ) throw 'required fromlng param is missing.';
 		if( ! params.tolat ) throw 'required tolat param is missing.';
 		if( ! params.tolng ) throw 'required tolng param is missing.';
-		if(! typeof(params.patrimony) === 'boolean' ) throw 'required patrimony param is missing.';
-		if(! typeof(params.gastronomy) === 'boolean' ) throw 'required gastronomy param is missing.';
-		if(! typeof(params.accomodity) === 'boolean' ) throw 'required accomodity param is missing.';
+		if(! typeof(params.patrimony) === 'Int16' ) throw 'required patrimony param is missing.';
+		if(! typeof(params.gastronomy) === 'Int16' ) throw 'required gastronomy param is missing.';
+		if(! typeof(params.accomodity) === 'Int16' ) throw 'required accomodity param is missing.';
 
 		var buf = new ArrayBuffer(8+4*8);
 		var type_req = new Int16Array(buf,0,1);
@@ -163,7 +165,9 @@ var H = {
 		gpscoord[3] = params.tolng;
 
 		// Change when buttons available
-		type_junk[0] = params.patrimony + (params.gastronomy << 1) + (params.accodomity << 2);
+
+		type_junk[0] = params.patrimony + (params.gastronomy << 1) + (params.accomodity << 2);
+		console.log(type_junk);
 
 		var geo_sendQuery = function(position) {
 			gpscoord[0] = position.coords.latitude;
@@ -192,9 +196,9 @@ var H = {
 		if( ! itinaryObj.fromlng ) throw 'requested fromlng parameter missing.';
 		if( ! itinaryObj.tolat ) throw 'requested tolat parameter missing.';
 		if( ! itinaryObj.tolng ) throw 'requested tolng parameter missing.';
-		if(! typeof(itinaryObj.patrimony) === 'boolean' ) throw 'requested patrimony parameter missing.';
-		if(! typeof(itinaryObj.gastronomy) === 'boolean' ) throw 'requested gastronomy parameter missing.';
-		if(! typeof(itinaryObj.accomodity) === 'boolean' ) throw 'requested accomodity parameter missing.';
+		if(! typeof(itinaryObj.patrimony) === 'Int16' ) throw 'requested patrimony parameter missing.';
+		if(! typeof(itinaryObj.gastronomy) === 'Int16' ) throw 'requested gastronomy parameter missing.';
+		if(! typeof(itinaryObj.accomodity) === 'Int16' ) throw 'requested accomodity parameter missing.';
 		window.location.hash = '#go' + this.objToUrl(itinaryObj);
 	},
 
@@ -217,9 +221,9 @@ $("#itinaryForm").submit( function() {
 	var from = document.getElementById('from').value;
 	var to = document.getElementById('to').value;
 
-	var gastro = document.getElementById('filter-food').checked;
-	var heberg = document.getElementById('filter-night').checked;
-	var patrim = document.getElementById('filter-tourism').checked;
+	var gastro = document.getElementById('filter-food').checked ? 1 : 0;
+	var heberg = document.getElementById('filter-night').checked ? 1 : 0;
+	var patrim = document.getElementById('filter-tourism').checked ? 1 : 0;
 
 	var isOk = true;
 
