@@ -200,7 +200,8 @@ function arrayBufferToString(buffer) {
 	return String.fromCharCode.apply(null, new Uint8Array(buffer));
 }
 
-//addressToCoordinates('4 rue Armand', function(coords){ //Call a function using coords });
+//Usage :
+//	addressToCoordinates('4 rue Armand', function(coords){ 'What you want to do when coords is retreived' });
 function addressToCoordinates(address, ondone) {
 	var access_token = "pk.eyJ1IjoiaDQxMTMiLCJhIjoib3JScEdYMCJ9.hwB8vIlfpiQh49pkk8YRCA";
 	var city = "+Lyon+France";
