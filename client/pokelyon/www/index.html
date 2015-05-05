@@ -44,6 +44,7 @@
         <link rel="stylesheet" type="text/css" href="css/app.css">
         <link rel="stylesheet" type="text/css" href="css/bootstrap-theme.min.css">
         <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="css/bootstrap-toggle.min.css">
         <title>PokeLyon</title>
     </head>
     <body>
@@ -95,7 +96,28 @@
                                 </div>
                                 <p id='alertTextTo'></p>
                                 <br>
-                                <input class='submit btn btn-default' type='submit' id='search'>
+                                <div class="checkbox">
+                                    <label for='filter-food'>
+                                        Gastronomie
+                                    </label>
+                                    <input type="checkbox" checked data-toggle="toggle" id='filter-night'>
+                                </div>
+                                <div class="checkbox">
+                                    <label for='filter-night'>
+                                        H&eacute;bergement
+                                    </label>
+                                    <input type="checkbox" checked data-toggle="toggle" id="filter-night">
+                                </div>
+                                <div class="checkbox">
+                                    <label for='filter-tourism'>
+                                        Patrimoine
+                                    </label>
+                                    <input type="checkbox" checked data-toggle="toggle" id="filter-tourism">
+                                </div>
+                                
+                                
+                                
+                                <input class='submit btn btn-primary btn-lg btn-block' type='submit' id='search'>
                             </form> 
                         </div>
                     </div>
@@ -106,10 +128,12 @@
         <script type="text/javascript" src="js/jquery-2.1.3.min.js"></script>
         <script type="text/javascript" src="js/jquery.transit.min.js"></script>
         <script type="text/javascript" src="js/lib/bootstrap.min.js"></script>
+        <script type="text/javascript" src="js/lib/bootstrap-toggle.min.js"></script>
+        
         <script type="text/javascript" src="js/h4113.js"></script>
+        <script type="text/javascript" src="js/globalization.js"></script>
         <script type="text/javascript" src="js/map.js"></script>
         <script type="text/javascript" src="js/utils.js"></script>
         <script type="text/javascript" src="js/index.js"></script>
-		<script type="text/javascript" src="js/globalization.js"></script>
     </body>
 </html>

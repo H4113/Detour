@@ -1,8 +1,20 @@
 var Locale = "de";
 var textLang = $(".lang");
 var imgLang = $("img");
+
+var Lang = {
+	data: null,
+
+	get : function( id ) {
+		return 'ya';//data[id];
+	}
+};
+
 $.getJSON("lang.json", function(lang)
 {
+
+	Lang.data = lang;
+
 	for (var i = 0; i < textLang.length; i++) 
 	{
 		if (textLang[i].hasAttribute("data-lang"))
@@ -17,5 +29,7 @@ $.getJSON("lang.json", function(lang)
 			imgLang[i].setAttribute("alt", lang[imgLang[i].getAttribute("alt")][Locale]);
 		}
 	}
+
+	//document.dispatchEvent()
 });
 
