@@ -11,6 +11,30 @@
 		"es" : "Itinerario",
 		"de" : "Strecke"
 	},
+	"2" : {
+		"en" : "From",
+		"fr" : "De",
+		"es" : "De",
+		"de" : "Von"
+	},
+	"3" : {
+		"en" : "To",
+		"fr" : "A",
+		"es" : "A",
+		"de" : "Bis"
+	},
+	"4" : {
+		"en" : "Mandatory field",
+		"fr" : "Champ obligatoire",
+		"es" : "Campo obligatorio",
+		"de" : "Obligatorische felder"
+	},
+	"5" : {
+		"en" : "Submit",
+		"fr" : "Soumettre",
+		"es" : "Someter",
+		"de" : "Vorlegen"
+	},
 	"Yes" : {
 		"en" : "Yes",
 		"fr" : "Oui",
