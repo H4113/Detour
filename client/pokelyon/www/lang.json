@@ -10,5 +10,17 @@
 		"fr" : "Itinéraire",
 		"es" : "Itinerario",
 		"de" : "Strecke"
+	},
+	"Yes" : {
+		"en" : "Yes",
+		"fr" : "Oui",
+		"es" : "Si",
+		"de" : "Ja"
+	},
+	"No" : {
+		"en" : "No",
+		"fr" : "Non",
+		"es" : "No",
+		"de" : "Nein"
 	}
 }
