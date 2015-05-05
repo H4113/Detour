@@ -1,6 +1,35 @@
 
 var H = {
 
+	//todo : H.user.nananana, H.events.createEvent, etc...
+
+	//   USER RELATED
+	user : {
+		lastKnownLocation: null,
+
+		updateLocation: function( a, b ) {
+			switch( arguments.length ) {
+			case 0:
+				throw 'H.user.updateLocation : at least one argument is required';
+				break;
+			case 1:
+				if( ! a.lat ) throw 'H.user.updateLocation : lat property is required';
+				if( ! a.lng ) throw 'H.user.updateLocation : lng property is required';
+				lastKnownLocation.lat = a.lat;
+				lastKnownLocation.lng = a.lng;
+			case 2:
+				lastKnownLocation.lat = a;
+				lastKnownLocation.lng = b;
+				break;
+			default:
+				throw 'H.user.updateLocation : invalid number of parameters.';
+				break;
+			}
+		}
+	},
+
+	//   JQUERY RELATED
+
 	jQueryMoveTopLeft: function(selector) {
 		var offy = $(selector).offset().top +1;
   		var offx = $(selector).offset().left +1;
@@ -10,6 +39,8 @@ var H = {
 	jQueryResetPos: function( selector ) {
 		$(selector).transition({y: 0, x: 0});
 	},
+
+	//   EVENTS
 
 	createEvent: function(name, properties) {
 		var evt = document.createEvent("Event");
@@ -128,7 +159,42 @@ var H = {
 		};
 
 		navigator.geolocation.getCurrentPosition(geo_sendQuery, function() {});
-	} 
+	},
+
+	objToUrl : function( obj ) {
+		var url = null;
+		for( var prop in obj ) {
+			if(  url ) {
+				url += '&';	
+			} else {
+				url = '?';
+			}
+			url += prop +'='+obj[prop];
+		}
+		return url;
+	},
+
+	go : function( lat, lng ) {
+		//window.location.search = "?lat="+lat+"&lng="+lng+"#go";
+		window.location.search = this.objToUrl({'lat':lat,'lng':lng});
+	},
+
+	goFromTo : function( itinaryObj ) {
+		if( ! itinaryObj.fromlat ) throw 'requested fromlat parameter missing.';
+		if( ! itinaryObj.fromlng ) throw 'requested fromlng parameter missing.';
+		if( ! itinaryObj.tolat ) throw 'requested tolat parameter missing.';
+		if( ! itinaryObj.tolng ) throw 'requested tolng parameter missing.';
+		window.location.search = this.objToUrl(itinaryObj);
+	},
+
+	makeItinaryObj: function( fromlat, fromlng, tolat, tolng) {
+		return {
+			fromlat: fromlat,
+			fromlng: fromlng,
+			tolat: tolat,
+			tolng: tolng
+		};
+	}
 
 
 };
