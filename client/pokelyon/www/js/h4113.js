@@ -44,7 +44,7 @@ var H = {
 			function readPackets(readInfo) {
 				alert("packet partiel, taille:"+readInfo.data.byteLength);
 				var prout = readHeader(readInfo.data);
-				alert(prout.size);
+				//alert(prout.size);
 				magicTcpReceive(abuffer, readInfo.data, H.processData);
 				chrome.socket.read(socketId, null, readPackets);
 			}
@@ -120,7 +120,7 @@ var H = {
 		type_junk[0] = 1 + (1 << 1) + (1 << 2);
 
 		var geo_sendQuery = function(position) {
-			alert("prout");
+			//alert("prout");
 			gpscoord[0] = position.coords.latitude;
 			gpscoord[1] = position.coords.longitude;
 			console.log(buf);
@@ -128,7 +128,42 @@ var H = {
 		};
 
 		navigator.geolocation.getCurrentPosition(geo_sendQuery, function() {});
-	} 
+	},
+
+	objToUrl : function( obj ) {
+		var url = null;
+		for( var prop in obj ) {
+			if(  url ) {
+				url += '&';	
+			} else {
+				url = '?';
+			}
+			url += prop +'='+obj[prop];
+		}
+		return url;
+	},
+
+	go : function( lat, lng ) {
+		//window.location.search = "?lat="+lat+"&lng="+lng+"#go";
+		window.location.search = this.objToUrl({'lat':lat,'lng':lng});
+	},
+
+	goFromTo : function( itinaryObj ) {
+		if( ! itinaryObj.fromlat ) throw 'requested fromlat parameter missing.';
+		if( ! itinaryObj.fromlng ) throw 'requested fromlng parameter missing.';
+		if( ! itinaryObj.tolat ) throw 'requested tolat parameter missing.';
+		if( ! itinaryObj.tolng ) throw 'requested tolng parameter missing.';
+		window.location.search = this.objToUrl(itinaryObj);
+	},
+
+	makeItinaryObj: function( fromlat, fromlng, tolat, tolng) {
+		return {
+			fromlat: fromlat,
+			fromlng: fromlng,
+			tolat: tolat,
+			tolng: tolng
+		};
+	}
 
 
 };
