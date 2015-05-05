@@ -13,8 +13,8 @@ DEBUG=debug
 RELEASE=release
 
 GPP=g++
-CFLAGS=-Wall -Wextra -Wmissing-braces -pedantic #-Werror
-INCLUDE=-I"./"
+CFLAGS= #-Werror
+INCLUDE=-I"./" -I websocketpp/
 
 CPPFILES=$(wildcard $(SRCDIR)/*.cpp)
 
@@ -29,7 +29,7 @@ BINRELEASE=$(addprefix $(RELEASEDIR)/,$(BIN))
 FLAGSDEBUG=-g -pg
 FLAGSRELEASE=-O2
 
-LIBS=-lm -lssl -lcrypto -lpthread -lpq -lpqxx
+LIBS=-lm -lssl -lcrypto -lpthread -lpq -lpqxx -lboost_system
 
 $(DEBUG): $(OBJDEBUG)
 	$(GPP) -o $(BINDEBUG) $(OBJDEBUG) $(LIBS)

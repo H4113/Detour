@@ -18,6 +18,10 @@
 #include <signal.h>
 #include <string.h>
 
+using websocketpp::lib::placeholders::_1;
+using websocketpp::lib::placeholders::_2;
+using websocketpp::lib::bind;
+
 static int portNumber;
 
 void siginthandler(int)
@@ -50,6 +54,8 @@ static void splitArray(char* c, const char* s, char* first, char* second)
 	}
 	printf("second : %s\n", second);
 }
+
+
 
 static void *clientRoutine(void* attr)
 {
@@ -185,7 +191,30 @@ static void *clientRoutine(void* attr)
 
 void startServer(Database *db)
 {
-	int serverSocket, 
+	server webserver;
+	try {
+		// Set logging settings
+        webserver.set_access_channels(websocketpp::log::alevel::all);
+        webserver.clear_access_channels(websocketpp::log::alevel::frame_payload);
+        webserver.init_asio();
+
+        // Register our message handler
+        webserver.set_message_handler(bind(&on_message,&webserver,::_1,::_2));
+
+        webserver.listen(NET_PORT_NUMBER);
+
+        // Start the server accept loop
+        webserver.start_accept();
+
+        // Start the ASIO io_service run loop
+        webserver.run();
+	} catch (websocketpp::exception const & e) {
+        std::cout << e.what() << std::endl;
+    } catch (...) {
+        std::cout << "other exception" << std::endl;
+    }
+
+	/*int serverSocket, 
 		clientSocket;
 	int* clso;
 	struct sockaddr_in serverAddress,
@@ -228,7 +257,7 @@ void startServer(Database *db)
 			delete clso;
 			error("ERROR creating thread");
 		}
-	}
+	}*/
 
 	pthread_exit(NULL);
 }
