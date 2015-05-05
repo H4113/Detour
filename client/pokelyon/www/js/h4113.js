@@ -214,21 +214,30 @@ $("#itinaryForm").submit( function() {
 
 	if(!from) {
 		//$('#from').addClass("red-border");
-		document.getElementById('alertFrom').style.display = 'block';
+		var f = document.getElementById('alertFrom');
+		f.style.display = 'block';
+		$('#divFrom').addClass('has-error has-feedback');
+		document.getElementById('errorSignFrom').style.display = 'block';
 		isOk = false;
 	}
 	else {
 		//$('#from').removeClass("red-border");
 		document.getElementById('alertFrom').style.display = 'none';
+		$('#divFrom').removeClass('has-error has-feedback');
+		document.getElementById('errorSignFrom').style.display = 'none';
 	}
 	if(!to) {
 		//$('#to').addClass("red-border");
 		document.getElementById('alertTo').style.display = 'block';
+		$('#divTo').addClass('has-error has-feedback');
+		document.getElementById('errorSignTo').style.display = 'block';
 		isOk = false;
 	}
 	else {
 		//$('#to').removeClass("red-border");
 		document.getElementById('alertTo').style.display = 'none';
+		$('#divTo').removeClass('has-error has-feedback');
+		document.getElementById('errorSignTo').style.display = 'none';
 	}
 	if(isOk) {
 		convertFields(from, to);	
