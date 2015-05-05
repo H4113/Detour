@@ -1,3 +1,3 @@
-./data/* linguist-vendored=false
-./client/pokelyon/plugins/* linguist-vendored=false
+./data/* linguist-vendored
+./client/pokelyon/plugins/* linguist-vendored
 
