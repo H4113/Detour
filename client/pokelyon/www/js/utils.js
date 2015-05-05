@@ -215,6 +215,7 @@ function addressToCoordinates(address, ondone) {
 
 	$.getJSON(url, function(json) {
 		var coords = json['features'][0].center;
-		ondone(coords);
+		var new_coords = {"latitude":coords[1], "longitude":coords[0]} 
+		ondone(new_coords);
 	});
 }
