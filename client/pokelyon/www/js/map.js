@@ -217,3 +217,9 @@ $(window).on('hashchange', function() {
 
   	State.launch( State.hashToState(hash) );
 });
+
+$(window).on('resize', function(){
+	if( State.last = 'itinary' ) {
+		H.jQuery.moveTopLeft('#directionsgui');
+	}
+});

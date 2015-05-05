@@ -35,8 +35,10 @@ var H = {
 	//   JQUERY RELATED
 	jQuery: {
 		moveTopLeft: function(selector) {
-			var offy = $(selector).offset().top +1;
+			//var offy = $(selector).offset().top +1;
 	  		var offx = $(selector).offset().left +1;
+	  		var offy = $(window).height() +1;
+	  		//var offx = $(window).width() +1;
 	  		$(selector).transition({y:'-'+offy, x:'-'+offx});
 		},
 
@@ -245,3 +247,12 @@ $("#itinaryForm").submit( function() {
 		});
 	}
 });
+
+/*
+$('.menu [type="checkbox"]').each( function() {
+	$(this).bootstrapToggle({
+    	on: Lang.get('Yes'),
+    	off: Lang.get('No')
+	});
+});
+*/
