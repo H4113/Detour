@@ -182,7 +182,6 @@ State
 			close.dispatchEvent( H.createEvent('click') );
 		}
 
-
 		var params = {
 			fromlat: Map.map.getCenter().lat,
 			fromlng: Map.map.getCenter().lng,
