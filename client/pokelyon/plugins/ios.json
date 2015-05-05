@@ -82,6 +82,9 @@
         },
         "org.chromium.socket": {
             "PACKAGE_NAME": "com.h4113.pokelyon"
+        },
+        "com.ququplay.websocket.WebSocket": {
+            "PACKAGE_NAME": "com.h4113.pokelyon"
         }
     },
     "dependent_plugins": {

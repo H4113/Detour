@@ -1,7 +1,6 @@
 var Locale = "de";
 var textLang = $(".lang");
 var imgLang = $("img");
-alert (imgLang.length);
 $.getJSON("lang.json", function(lang)
 {
 	for (var i = 0; i < textLang.length; i++) 
