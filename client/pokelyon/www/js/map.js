@@ -108,12 +108,19 @@ document.addEventListener('map-created', function(e) {
 	e.Map.onClick(function(click){
 		if( H.user.locationKnown() ){
 			popup.setLatLng(click.latlng)
-			 .setContent("<a href='?fromlat="
+			 /*.setContent("<a href='?fromlat="
 			 	+H.user.lastKnownLocation.lat
 			 	+"&fromlng="+H.user.lastKnownLocation.lng
 			 	+"&tolat="+click.latlng.lat
 			 	+"&tolng="+click.latlng.lng
-			 	+"#go' class='gps-btn'>Aller ici</a>")
+			 	+"#go' class='gps-btn'>Aller ici</a>")*/
+			 .setContent("<a href='#go"+
+			 	H.objToUrl(H.makeItinaryObj(
+			 	H.user.lastKnownLocation.lat,
+			 	H.user.lastKnownLocation.lng,
+			 	click.latlng.lat,
+			 	click.latlng.lng))
+			 	+"' class='gps-btn'>Aller ici</a>")
 			 .openOn(e.Map.map);
 		}
 	});
@@ -150,7 +157,7 @@ document.addEventListener('deviceready', function(e) {
 
 // States of the app
 function getParameterByName(name) {
-    var url = location.href.substring(location.href.lastIndexOf('?')+1,location.href.lastIndexOf('#'));
+    var url = location.href.substring(location.href.lastIndexOf('?')+1/*,location.href.lastIndexOf('#')*/);
     var params = url.split('&');
     for( var i = 0; i < params.length; ++i) {
     	var regex = new RegExp( name +"=(.*)");
