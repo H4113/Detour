@@ -140,15 +140,41 @@ $("#itinaryForm").submit( function() {
 	function convertFieldTo(coordsFrom, to) {
 		if(to) {
 			addressToCoordinates(to, function(coordsTo){
+				var buf = new ArrayBuffer(8+4*8);
+				var type_req = new Int16Array(buf,0,1);
+				var type_junk = new Int16Array(buf,2,1);
+				var type_junk2 = new Int32Array(buf,4,1);
+				var gpscoord = new Float64Array(buf,8,4);
 				
+				type_req[0] = 0;
+				type_junk[0] = 42;
+				type_junk2[0] = 42;
+
+				gpscoord[2] = coordsTo.latitude;
+				gpscoord[3] = coordsTo.longitude;
+
+				if(coordsFrom) {
+					gpscoord[0] = coordsFrom.latitude;
+					gpscoord[1] = coordsFrom.longitude;
+
+					// Change when buttons available
+					type_junk[0] = 1 + (1 << 1) + (1 << 2);
+
+					State.launch('home');
+					H.sendQuery(buf);
+				}
+				else {
+					//GET GPS coordinates
+				}
 			});
+		}
+		else {
+			//POUET
 		}
 	}
 
 	function convertFields(from, to) {
 		if(from) {
-			console.log('from : ');
-			console.log(from);
 			addressToCoordinates(from, function(coordsFrom){
 				convertFieldTo(coordsFrom, to);
 			});
