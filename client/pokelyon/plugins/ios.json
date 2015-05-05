@@ -64,6 +64,16 @@
                         }
                     ]
                 }
+            },
+            "res/xml/config.xml": {
+                "parents": {
+                    "/*": [
+                        {
+                            "xml": "<feature name=\"SocketIO\"><param name=\"android-package\" value=\"plugin.socket.io.SocketIO\" /></feature>",
+                            "count": 1
+                        }
+                    ]
+                }
             }
         }
     },
@@ -81,6 +91,9 @@
             "PACKAGE_NAME": "com.h4113.pokelyon"
         },
         "org.chromium.socket": {
+            "PACKAGE_NAME": "com.h4113.pokelyon"
+        },
+        "plugin.socket.io": {
             "PACKAGE_NAME": "com.h4113.pokelyon"
         }
     },

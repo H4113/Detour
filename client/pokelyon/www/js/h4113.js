@@ -76,10 +76,10 @@ var H = {
 
 	// --> WebSocket is the new black
 	sendMessage: function( message, callback, error ) {
-		console.log("ICI"+message);
+		//console.log("ICI"+message);
 		var abuffer = [];
 		//var ws = new WebSocket('ws://echo.websocket.org');
-		var ws = new WebSocket('ws://192.168.56.101:80');
+		var ws = new WebSocket('ws://151.80.143.42:80');
 		
 		ws.onopen = function (event) {
 	         alert("open" + event);
@@ -87,19 +87,21 @@ var H = {
 		};
 
 		ws.onmessage = function(evt) {
-			console.log(evt.data);
+			//console.log(evt.data);
 			alert( "answer  SIZE ");
-			var arrayBuffer;
-			var fileReader = new FileReader();
-			fileReader.onload = function() {
-				arrayBuffer = this.result;
-				magicTcpReceive(abuffer, arrayBuffer, H.processData);
-				alert( "end");
-			};
-			fileReader.readAsArrayBuffer(evt.data);
-			
-			
+			// var arrayBuffer;
+			// var fileReader = new FileReader();
+			// fileReader.onload = function() {
+			// 	arrayBuffer = this.result;
+			// 	magicTcpReceive(abuffer, arrayBuffer, H.processData);
+			// 	alert( "end");
+			// };
+			// fileReader.readAsArrayBuffer(evt.data);
 		};
+
+		ws.onfragment = function(evt) {
+			alert("prout");
+		}
 
 		ws.onclose = function() {
 			alert('connection closed');

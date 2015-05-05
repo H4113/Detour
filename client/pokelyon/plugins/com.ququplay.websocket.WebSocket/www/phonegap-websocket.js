@@ -97,6 +97,7 @@ hasWebSocket() || (function() {
     },
 
     dispatchEvent: function (event) {
+      alert("loul");
       var handler;
       var events = this.events[event.type] || [];
 
@@ -111,6 +112,7 @@ hasWebSocket() || (function() {
     },
 
     _handleEvent: function (event) {
+      alert("mdr");
       this.readyState = event.readyState;
 
       if (event.type == "message") {
@@ -151,6 +153,7 @@ hasWebSocket() || (function() {
   }
 
   function createMessageEvent(type, data) {
+    alert("prout");
     var event = document.createEvent("MessageEvent");
     event.initMessageEvent("message", false, false, data, null, null, window, null);
     return event;
@@ -162,8 +165,8 @@ hasWebSocket() || (function() {
     // makes a mess of ArrayBuffers.  This should work with most clients, as
     // long as they don't do something odd with the event.  The type is 
     // correctly set to "message", so client event routing logic should work.
+    alert("caca");
     var event = document.createEvent("Event");
-
     event.initEvent("message", false, false);
     event.data = data;
     return event;

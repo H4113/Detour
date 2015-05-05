@@ -1,0 +1,20 @@
+{
+    "version": "1.0.0",
+    "name": "plugin.socket.io",
+    "cordova_name": "plugin.socket.io",
+    "description": "This plugin works with socket.io >= 1.0",
+    "license": "Apache 2.0",
+    "repo": "https://github.com/wf9a5m75/plugin-socket.io",
+    "keywords": [
+        "socket.io"
+    ],
+    "platforms": [
+        "android"
+    ],
+    "engines": [
+        {
+            "name": "cordova",
+            "version": ">=3.0.0"
+        }
+    ]
+}
