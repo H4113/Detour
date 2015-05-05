@@ -132,3 +132,8 @@ var H = {
 
 
 };
+
+$("#itinaryForm").submit( function() {
+	//alert('don\'t reload you fool');
+	return false;
+});
