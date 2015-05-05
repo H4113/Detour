@@ -5,6 +5,7 @@ var app = {
 	// Application Constructor
 	initialize: function() {
 		this.bindEvents();
+		H.sendMessage("test",function(obj){alert('it works');},function(obj){});
 	},
 	// Bind Event Listeners
 	//
@@ -19,6 +20,7 @@ var app = {
 	// function, we must explicitly call 'app.receivedEvent(...);'
 	onDeviceReady: function() {
 		app.receivedEvent('deviceready');
+		
 		/*var buf = new ArrayBuffer(8+4*8);
 		var type_req = new Int16Array(buf,0,1);
 		var type_junk = new Int16Array(buf,2,1);
