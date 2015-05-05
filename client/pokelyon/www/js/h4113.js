@@ -5,7 +5,11 @@ var H = {
 
 	//   USER RELATED
 	user : {
-		lastKnownLocation: null,
+		lastKnownLocation: {},
+
+		locationKnown: function() {
+			return this.lastKnownLocation.lat && this.lastKnownLocation.lng ;
+		},
 
 		updateLocation: function( a, b ) {
 			switch( arguments.length ) {
@@ -15,11 +19,11 @@ var H = {
 			case 1:
 				if( ! a.lat ) throw 'H.user.updateLocation : lat property is required';
 				if( ! a.lng ) throw 'H.user.updateLocation : lng property is required';
-				lastKnownLocation.lat = a.lat;
-				lastKnownLocation.lng = a.lng;
+				this.lastKnownLocation.lat = a.lat;
+				this.lastKnownLocation.lng = a.lng;
 			case 2:
-				lastKnownLocation.lat = a;
-				lastKnownLocation.lng = b;
+				this.lastKnownLocation.lat = a;
+				this.lastKnownLocation.lng = b;
 				break;
 			default:
 				throw 'H.user.updateLocation : invalid number of parameters.';
@@ -174,12 +178,12 @@ var H = {
 		return url;
 	},
 
-	go : function( lat, lng ) {
+	/*go : function( lat, lng ) {
 		//window.location.search = "?lat="+lat+"&lng="+lng+"#go";
 		window.location.search = this.objToUrl({'lat':lat,'lng':lng});
-	},
+	},*/
 
-	goFromTo : function( itinaryObj ) {
+	go : function( itinaryObj ) {
 		if( ! itinaryObj.fromlat ) throw 'requested fromlat parameter missing.';
 		if( ! itinaryObj.fromlng ) throw 'requested fromlng parameter missing.';
 		if( ! itinaryObj.tolat ) throw 'requested tolat parameter missing.';
