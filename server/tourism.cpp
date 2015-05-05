@@ -91,10 +91,9 @@ static double dabs(double a)
 	return a < 0 ? -a : a;
 }
 
-bool BuildTouristicPath(const Path &resultPath, const std::vector<Coordinates> &initialPath, std::vector<Coordinates> &finalPath, std::vector<TouristicPlace> &places, const TouristicFilter &filter, Database *db)
+bool BuildTouristicPath(const Path &resultPath, const std::vector<Coordinates> &initialPath, std::vector<Coordinates> &finalPath, std::vector<TouristicPlace> &places, const TouristicFilter &filter, double maxDeviation, Database *db)
 {
 	const unsigned int N_TOURISTIC_PLACES = 3;
-	const double MAX_DEVIATION = 1000.;
 	const unsigned int MAX_TOURISTIC_PLACES = 8;
 	const unsigned int PACE = 2;
 
@@ -207,12 +206,12 @@ bool BuildTouristicPath(const Path &resultPath, const std::vector<Coordinates> &
 			std::cout << "Actual: " << measureResult(newPath.result) << std::endl;
 			std::cout << "Discrepancy: " << discrepancyMeasure << std::endl;
 			
-			if(dabs(discrepancyMeasure) < MAX_DEVIATION)
+			if(dabs(discrepancyMeasure) < maxDeviation)
 				computedPlacesCount += PACE;
 			else
 				computedPlacesCount = (computedPlacesCount < PACE ? 0 : computedPlacesCount - PACE);
 
-		} while(computedPlacesCount <  MAX_TOURISTIC_PLACES && (prevDiscrepancy == 0 || (prevDiscrepancy - MAX_DEVIATION) * (discrepancyMeasure - MAX_DEVIATION) > 0));
+		} while(computedPlacesCount <  MAX_TOURISTIC_PLACES && (prevDiscrepancy == 0 || (prevDiscrepancy - maxDeviation) * (discrepancyMeasure - maxDeviation) > 0));
 
 		if(!computedPlacesCount)
 			return false;

@@ -34,6 +34,7 @@ static void paramFilter(PathRequest pr)
 	std::cout << patrimony << " " << gastronomy << " " << accomodation << std::endl;
 }
 
+/*
 static void splitArray(char* c, const char* s, char* first, char* second)
 {
 	int i = 0;
@@ -50,6 +51,7 @@ static void splitArray(char* c, const char* s, char* first, char* second)
 	}
 	printf("second : %s\n", second);
 }
+*/
 
 static void *clientRoutine(void* attr)
 {
@@ -81,7 +83,10 @@ static void *clientRoutine(void* attr)
 		// BUILD PATH
 		std::vector<Coordinates> path;
 		std::vector<TouristicPlace> touristicPlaces;
-		if(PF_FindPath(pr.path.pointA, pr.path.pointB, path, touristicPlaces, sdb.database))
+		
+		const double MAX_DEVIATION = 1000.; // TODO: param to be sent by client
+		
+		if(PF_FindPath(pr.path.pointA, pr.path.pointB, MAX_DEVIATION, path, touristicPlaces, sdb.database))
 		{
 			int16_t sizeType, sizeTypeDetail, sizeName, sizeAddress, sizeWorkingHours;
 			// ANSWER !!!!
