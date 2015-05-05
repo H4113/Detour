@@ -132,3 +132,33 @@ var H = {
 
 
 };
+
+$("#itinaryForm").submit( function() {
+	var from = document.getElementById('from').value;
+	var to = document.getElementById('to').value;
+
+	function convertFieldTo(coordsFrom, to) {
+		if(to) {
+			addressToCoordinates(to, function(coordsTo){
+				
+			});
+		}
+	}
+
+	function convertFields(from, to) {
+		if(from) {
+			console.log('from : ');
+			console.log(from);
+			addressToCoordinates(from, function(coordsFrom){
+				convertFieldTo(coordsFrom, to);
+			});
+		}
+		else {
+			convertFieldTo("", to);
+		}
+	}
+
+	convertFields(from, to);
+
+	return false;
+});
