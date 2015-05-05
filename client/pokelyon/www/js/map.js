@@ -107,7 +107,7 @@ document.addEventListener('map-created', function(e) {
 			
 	e.Map.onClick(function(click){
 		popup.setLatLng(click.latlng)
-			 .setContent("<a href='#go?lat="+click.latlng.lat+"&lng="+click.latlng.lng+"' class='gps-btn'>Aller ici</a>")
+			 .setContent("<a href='?lat="+click.latlng.lat+"&lng="+click.latlng.lng+"#go' class='gps-btn'>Aller ici</a>")
 			 .openOn(e.Map.map);
 	});
 });
@@ -142,7 +142,7 @@ document.addEventListener('deviceready', function(e) {
 
 // States of the app
 function getParameterByName(name) {
-    var url = location.href.substring(location.href.lastIndexOf('?')+1);
+    var url = location.href.substring(location.href.lastIndexOf('?')+1,location.href.lastIndexOf('#'));
     var params = url.split('&');
     for( var i = 0; i < params.length; ++i) {
     	var regex = new RegExp( name +"=(.*)");
@@ -168,11 +168,12 @@ State
 .addState('menu','#menu', null,
 	// launch
 	function() {
-		H.jQueryMoveTopLeft('#menugui');
+		//H.jQueryMoveTopLeft('#menugui');
+		H.goFromTo(H.makeItinaryObj('45.757927','4.847598','45.782407','4.872925'));
 	},
 	// clear
 	function() {
-		H.jQueryResetPos('#menugui');
+		//H.jQueryResetPos('#menugui');
 	})
 .addState('go','#go', null,
 	// launch
@@ -181,7 +182,6 @@ State
 		if(close) {
 			close.dispatchEvent( H.createEvent('click') );
 		}
-
 
 		var params = {
 			fromlat: Map.map.getCenter().lat,
