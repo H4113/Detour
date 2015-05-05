@@ -119,6 +119,7 @@ bool BuildTouristicPath(const Path &resultPath, const std::vector<Coordinates> &
 	if(touristicPlaces.size() > 0)
 	{
 		std::multimap<double, TouristicClosestNode> orderedPlaces;
+		std::multimap<double, TouristicClosestNode*> orderedPlacesFromStart;
 		unsigned int i;
 		const Coordinates **points;
 		bool error = false;
@@ -141,18 +142,22 @@ bool BuildTouristicPath(const Path &resultPath, const std::vector<Coordinates> &
 		computedPlacesCount = N_TOURISTIC_PLACES;
 		do
 		{
-			std::multimap<double, TouristicClosestNode*> orderedPlacesFromStart;
+			unsigned int oldOrderedSize = orderedPlacesFromStart.size();
+
 			// Choose only the closest ones
 			places.clear();
 			places.resize(computedPlacesCount);
 			i = 0;
-			for(std::multimap<double, TouristicClosestNode>::iterator it = orderedPlaces.begin();
+			for(std::multimap<double, TouristicClosestNode>::iterator it = orderedPlaces.begin();	
 				it != orderedPlaces.end() && i < computedPlacesCount;
 				++it, ++i)
 			{
-				double dist = squareDist2(*(resultPath.realStart), it->second.place->location);
-				orderedPlacesFromStart.insert(std::pair<double, TouristicClosestNode*>(dist, &(it->second)));
-				places[i] = *(it->second.place);
+				if(i >= oldOrderedSize)
+				{
+					double dist = squareDist2(*(resultPath.realStart), it->second.place->location);
+					orderedPlacesFromStart.insert(std::pair<double, TouristicClosestNode*>(dist, &(it->second)));
+					places[i] = *(it->second.place);
+				}
 			}
 		
 			// Create points array	
