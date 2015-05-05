@@ -57,6 +57,124 @@ static void splitArray(char* c, const char* s, char* first, char* second)
 
 
 
+std::string buildData(Database* database) {
+	std::cout << "DEBUT SEND"<<std::endl;
+
+	PathRequest pr;
+	pr.type = PT_PathQuery;
+	pr.path.pointA.longitude = 45.782741199999996695169102167711;
+	pr.path.pointA.latitude = 4.873665800000000380975961888907;
+	pr.path.pointB.longitude = 45.782249782982248120788426604122;
+	pr.path.pointB.latitude = 4.878101348876953125000000000000;
+
+	printf("Here is the request from the client: %d %d\n",pr.type,pr.junk);
+	printf("%.30f %.30f %.30f %.30f\n", pr.path.pointA.longitude, pr.path.pointA.latitude, pr.path.pointB.longitude, pr.path.pointB.latitude);
+	std::cout << "DEBUT SEND2"<<std::endl;
+	if(pr.type == PT_PathQuery) 
+	{
+		paramFilter(pr);
+
+		// BUILD PATH
+		std::vector<Coordinates> path;
+		std::vector<TouristicPlace> touristicPlaces;
+		if(PF_FindPath(pr.path.pointA, pr.path.pointB, path, touristicPlaces, database))
+		{
+			int16_t sizeType, sizeTypeDetail, sizeName, sizeAddress, sizeWorkingHours;
+			// ANSWER !!!!
+			int32_t type = 1;
+			// type + size + path_size + touristic_size + ... path ...
+			int32_t size = 4 * sizeof(int32_t) + sizeof(double) * path.size() * 2;
+			//int32_t nbDouble = path.size();
+
+			for(std::vector<TouristicPlace>::iterator it = touristicPlaces.begin();
+				it != touristicPlaces.end();
+				++it)
+			{
+				sizeType = it->type.size();
+				sizeTypeDetail = it->typeDetail.size();
+				sizeName = it->name.size();
+				sizeAddress = it->address.size();
+				sizeWorkingHours = it->workingHours.size();
+				size += sizeof(int16_t) * 5 + (sizeType + sizeTypeDetail + sizeWorkingHours + sizeAddress + sizeName) *
+					sizeof(char) + 2 * sizeof(double);
+			}
+
+			int8_t* answer = new int8_t[size];
+			int8_t* ptr;
+			int32_t pathSize = path.size();
+			int32_t touriSize = touristicPlaces.size();
+			
+			std::cout << pathSize << " " << touriSize << std::endl;
+			
+			memcpy(answer, &type, sizeof(int32_t));
+			memcpy(answer + sizeof(int32_t), &size, sizeof(int32_t));
+			memcpy(answer + sizeof(int32_t) * 2, &pathSize, sizeof(int32_t));
+			memcpy(answer + sizeof(int32_t) * 3, &touriSize, sizeof(int32_t));
+
+			ptr = answer + 4 * sizeof(int32_t);
+
+			for(std::vector<Coordinates>::iterator it = path.begin();
+				it != path.end();
+				++it, ptr += 2 * sizeof(double)) 
+			{
+				memcpy(ptr, &(it->longitude), sizeof(double));
+				memcpy(ptr + sizeof(double), &(it->latitude), sizeof(double));
+			}
+
+			// Add touristic places
+			for(std::vector<TouristicPlace>::iterator it = touristicPlaces.begin();
+				it != touristicPlaces.end();
+				++it)
+			{
+				sizeType = it->type.size();
+				sizeTypeDetail = it->typeDetail.size();
+				sizeName = it->name.size();
+				sizeAddress = it->address.size();
+				sizeWorkingHours = it->workingHours.size();
+
+				memcpy(ptr, &sizeType, sizeof(int16_t));
+				memcpy(ptr + sizeof(int16_t), &sizeTypeDetail, sizeof(int16_t));
+				memcpy(ptr + sizeof(int16_t) * 2, &sizeName, sizeof(int16_t));
+				memcpy(ptr + sizeof(int16_t) * 3, &sizeAddress, sizeof(int16_t));
+				memcpy(ptr + sizeof(int16_t) * 4, &sizeWorkingHours, sizeof(int16_t));
+
+				ptr += sizeof(int16_t) * 5;
+
+				memcpy(ptr, &(it->location.longitude), sizeof(double));
+				memcpy(ptr + sizeof(double), &(it->location.latitude), sizeof(double));
+
+				std::cout << it->location.longitude << " " << it->location.latitude << std::endl;
+
+				ptr += 2 * sizeof(double);
+
+				memcpy(ptr, it->type.c_str(), sizeType * sizeof(char));
+				ptr += sizeType * sizeof(char);
+				memcpy(ptr, it->typeDetail.c_str(), sizeTypeDetail * sizeof(char));
+				ptr += sizeTypeDetail * sizeof(char);
+				memcpy(ptr, it->name.c_str(), sizeName * sizeof(char));
+				ptr += sizeName * sizeof(char);
+				memcpy(ptr, it->address.c_str(), sizeAddress * sizeof(char));
+				ptr += sizeAddress * sizeof(char);
+				memcpy(ptr, it->workingHours.c_str(), sizeWorkingHours * sizeof(char));
+				ptr += sizeWorkingHours * sizeof(char);
+			}
+
+			std::cout << "last : " << path[path.size() - 1].longitude << " " << path[path.size() - 1].latitude << std::endl; 
+
+			char* ret = new char[size];
+			memcpy(ret,answer,size);
+			delete[] answer;
+			std::string str(ret,size);
+			delete[] ret;
+			return str;
+		} else {
+			// Send error?
+		}
+	} // else send error?
+
+	return 0;
+}
+
 static void *clientRoutine(void* attr)
 {
 	//?
@@ -189,30 +307,49 @@ static void *clientRoutine(void* attr)
 	pthread_exit(NULL);
 }
 
-void startServer(Database *db)
+WebServer::WebServer(Database *mdb):
+	db(mdb)
 {
-	server webserver;
+
 	try {
 		// Set logging settings
         webserver.set_access_channels(websocketpp::log::alevel::all);
         webserver.clear_access_channels(websocketpp::log::alevel::frame_payload);
         webserver.init_asio();
+        webserver.set_message_handler(bind(&WebServer::on_message,this,::_1,::_2));
 
-        // Register our message handler
-        webserver.set_message_handler(bind(&on_message,&webserver,::_1,::_2));
-
-        webserver.listen(NET_PORT_NUMBER);
-
-        // Start the server accept loop
+        webserver.listen(80);
         webserver.start_accept();
-
-        // Start the ASIO io_service run loop
         webserver.run();
 	} catch (websocketpp::exception const & e) {
         std::cout << e.what() << std::endl;
     } catch (...) {
         std::cout << "other exception" << std::endl;
     }
+    
+
+}
+
+WebServer::~WebServer(){
+	std::cout << "FIN"<<std::endl;
+}
+
+void WebServer::on_message(websocketpp::connection_hdl hdl, server::message_ptr msg) {
+	std::cout << "JE PASSE ICI prout prout" <<std::endl;
+    std::cout << msg->get_payload() << std::endl;
+    std::cout << "on_message called with hdl: " << hdl.lock().get()
+          << " and message: " << msg->get_payload()
+          << std::endl;
+    std::string str = buildData(db);
+    std::cout<<"DATA:::::"<<std::endl<<str<<std::endl;
+    webserver.send(hdl, str, websocketpp::frame::opcode::BINARY);
+    std::cout<<"DATA ::: SENT"<<std::endl;
+}
+
+void startServer(Database *db)
+{
+	signal(SIGINT, siginthandler);
+	WebServer server(db);
 
 	/*int serverSocket, 
 		clientSocket;

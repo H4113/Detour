@@ -50,15 +50,20 @@ union PathRequest
 	};
 };
 
+class WebServer
+{
+	public:
+		WebServer(Database *db);
+		virtual ~WebServer();
+		void on_message(websocketpp::connection_hdl hdl, server::message_ptr msg);
+	protected:
+		Database *db;
+		server webserver;
+};
+
 void startServer(Database *db);
 
-void on_message(server* s, websocketpp::connection_hdl hdl, server::message_ptr msg) {
-    std::cout << msg->get_payload() << std::endl;
-    std::cout << "on_message called with hdl: " << hdl.lock().get()
-          << " and message: " << msg->get_payload()
-          << std::endl;
-    //s->send(hdl, msg->get_payload(), msg->get_opcode());
-}
 
+std::string buildData(void* attr);
 
 #endif // NETWORK_H
