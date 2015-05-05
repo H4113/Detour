@@ -203,8 +203,7 @@ State
 			tolat: getParameterByName('tolat'),
 			tolng: getParameterByName('tolng')
 		};
-		
-		console.log(params);
+
 		H.requestWay( params, function(path){drawPathOnMap(Map.map, path);},function(){});
 	});
 
