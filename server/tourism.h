@@ -26,7 +26,7 @@ struct TouristicPlace
 	Coordinates location;
 };
 
-bool BuildTouristicPath(const Path &resultPath, const std::vector<Coordinates> &initialPath, std::vector<Coordinates> &finalPath, std::vector<TouristicPlace> &places, const TouristicFilter &filter, Database *db);
+bool BuildTouristicPath(const Path &resultPath, const std::vector<Coordinates> &initialPath, std::vector<Coordinates> &finalPath, std::vector<TouristicPlace> &places, const TouristicFilter &filter, double maxDeviation, Database *db);
 
 /*
 class Tourism

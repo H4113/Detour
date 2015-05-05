@@ -53,7 +53,7 @@ class PathFinder
 void TestPathfinder(void);
 void TestPathfinderRealData(Database *db);
 
-bool PF_FindPath(const Coordinates &coordStart, const Coordinates &coordGoal, std::vector<Coordinates> &path, std::vector<struct TouristicPlace> &places, Database *database);
+bool PF_FindPath(const Coordinates &coordStart, const Coordinates &coordGoal, double maxDeviation, std::vector<Coordinates> &path, std::vector<struct TouristicPlace> &places, Database *database);
 
 #endif
 

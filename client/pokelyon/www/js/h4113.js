@@ -1,6 +1,39 @@
 
 var H = {
 
+	//todo : H.user.nananana, H.events.createEvent, etc...
+
+	//   USER RELATED
+	user : {
+		lastKnownLocation: {},
+
+		locationKnown: function() {
+			return this.lastKnownLocation.lat && this.lastKnownLocation.lng ;
+		},
+
+		updateLocation: function( a, b ) {
+			switch( arguments.length ) {
+			case 0:
+				throw 'H.user.updateLocation : at least one argument is required';
+				break;
+			case 1:
+				if( ! a.lat ) throw 'H.user.updateLocation : lat property is required';
+				if( ! a.lng ) throw 'H.user.updateLocation : lng property is required';
+				this.lastKnownLocation.lat = a.lat;
+				this.lastKnownLocation.lng = a.lng;
+			case 2:
+				this.lastKnownLocation.lat = a;
+				this.lastKnownLocation.lng = b;
+				break;
+			default:
+				throw 'H.user.updateLocation : invalid number of parameters.';
+				break;
+			}
+		}
+	},
+
+	//   JQUERY RELATED
+
 	jQueryMoveTopLeft: function(selector) {
 		var offy = $(selector).offset().top +1;
   		var offx = $(selector).offset().left +1;
@@ -10,6 +43,8 @@ var H = {
 	jQueryResetPos: function( selector ) {
 		$(selector).transition({y: 0, x: 0});
 	},
+
+	//   EVENTS
 
 	createEvent: function(name, properties) {
 		var evt = document.createEvent("Event");
@@ -23,7 +58,7 @@ var H = {
 	},
 
 	processData: function (obj){
-		alert("packet entier, taille: "+obj.buffer.byteLength);
+		//alert("packet entier, taille: "+obj.buffer.byteLength);
 		var data = obj.buffer;
 		if(obj.type == 1){ // type == 1 -> PATH sent
 			var obj2 = parseData(data);
@@ -42,7 +77,7 @@ var H = {
 			var abuffer = [];
 			var socketId = createInfo.socketId;
 			function readPackets(readInfo) {
-				alert("packet partiel, taille:"+readInfo.data.byteLength);
+				//alert("packet partiel, taille:"+readInfo.data.byteLength);
 				var prout = readHeader(readInfo.data);
 				//alert(prout.size);
 				magicTcpReceive(abuffer, readInfo.data, H.processData);
@@ -94,7 +129,7 @@ var H = {
 
 	requestWay: function( params, callback, error ) {
 
-		console.log(params);
+		//console.log(params);
 		
 		if( ! params.fromlat ) throw 'required fromlat param is missing.';
 		if( ! params.fromlng ) throw 'required fromlng param is missing.';
@@ -123,7 +158,7 @@ var H = {
 			//alert("prout");
 			gpscoord[0] = position.coords.latitude;
 			gpscoord[1] = position.coords.longitude;
-			console.log(buf);
+			//console.log(buf);
 			H.sendQuery(buf);
 		};
 
@@ -143,12 +178,12 @@ var H = {
 		return url;
 	},
 
-	go : function( lat, lng ) {
+	/*go : function( lat, lng ) {
 		//window.location.search = "?lat="+lat+"&lng="+lng+"#go";
 		window.location.search = this.objToUrl({'lat':lat,'lng':lng});
-	},
+	},*/
 
-	goFromTo : function( itinaryObj ) {
+	go : function( itinaryObj ) {
 		if( ! itinaryObj.fromlat ) throw 'requested fromlat parameter missing.';
 		if( ! itinaryObj.fromlng ) throw 'requested fromlng parameter missing.';
 		if( ! itinaryObj.tolat ) throw 'requested tolat parameter missing.';
