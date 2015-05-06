@@ -426,6 +426,8 @@ bool PF_FindPath(const Coordinates &coordStart, const Coordinates &coordGoal, in
 				path = finalPath;
 				FreePathResult(&resultPath);
 			}
+			else
+				places.clear();
 		}
 		else
 		{
