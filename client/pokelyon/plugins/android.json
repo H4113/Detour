@@ -9,19 +9,19 @@
                 "parents": {
                     "/*": [
                         {
-                            "xml": "<feature name=\"Socket\"><param name=\"android-package\" value=\"com.tlantic.plugins.socket.SocketPlugin\" /></feature>",
-                            "count": 1
-                        },
-                        {
-                            "xml": "<feature name=\"Whitelist\"><param name=\"android-package\" value=\"org.apache.cordova.whitelist.WhitelistPlugin\" /><param name=\"onload\" value=\"true\" /></feature>",
-                            "count": 1
-                        },
-                        {
                             "xml": "<feature name=\"WebSocket\"><param name=\"android-package\" value=\"com.ququplay.websocket.WebSocket\" /></feature>",
                             "count": 1
                         },
                         {
+                            "xml": "<feature name=\"Socket\"><param name=\"android-package\" value=\"com.tlantic.plugins.socket.SocketPlugin\" /></feature>",
+                            "count": 1
+                        },
+                        {
                             "xml": "<feature name=\"Globalization\"><param name=\"android-package\" value=\"org.apache.cordova.globalization.Globalization\" /></feature>",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"Whitelist\"><param name=\"android-package\" value=\"org.apache.cordova.whitelist.WhitelistPlugin\" /><param name=\"onload\" value=\"true\" /></feature>",
                             "count": 1
                         }
                     ],
@@ -60,7 +60,13 @@
         }
     },
     "installed_plugins": {
+        "com.ququplay.websocket.WebSocket": {
+            "PACKAGE_NAME": "com.h4113.pokelyon"
+        },
         "com.tlantic.plugins.socket": {
+            "PACKAGE_NAME": "com.h4113.pokelyon"
+        },
+        "cordova-plugin-globalization": {
             "PACKAGE_NAME": "com.h4113.pokelyon"
         },
         "cordova-plugin-whitelist": {
@@ -72,16 +78,10 @@
         "org.chromium.common": {
             "PACKAGE_NAME": "com.h4113.pokelyon"
         },
-        "org.chromium.socket": {
-            "PACKAGE_NAME": "com.h4113.pokelyon"
-        },
-        "com.ququplay.websocket.WebSocket": {
-            "PACKAGE_NAME": "com.h4113.pokelyon"
-        },
         "org.chromium.iossocketscommon": {
             "PACKAGE_NAME": "com.h4113.pokelyon"
         },
-        "cordova-plugin-globalization": {
+        "org.chromium.socket": {
             "PACKAGE_NAME": "com.h4113.pokelyon"
         }
     },
