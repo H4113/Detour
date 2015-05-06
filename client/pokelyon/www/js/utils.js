@@ -120,7 +120,7 @@ function drawPathOnMap(map, path){
 		smoothFactor: 1 });
 	map_path.addTo(map);
 
-	//map.fitBounds(polyline.getBounds());
+	map.setView(map_start.getLatLng());
 }
 
 function drawTourismOnMap(map, obj){

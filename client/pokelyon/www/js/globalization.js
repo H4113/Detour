@@ -25,7 +25,7 @@ function initLocale() {
 
 function successLocale() 
 {
-	alert ("language: " + Locale);
+	//alert ("language: " + Locale);
 	$.getJSON("lang.json", function(lang)
 	{
 
@@ -52,6 +52,6 @@ function successLocale()
 
 function errorLocale() 
 {
-	alert ("Locale error");
+	//alert ("Locale error");
 	Locale = "en";
 }

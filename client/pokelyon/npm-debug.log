@@ -1,0 +1,199 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/usr/local/bin/node', '/usr/local/bin/npm', 'install', 'ws' ]
+2 info using npm@2.7.4
+3 info using node@v0.12.2
+4 silly cache add args [ 'ws', null ]
+5 verbose cache add spec ws
+6 silly cache add parsed spec { raw: 'ws',
+6 silly cache add   scope: null,
+6 silly cache add   name: 'ws',
+6 silly cache add   rawSpec: '',
+6 silly cache add   spec: '*',
+6 silly cache add   type: 'range' }
+7 verbose addNamed ws@*
+8 silly addNamed semver.valid null
+9 silly addNamed semver.validRange *
+10 silly addNameRange { name: 'ws', range: '*', hasData: false }
+11 silly mapToRegistry name ws
+12 silly mapToRegistry using default registry
+13 silly mapToRegistry registry https://registry.npmjs.org/
+14 silly mapToRegistry uri https://registry.npmjs.org/ws
+15 verbose addNameRange registry:https://registry.npmjs.org/ws not in flight; fetching
+16 verbose request uri https://registry.npmjs.org/ws
+17 verbose request no auth needed
+18 info attempt registry request try #1 at 10:29:34
+19 verbose request id d4af59c6afe7901a
+20 verbose etag "1OZRLERJRW9UQ7AXEIBXGM6YX"
+21 http request GET https://registry.npmjs.org/ws
+22 http 200 https://registry.npmjs.org/ws
+23 silly get cb [ 200,
+23 silly get   { server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
+23 silly get     etag: '"2TM96WZY830QTBIN1912RCDU6"',
+23 silly get     'content-type': 'application/json',
+23 silly get     'cache-control': 'max-age=60',
+23 silly get     'content-length': '70092',
+23 silly get     'accept-ranges': 'bytes',
+23 silly get     date: 'Wed, 06 May 2015 08:29:34 GMT',
+23 silly get     via: '1.1 varnish',
+23 silly get     age: '5',
+23 silly get     connection: 'keep-alive',
+23 silly get     'x-served-by': 'cache-ams4145-AMS',
+23 silly get     'x-cache': 'HIT',
+23 silly get     'x-cache-hits': '1',
+23 silly get     'x-timer': 'S1430900974.713650,VS0,VE0',
+23 silly get     vary: 'Accept' } ]
+24 verbose get saving ws to /Users/remimartin/.npm/registry.npmjs.org/ws/.cache.json
+25 silly addNameRange number 2 { name: 'ws', range: '*', hasData: true }
+26 silly addNameRange versions [ 'ws',
+26 silly addNameRange   [ '0.2.6',
+26 silly addNameRange     '0.2.8',
+26 silly addNameRange     '0.2.9',
+26 silly addNameRange     '0.3.0',
+26 silly addNameRange     '0.3.1',
+26 silly addNameRange     '0.3.2',
+26 silly addNameRange     '0.3.3',
+26 silly addNameRange     '0.3.4',
+26 silly addNameRange     '0.3.4-2',
+26 silly addNameRange     '0.3.5',
+26 silly addNameRange     '0.3.5-2',
+26 silly addNameRange     '0.3.5-3',
+26 silly addNameRange     '0.3.5-4',
+26 silly addNameRange     '0.3.6',
+26 silly addNameRange     '0.3.7',
+26 silly addNameRange     '0.3.8',
+26 silly addNameRange     '0.3.9',
+26 silly addNameRange     '0.4.0',
+26 silly addNameRange     '0.4.1',
+26 silly addNameRange     '0.4.2',
+26 silly addNameRange     '0.4.3',
+26 silly addNameRange     '0.4.5',
+26 silly addNameRange     '0.4.6',
+26 silly addNameRange     '0.4.7',
+26 silly addNameRange     '0.4.8',
+26 silly addNameRange     '0.4.9',
+26 silly addNameRange     '0.4.10',
+26 silly addNameRange     '0.4.11',
+26 silly addNameRange     '0.4.12',
+26 silly addNameRange     '0.4.13',
+26 silly addNameRange     '0.4.14',
+26 silly addNameRange     '0.4.15',
+26 silly addNameRange     '0.4.16',
+26 silly addNameRange     '0.4.17',
+26 silly addNameRange     '0.4.18',
+26 silly addNameRange     '0.4.19',
+26 silly addNameRange     '0.4.20',
+26 silly addNameRange     '0.4.21',
+26 silly addNameRange     '0.4.22',
+26 silly addNameRange     '0.4.23',
+26 silly addNameRange     '0.4.24',
+26 silly addNameRange     '0.4.25',
+26 silly addNameRange     '0.4.27',
+26 silly addNameRange     '0.4.28',
+26 silly addNameRange     '0.4.29',
+26 silly addNameRange     '0.4.30',
+26 silly addNameRange     '0.4.31',
+26 silly addNameRange     '0.4.32',
+26 silly addNameRange     '0.5.0',
+26 silly addNameRange     '0.6.0',
+26 silly addNameRange     '0.6.1',
+26 silly addNameRange     '0.6.2',
+26 silly addNameRange     '0.6.3',
+26 silly addNameRange     '0.6.4',
+26 silly addNameRange     '0.6.5',
+26 silly addNameRange     '0.7.0',
+26 silly addNameRange     '0.7.1' ] ]
+27 verbose addNamed ws@0.7.1
+28 silly addNamed semver.valid 0.7.1
+29 silly addNamed semver.validRange 0.7.1
+30 silly mapToRegistry name ws
+31 silly mapToRegistry using default registry
+32 silly mapToRegistry registry https://registry.npmjs.org/
+33 silly mapToRegistry uri https://registry.npmjs.org/ws
+34 verbose addRemoteTarball https://registry.npmjs.org/ws/-/ws-0.7.1.tgz not in flight; adding
+35 verbose addRemoteTarball [ 'https://registry.npmjs.org/ws/-/ws-0.7.1.tgz',
+35 verbose addRemoteTarball   '8f1c7864ca08081be3cd0ac330df0d29c5fcd0da' ]
+36 info retry fetch attempt 1 at 10:29:34
+37 info attempt registry request try #1 at 10:29:34
+38 http fetch GET https://registry.npmjs.org/ws/-/ws-0.7.1.tgz
+39 http fetch 200 https://registry.npmjs.org/ws/-/ws-0.7.1.tgz
+40 silly fetchAndShaCheck shasum 8f1c7864ca08081be3cd0ac330df0d29c5fcd0da
+41 verbose addTmpTarball /var/folders/20/yrzcjgdn2hl66f2q857f81br0000gn/T/npm-1894-df00b4d7/registry.npmjs.org/ws/-/ws-0.7.1.tgz not in flight; adding
+42 verbose addTmpTarball already have metadata; skipping unpack for ws@0.7.1
+43 silly cache afterAdd ws@0.7.1
+44 verbose afterAdd /Users/remimartin/.npm/ws/0.7.1/package/package.json not in flight; writing
+45 verbose afterAdd /Users/remimartin/.npm/ws/0.7.1/package/package.json written
+46 silly install resolved [ { author:
+46 silly install resolved      { name: 'Einar Otto Stangvik',
+46 silly install resolved        email: 'einaros@gmail.com',
+46 silly install resolved        url: 'http://2x.io' },
+46 silly install resolved     name: 'ws',
+46 silly install resolved     description: 'simple to use, blazing fast and thoroughly tested websocket client, server and console for node.js, up-to-date against RFC-6455',
+46 silly install resolved     version: '0.7.1',
+46 silly install resolved     license: 'MIT',
+46 silly install resolved     keywords:
+46 silly install resolved      [ 'Hixie',
+46 silly install resolved        'HyBi',
+46 silly install resolved        'Push',
+46 silly install resolved        'RFC-6455',
+46 silly install resolved        'WebSocket',
+46 silly install resolved        'WebSockets',
+46 silly install resolved        'real-time' ],
+46 silly install resolved     repository: { type: 'git', url: 'git://github.com/websockets/ws.git' },
+46 silly install resolved     scripts: { test: 'make test' },
+46 silly install resolved     dependencies:
+46 silly install resolved      { options: '>=0.0.5',
+46 silly install resolved        ultron: '1.0.x',
+46 silly install resolved        bufferutil: '1.0.x',
+46 silly install resolved        'utf-8-validate': '1.0.x' },
+46 silly install resolved     optionalDependencies: { bufferutil: '1.0.x', 'utf-8-validate': '1.0.x' },
+46 silly install resolved     devDependencies:
+46 silly install resolved      { ansi: '0.3.x',
+46 silly install resolved        benchmark: '0.3.x',
+46 silly install resolved        'expect.js': '0.3.x',
+46 silly install resolved        mocha: '2.0.x',
+46 silly install resolved        should: '4.3.x',
+46 silly install resolved        tinycolor: '0.0.x' },
+46 silly install resolved     browser: './lib/browser.js',
+46 silly install resolved     component: { scripts: [Object] },
+46 silly install resolved     gypfile: true,
+46 silly install resolved     gitHead: '608df82a333de45905f05ca60f18a625b4c3293b',
+46 silly install resolved     bugs: { url: 'https://github.com/websockets/ws/issues' },
+46 silly install resolved     homepage: 'https://github.com/websockets/ws',
+46 silly install resolved     _id: 'ws@0.7.1',
+46 silly install resolved     _shasum: '8f1c7864ca08081be3cd0ac330df0d29c5fcd0da',
+46 silly install resolved     _from: 'ws@*',
+46 silly install resolved     _npmVersion: '2.3.0',
+46 silly install resolved     _nodeVersion: '0.10.35',
+46 silly install resolved     _npmUser: { name: '3rdeden', email: 'npm@3rd-Eden.com' },
+46 silly install resolved     maintainers: [ [Object], [Object], [Object] ],
+46 silly install resolved     dist:
+46 silly install resolved      { shasum: '8f1c7864ca08081be3cd0ac330df0d29c5fcd0da',
+46 silly install resolved        tarball: 'http://registry.npmjs.org/ws/-/ws-0.7.1.tgz' },
+46 silly install resolved     directories: {},
+46 silly install resolved     _resolved: 'https://registry.npmjs.org/ws/-/ws-0.7.1.tgz' } ]
+47 info install ws@0.7.1 into /Users/remimartin/Documents/git/NetworkProject/client/pokelyon
+48 info installOne ws@0.7.1
+49 verbose installOne of ws to /Users/remimartin/Documents/git/NetworkProject/client/pokelyon not in flight; installing
+50 warn locking Error: EACCES, open '/Users/remimartin/.npm/_locks/ws-d3714e13a200c6ab.lock'
+50 warn locking     at Error (native)
+50 warn locking  /Users/remimartin/.npm/_locks/ws-d3714e13a200c6ab.lock failed { [Error: EACCES, open '/Users/remimartin/.npm/_locks/ws-d3714e13a200c6ab.lock']
+50 warn locking   errno: -13,
+50 warn locking   code: 'EACCES',
+50 warn locking   path: '/Users/remimartin/.npm/_locks/ws-d3714e13a200c6ab.lock' }
+51 verbose stack Error: Attempt to unlock /Users/remimartin/Documents/git/NetworkProject/client/pokelyon/node_modules/ws, which hasn't been locked
+51 verbose stack     at unlock (/usr/local/lib/node_modules/npm/lib/utils/locker.js:66:11)
+51 verbose stack     at cb (/usr/local/lib/node_modules/npm/lib/install.js:1004:5)
+51 verbose stack     at /usr/local/lib/node_modules/npm/lib/install.js:1008:20
+51 verbose stack     at /usr/local/lib/node_modules/npm/lib/utils/locker.js:40:9
+51 verbose stack     at cb (/usr/local/lib/node_modules/npm/node_modules/lockfile/lockfile.js:149:38)
+51 verbose stack     at /usr/local/lib/node_modules/npm/node_modules/lockfile/lockfile.js:177:38
+51 verbose stack     at FSReqWrap.oncomplete (fs.js:95:15)
+52 verbose cwd /Users/remimartin/Documents/git/NetworkProject/client/pokelyon
+53 error Darwin 14.1.0
+54 error argv "/usr/local/bin/node" "/usr/local/bin/npm" "install" "ws"
+55 error node v0.12.2
+56 error npm  v2.7.4
+57 error Attempt to unlock /Users/remimartin/Documents/git/NetworkProject/client/pokelyon/node_modules/ws, which hasn't been locked
+58 error If you need help, you may report this error at:
+58 error     <https://github.com/npm/npm/issues>
+59 verbose exit [ 1, true ]
