@@ -82,14 +82,13 @@
         "com.ququplay.websocket.WebSocket": {
             "PACKAGE_NAME": "com.h4113.pokelyon"
         },
-<<<<<<< HEAD
         "plugin.socket.io": {
-=======
+			"PACKAGE_NAME": "com.h4113.pokelyon"
+		},
         "org.chromium.iossocketscommon": {
             "PACKAGE_NAME": "com.h4113.pokelyon"
         },
         "cordova-plugin-globalization": {
->>>>>>> master
             "PACKAGE_NAME": "com.h4113.pokelyon"
         }
     },

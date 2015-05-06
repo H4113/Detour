@@ -21,9 +21,9 @@
         "com.ququplay.websocket.WebSocket": {
             "PACKAGE_NAME": "com.h4113.pokelyon"
         },
-<<<<<<< HEAD
         "plugin.socket.io": {
-=======
+            "PACKAGE_NAME": "com.h4113.pokelyon"
+        },
         "com.tlantic.plugins.socket": {
             "PACKAGE_NAME": "com.h4113.pokelyon"
         },
@@ -43,7 +43,6 @@
             "PACKAGE_NAME": "com.h4113.pokelyon"
         },
         "org.chromium.socket": {
->>>>>>> master
             "PACKAGE_NAME": "com.h4113.pokelyon"
         }
     },
