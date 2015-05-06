@@ -273,11 +273,11 @@ $("#itinaryForm").submit( function() {
 	var minutes = parseInt(document.getElementById('minutes').value);
 
 	if(!hours) {
-		hours = 23;
+		hours = 1;
 		lastHours = hours;
 	}
 	if(!minutes) {
-		minutes = 0;
+		minutes = 30;
 		lastMinutes = minutes;
 	}
 

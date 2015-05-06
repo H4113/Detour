@@ -4,8 +4,8 @@ var bool_gps = true;
 var lastPatrimony = true;
 var lastGastronomy = true;
 var lastAccomodity = true;
-var lastHours = 23;
-var lastMinutes = 0;
+var lastHours = 1;
+var lastMinutes = 30;
 
 ///////////////////////////////////////////////////////////////////////////////////
 //                               STATE
