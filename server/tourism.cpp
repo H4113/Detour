@@ -86,10 +86,12 @@ static double measureResult(const ResultNode *result)
 	return ret;
 }
 
+/*
 static double dabs(double a)
 {
 	return a < 0 ? -a : a;
 }
+*/
 
 bool BuildTouristicPath(const Path &resultPath, const std::vector<Coordinates> &initialPath, std::vector<Coordinates> &finalPath, std::vector<TouristicPlace> &places, const TouristicFilter &filter, int duration, Database *db)
 {
@@ -127,9 +129,8 @@ bool BuildTouristicPath(const Path &resultPath, const std::vector<Coordinates> &
 		const Coordinates **points;
 		bool error = false;
 		double maxDuration = duration;
-		double referenceMeasure = measureResult(resultPath.result);
-		double discrepancyDuration = 0;
-		double prevDiscrepancy;
+		double currentDuration = 0;
+		double prevDuration;
 		Path newPath;
 		unsigned int computedPlacesCount;
 		std::vector<Path> generatedPaths;
@@ -151,7 +152,6 @@ bool BuildTouristicPath(const Path &resultPath, const std::vector<Coordinates> &
 
 			// Choose only the closest ones
 			places.clear();
-			places.resize(computedPlacesCount);
 			i = 0;
 			for(std::multimap<double, TouristicClosestNode>::iterator it = orderedPlaces.begin();	
 				it != orderedPlaces.end() && i < computedPlacesCount;
@@ -161,7 +161,7 @@ bool BuildTouristicPath(const Path &resultPath, const std::vector<Coordinates> &
 				{
 					double dist = squareDist2(*(resultPath.realStart), it->second.place->location);
 					orderedPlacesFromStart.insert(std::pair<double, TouristicClosestNode*>(dist, &(it->second)));
-					places[i] = *(it->second.place);
+					places.push_back(*(it->second.place));
 				}
 			}
 		
@@ -209,19 +209,16 @@ bool BuildTouristicPath(const Path &resultPath, const std::vector<Coordinates> &
 			if(error)
 				return false;
 		
-			prevDiscrepancy = discrepancyDuration;	
-			discrepancyDuration = orderedPlacesFromStart.size() * STOP_TIME + (measureResult(newPath.result) - referenceMeasure) / VELOCITY;
+			prevDuration = currentDuration;	
+			currentDuration = orderedPlacesFromStart.size() * STOP_TIME + measureResult(newPath.result) / VELOCITY;
 			
-			std::cout << "Reference: " << referenceMeasure << std::endl;
-			std::cout << "Discrepancy: " << discrepancyDuration << std::endl;
-			
-			if(dabs(discrepancyDuration) < maxDuration)
+			if(currentDuration < maxDuration)
 				computedPlacesCount += PACE;
 			else
 				computedPlacesCount = (computedPlacesCount < PACE ? 0 : computedPlacesCount - PACE);
 
 			generatedPaths.push_back(newPath);
-		} while(computedPlacesCount && computedPlacesCount <  MAX_TOURISTIC_PLACES && (prevDiscrepancy == 0 || (prevDiscrepancy - maxDuration) * (discrepancyDuration - maxDuration) > 0));
+		} while(computedPlacesCount && computedPlacesCount <  MAX_TOURISTIC_PLACES && (prevDuration == 0 || (prevDuration - maxDuration) * (currentDuration - maxDuration) > 0));
 
 		if(!computedPlacesCount)
 		
