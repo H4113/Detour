@@ -1,9 +1,9 @@
 {
 	"0" : {
-		"en" : "Menu",
-		"fr" : "Menu",
-		"es" : "Menú",
-		"de" : "Menü"
+		"en" : "About",
+		"fr" : "A propos",
+		"es" : "XXX",
+		"de" : "XXX"
 	},
 	"1" : {
 		"en" : "Route",
@@ -71,11 +71,30 @@
 		"es" : "Tiempo disponible",
 		"de" : "Zeit nicht"
 	},
-	"Dtr": {
+	"Dtr" : {
 		"en" : "Detour",
 		"fr" : "Detour",
 		"es" : "Detour",
 		"de" : "Detour"
+	},
+	"Ctbs": {
+		"en" : "Contributors",
+		"fr" : "Contributeurs",
+		"es" : "XXX",
+		"de" : "XXX"
+	},
+	"cprght": {
+		"en" : "Attribution",
+		"fr" : "Sources",
+		"es" : "XXX",
+		"de" : "XXX"
+	},
+	"title": {
+		"en" : "Detour - so close...",
+		"fr" : "Detour - si près...",
+		"es" : "Detour",
+		"de" : "Detour"
 	}
+
 
 }
