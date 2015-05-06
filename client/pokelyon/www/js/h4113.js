@@ -185,6 +185,8 @@ var H = {
 		if(!(typeof(params.hours) === 'number' )) throw 'required hours param is missing.';
 		if(!(typeof(params.minutes) === 'number' )) throw 'required minutes param is missing.';
 
+		params.onMap = typeof params.onMap !== 'undefined' ? params.onMap : true;
+
 		var buf = new ArrayBuffer(8+4*8);
 		var type_req = new Int16Array(buf,0,1);
 		var type_junk = new Int16Array(buf,2,1);
@@ -203,16 +205,16 @@ var H = {
 
 		//Change when time is available
 		type_junk2[0] = params.hours*60 + params.minutes;
-
-		console.log(type_junk2);
 		
 		var geo_sendQuery = function(position) {
 			gpscoord[0] = position.coords.latitude;
 			gpscoord[1] = position.coords.longitude;
-			H.sendQuery(buf);
 		};
 
-		navigator.geolocation.getCurrentPosition(geo_sendQuery, function() {});
+		if(params.onMap) {
+			navigator.geolocation.getCurrentPosition(geo_sendQuery, function() {});	
+		}
+		H.sendQuery(buf);
 	},
 
 	objToUrl : function( obj ) {
@@ -241,7 +243,7 @@ var H = {
 		window.location.hash = '#go' + this.objToUrl(itinaryObj);
 	},
 
-	makeItinaryObj: function( fromlat, fromlng, tolat, tolng, patrimony, gastronomy, accomodity, hours, minutes) {
+	makeItinaryObj: function( fromlat, fromlng, tolat, tolng, patrimony, gastronomy, accomodity, hours, minutes, onMap) {
 		return {
 			fromlat: fromlat,
 			fromlng: fromlng,
@@ -251,7 +253,8 @@ var H = {
 			gastronomy: gastronomy,
 			accomodity: accomodity,
 			hours: hours,
-			minutes: minutes
+			minutes: minutes,
+			onMap : onMap
 		};
 	}
 
@@ -270,7 +273,7 @@ $("#itinaryForm").submit( function() {
 	var minutes = parseInt(document.getElementById('minutes').value);
 
 	if(!hours) {
-		hours = 0;
+		hours = 23;
 	}
 	if(!minutes) {
 		minutes = 0;
@@ -313,7 +316,8 @@ $("#itinaryForm").submit( function() {
 			addressToCoordinates(to, function(coordsTo){
 				var itinary = H.makeItinaryObj(coordsFrom.latitude,coordsFrom.longitude,
 												coordsTo.latitude,  coordsTo.longitude, 
-												patrimony, gastronomy, accomodity, hours, minutes);
+												patrimony, gastronomy, accomodity, hours, 
+												minutes, false);
 				H.go(itinary);
 			});
 		});
