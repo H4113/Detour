@@ -23,7 +23,7 @@ var H = {
 	},
 
 	processData: function (obj){
-		alert("packet entier, taille: "+obj.buffer.byteLength);
+		//alert("packet entier, taille: "+obj.buffer.byteLength);
 		var data = obj.buffer;
 		if(obj.type == 1){ // type == 1 -> PATH sent
 			var obj2 = parseData(data);
@@ -42,9 +42,9 @@ var H = {
 			var abuffer = [];
 			var socketId = createInfo.socketId;
 			function readPackets(readInfo) {
-				alert("packet partiel, taille:"+readInfo.data.byteLength);
+				//alert("packet partiel, taille:"+readInfo.data.byteLength);
 				var prout = readHeader(readInfo.data);
-				alert(prout.size);
+				//alert(prout.size);
 				magicTcpReceive(abuffer, readInfo.data, H.processData);
 				chrome.socket.read(socketId, null, readPackets);
 			}
@@ -65,7 +65,7 @@ var H = {
 					});
 				} else {
 					alert("pas de serveur");
-					// Cannot connect
+					// Cannot connectError during 
 					// Do something smart
 				}
 
@@ -76,16 +76,32 @@ var H = {
 
 	// --> WebSocket is the new black
 	sendMessage: function( message, callback, error ) {
-		//ws = new WebSocket('ws://151.80.143.42:4853', 'tcp');
-		var ws = new WebSocket('ws://echo.websocket.org');
-		ws.onopen = function() {
+		//console.log("ICI"+message);
+		var abuffer = [];
+		//var ws = new WebSocket('ws://echo.websocket.org');
+		var ws = new WebSocket('ws://151.80.143.42:80');
+		
+		ws.onopen = function (event) {
+			alert("caca lauwl ta soeur");
 			ws.send( message );
 		};
 
 		ws.onmessage = function(evt) {
-			console.log(evt.data);
-			alert( "answer : "+evt.data);
+			//console.log(evt.data);
+			alert( "answer  SIZE ");
+			var arrayBuffer;
+			var fileReader = new FileReader();
+			fileReader.onload = function() {
+				arrayBuffer = this.result;
+				magicTcpReceive(abuffer, arrayBuffer, H.processData);
+				alert( "end");
+			};
+			fileReader.readAsArrayBuffer(evt.data);
 		};
+
+		ws.onfragment = function(evt) {
+			alert("prout");
+		}
 
 		ws.onclose = function() {
 			alert('connection closed');

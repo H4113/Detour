@@ -10,7 +10,7 @@
     <content src="index.html" />
     <plugin name="cordova-plugin-whitelist" version="1" />
     <access origin="*" />
-    <!--<access origin="ws://192.168.1.199:6666" />-->
+    <access origin="ws://151.80.143.42:80" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
     <allow-intent href='ws://*'/>

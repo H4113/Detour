@@ -19,6 +19,10 @@
                         {
                             "xml": "<feature name=\"WebSocket\"><param name=\"android-package\" value=\"com.ququplay.websocket.WebSocket\" /></feature>",
                             "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"SocketIO\"><param name=\"android-package\" value=\"plugin.socket.io.SocketIO\" /></feature>",
+                            "count": 1
                         }
                     ],
                     "/widget": [
@@ -72,6 +76,9 @@
             "PACKAGE_NAME": "com.h4113.pokelyon"
         },
         "com.ququplay.websocket.WebSocket": {
+            "PACKAGE_NAME": "com.h4113.pokelyon"
+        },
+        "plugin.socket.io": {
             "PACKAGE_NAME": "com.h4113.pokelyon"
         }
     },

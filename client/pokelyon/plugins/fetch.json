@@ -63,5 +63,13 @@
         },
         "is_top_level": true,
         "variables": {}
+    },
+    "plugin.socket.io": {
+        "source": {
+            "type": "registry",
+            "id": "plugin.socket.io"
+        },
+        "is_top_level": true,
+        "variables": {}
     }
 }
