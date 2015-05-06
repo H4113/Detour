@@ -7,6 +7,7 @@
 var net = require('net');
 var fs = require('fs');
 var events = require('events');
+var WebSocket = require('ws')
 var eventclient = new events.EventEmitter();
 
 // hack to avoid the error "alert is not defined"
@@ -69,7 +70,7 @@ var option_nojson = false;
 function getData(){
 	// GPS coords:
 	//var datagps = [45.760574,4.8593929999999546,45.7514164745,4.82062964108];
-	var datagps = [45.783995, 4.871559, 45.7514164745,4.82062964108];
+	var datagps = [45.782741199999996695169102167711, 4.873665800000000380975961888907, 45.782249782982248120788426604122, 4.878101348876953125000000000000];
 	var buf = new ArrayBuffer(8+8*datagps.length);
 	var sz = new Uint16Array(buf, 0, 4);
 	sz[0] = 0;
@@ -146,6 +147,51 @@ function launchClient(id){
 
 }
 
+function launchClientWS(id){
+	var url = 'ws://'+IP+'/';
+	console.log('Try '+url);
+	var client = new WebSocket(url);
+	var abuffer = [];
+	
+	var starttime;
+	var endstate = 0;
+
+	
+	client.on('open', function () {
+		console.log('Connected to '+IP+":"+PORT);
+		
+		var data = getData();
+		data = toBuffer(data);
+		try {
+			client.send(data);
+			starttime = process.hrtime();  
+		} catch(e) {
+			console.log("EXCEPTION: "+e);
+		}
+		
+		client.on('message', function (data) {
+			magicTcpReceive(abuffer, toArrayBuffer(data),processData );
+			if(abuffer.length == 0){
+				eventclient.emit('time',id,process.hrtime(starttime));
+				eventclient.emit('end',id,endstate);
+			}
+		}); 
+		
+		client.on('close', function () {
+			eventclient.emit('end',id,endstate);
+			console.log('Connection closed');
+		}); 
+		
+		client.on('error', function(e) {
+			if(endstate == 0)
+				endstate = 1;
+			console.log('ERROR '+e);
+		});
+		
+	});
+
+}
+
 function showHelp(){
 	console.log("Usage:");
 	console.log("\tnode emulate.js <nb client>");
@@ -194,6 +240,7 @@ function main(){
 				bench[nbclient] = [];
 			bench[nbclient].push(databenchmark);
 			objtofile(bench,"data/benchmark.json");
+			//process.exit(0);
 		}
 	});
 	
@@ -207,11 +254,9 @@ function main(){
 	console.log('launch '+nbclient+' client(s)');
 	for(var i=0;i<nbclient;++i){
 		databenchmark[i] = {state:-1,time:0};
-		launchClient(i);
+		launchClientWS(i);
 	}
 
 }
-
-
 
 main();
