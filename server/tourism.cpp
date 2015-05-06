@@ -133,7 +133,6 @@ bool BuildTouristicPath(const Path &resultPath, const std::vector<Coordinates> &
 		double prevDuration;
 		Path newPath;
 		unsigned int computedPlacesCount;
-		std::vector<Path> generatedPaths;
 
 		// Find the minimal distance between each place and all the intersections
 		for(std::vector<TouristicPlace>::const_iterator it = touristicPlaces.begin();
@@ -149,6 +148,8 @@ bool BuildTouristicPath(const Path &resultPath, const std::vector<Coordinates> &
 		do
 		{
 			unsigned int oldOrderedSize = orderedPlacesFromStart.size();
+
+			std::cout << "LOOP" << std::endl;
 
 			// Choose only the closest ones
 			places.clear();
@@ -177,8 +178,11 @@ bool BuildTouristicPath(const Path &resultPath, const std::vector<Coordinates> &
 				points[i] = &(it->second->place->location);
 			}
 
+			std::cout << "COMPUTED: " << computedPlacesCount << std::endl;
+
 			// Create subpaths
-			for(i = 0; i < 1 + computedPlacesCount && !error; ++i)
+			newPath.result = 0;
+			for(i = 0; i < 1 + orderedPlacesFromStart.size() && !error; ++i)
 			{
 				Path subpath;
 				if(!PathFinder::Astar(*(points[i]), *(points[i+1]), i == 0 ? newPath : subpath))
@@ -217,33 +221,21 @@ bool BuildTouristicPath(const Path &resultPath, const std::vector<Coordinates> &
 			else
 				computedPlacesCount = (computedPlacesCount < PACE ? 0 : computedPlacesCount - PACE);
 
-			generatedPaths.push_back(newPath);
 		} while(computedPlacesCount && computedPlacesCount <  MAX_TOURISTIC_PLACES && (prevDuration == 0 || (prevDuration - maxDuration) * (currentDuration - maxDuration) > 0));
 
 		if(!computedPlacesCount)
 		
 		{
-			for(std::vector<Path>::iterator it = generatedPaths.begin();
-				it != generatedPaths.end();
-				++it)
-				FreePathResult(&(*it));
 			return false;
 		}
 
 		finalPath.clear();
 		if(!PathFinder::BuildPath(newPath, finalPath))
 		{
-			for(std::vector<Path>::iterator it = generatedPaths.begin();
-				it != generatedPaths.end();
-				++it)
-				FreePathResult(&(*it));
 			return false;
 		}
-		for(std::vector<Path>::iterator it = generatedPaths.begin();
-			it != generatedPaths.end();
-			++it)
-			FreePathResult(&(*it));
 
+		FreePathResult(&newPath);
 		return true;
 	}
 	else 
