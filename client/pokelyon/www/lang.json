@@ -46,5 +46,23 @@
 		"fr" : "Non",
 		"es" : "No",
 		"de" : "Nein"
+	},
+	"6" : {
+		"en" : "Gastronomy",
+		"fr" : "Gastronomie",
+		"es" : "Gastronomía",
+		"de" : "Gastronomie"
+	},
+	"7" : {
+		"en" : "Accomodity",
+		"fr" : "Hébergement",
+		"es" : "Alojamiento",
+		"de" : "Unterkunft"
+	},
+	"8" : {
+		"en" : "Patrimony",
+		"fr" : "Patrimoine",
+		"es" : "Patrimonio",
+		"de" : "Tourismus"
 	}
 }

@@ -1,4 +1,4 @@
-var Locale = "de";
+var Locale = "fr";
 var textLang = $(".lang");
 var imgLang = $("img");
 
