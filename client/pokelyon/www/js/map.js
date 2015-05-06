@@ -1,6 +1,11 @@
 var circlePosUser = null;
 var interval_GPS;
 var bool_gps = true;
+var lastPatrimony = true;
+var lastGastronomy = true;
+var lastAccomodity = true;
+var lastHours = 23;
+var lastMinutes = 0;
 
 ///////////////////////////////////////////////////////////////////////////////////
 //                               STATE
@@ -119,7 +124,13 @@ document.addEventListener('map-created', function(e) {
 			 	H.user.lastKnownLocation.lat,
 			 	H.user.lastKnownLocation.lng,
 			 	click.latlng.lat,
-			 	click.latlng.lng))
+			 	click.latlng.lng,
+			 	lastPatrimony,
+			 	lastGastronomy,
+			 	lastAccomodity,
+			 	lastHours,
+			 	lastMinutes,
+			 	false))
 			 	+"' class='gps-btn'>Aller ici</a>")
 			 .openOn(e.Map.map);
 		}

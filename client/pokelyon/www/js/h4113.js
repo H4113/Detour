@@ -265,18 +265,20 @@ $("#itinaryForm").submit( function() {
 	var from = document.getElementById('from').value;
 	var to = document.getElementById('to').value;
 
-	var gastro = document.getElementById('filter-food').checked ? 1 : 0;
-	var heberg = document.getElementById('filter-night').checked ? 1 : 0;
-	var patrim = document.getElementById('filter-tourism').checked ? 1 : 0;
+	lastGastronomy = document.getElementById('filter-food').checked ? 1 : 0;
+	lastAccomodity = document.getElementById('filter-night').checked ? 1 : 0;
+	lastPatrimony = document.getElementById('filter-tourism').checked ? 1 : 0;
 
 	var hours = parseInt(document.getElementById('hours').value);
 	var minutes = parseInt(document.getElementById('minutes').value);
 
 	if(!hours) {
 		hours = 23;
+		lastHours = hours;
 	}
 	if(!minutes) {
 		minutes = 0;
+		lastMinutes = minutes;
 	}
 
 	var isOk = true;
@@ -305,7 +307,7 @@ $("#itinaryForm").submit( function() {
 		removeAlert('To');
 	}
 	if(isOk) {
-		convertFields(from, to, patrim, gastro, heberg, hours, minutes);	
+		convertFields(from, to, lastPatrimony, lastGastronomy, lastAccomodity, hours, minutes);	
 	}
 	return false;
 
