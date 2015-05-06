@@ -13,6 +13,9 @@
         "com.tlantic.plugins.socket": {
             "PACKAGE_NAME": "com.h4113.pokelyon"
         },
+        "cordova-plugin-globalization": {
+            "PACKAGE_NAME": "com.h4113.pokelyon"
+        },
         "cordova-plugin-whitelist": {
             "PACKAGE_NAME": "com.h4113.pokelyon"
         },
@@ -26,9 +29,6 @@
             "PACKAGE_NAME": "com.h4113.pokelyon"
         },
         "org.chromium.socket": {
-            "PACKAGE_NAME": "com.h4113.pokelyon"
-        },
-        "cordova-plugin-globalization": {
             "PACKAGE_NAME": "com.h4113.pokelyon"
         }
     },
