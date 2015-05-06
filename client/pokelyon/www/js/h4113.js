@@ -49,15 +49,27 @@ var H = {
 
 	//   EVENTS
 
-	createEvent: function(name, properties) {
-		var evt = document.createEvent("Event");
-		evt.initEvent(name,true,true);
-		if( properties ) {
-			for( var p in properties ) {
-				evt[p] = properties[p];
+	events: {
+
+		dispatch: function( event ) {
+			document.dispatchEvent(event);
+		},
+
+		create: function(name, properties) {
+			var evt = document.createEvent("Event");
+			evt.initEvent(name,true,true);
+			if( properties ) {
+				for( var p in properties ) {
+					evt[p] = properties[p];
+				}
 			}
+			return evt;
+		},
+
+		on: function( name, callback ) {
+			document.addEventListener(name,callback);
 		}
-		return evt;
+
 	},
 
 	processData: function (obj){
@@ -258,11 +270,12 @@ $("#itinaryForm").submit( function() {
 	}
 });
 
-/*
-$('.menu [type="checkbox"]').each( function() {
-	$(this).bootstrapToggle({
-    	on: Lang.get('Yes'),
-    	off: Lang.get('No')
+H.events.on('globalization-enabled', function(evt) {
+	$('.menu [type="checkbox"]').each( function() {
+		$(this).bootstrapToggle({
+	    	on: Lang.get('Yes'),
+	    	off: Lang.get('No'),
+	    	size: "small"
+		});
 	});
 });
-*/

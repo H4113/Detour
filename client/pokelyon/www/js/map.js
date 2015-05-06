@@ -87,7 +87,7 @@ var Map = {
 
 		this.layer.addTo(this.map);
 
-		var mapevt = H.createEvent('map-created',{Map:this});
+		var mapevt = H.events.create('map-created',{Map:this});
 		document.dispatchEvent( mapevt );
 	},
 
@@ -151,7 +151,7 @@ document.addEventListener('deviceready', function(e) {
 		navigator.geolocation.getCurrentPosition(onGeoSuccess, onGeoError);
 	}, 500);
 
-	document.dispatchEvent( H.createEvent('hashchange') );
+	document.dispatchEvent( H.events.create('hashchange') );
 });
 
 
@@ -194,7 +194,7 @@ State
 	function() {
 		var close = $(".leaflet-popup-close-button")[0];
 		if(close) {
-			close.dispatchEvent( H.createEvent('click') );
+			close.dispatchEvent( H.events.create('click') );
 		}
 
 		var params = {
