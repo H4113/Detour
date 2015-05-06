@@ -70,6 +70,12 @@
 		"fr" : "Temps disponible",
 		"es" : "Tiempo disponible",
 		"de" : "Zeit nicht"
+	},
+	"Dtr": {
+		"en" : "Detour",
+		"fr" : "Detour",
+		"es" : "Detour",
+		"de" : "Detour"
 	}
 
 }

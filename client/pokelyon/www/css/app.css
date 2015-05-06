@@ -126,6 +126,15 @@ html, body, #app-container, #map {
  .menu-body {
  	margin: 10px 15px 0px 15px;
  }
+
+ .logo-holder {
+ 	width: 40%;
+ }
+
+ .logo-holder img {
+ 	width: 100%;
+ 	height: auto;
+ }
 /*
  .menu-header .return {
  	text-decoration: none;
