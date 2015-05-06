@@ -5,8 +5,6 @@ var app = {
 	// Application Constructor
 	initialize: function() {
 		this.bindEvents();
-
-		//H.sendMessage("test",function(obj){alert('it works');},function(obj){});
 	},
 	// Bind Event Listeners
 	//
