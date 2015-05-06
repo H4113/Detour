@@ -6,7 +6,8 @@ var Lang = {
 	data: null,
 
 	get : function( id ) {
-		return 'ya';//data[id];
+		if( ! this.data ) throw 'Lang.get: this function must be called after the "globalization-enabled" event.';
+		return this.data[id][Locale];
 	}
 };
 
@@ -44,8 +45,8 @@ function successLocale()
 				imgLang[i].setAttribute("alt", lang[imgLang[i].getAttribute("alt")][Locale]);
 			}
 		}
-
-		//document.dispatchEvent()
+		
+		H.events.dispatch(H.events.create("globalization-enabled"));
 	});
 }
 
