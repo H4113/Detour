@@ -79,7 +79,7 @@ std::string buildData(Database* database, PathRequest const& pr) {
 		// BUILD PATH
 		std::vector<Coordinates> path;
 		std::vector<TouristicPlace> touristicPlaces;
-		if(PF_FindPath(pr.path.pointA, pr.path.pointB, path, touristicPlaces, database))
+		if(PF_FindPath(pr.path.pointA, pr.path.pointB, pr.junk2, path, touristicPlaces, database))
 		{
 			int16_t sizeType, sizeTypeDetail, sizeName, sizeAddress, sizeWorkingHours;
 			// ANSWER !!!!

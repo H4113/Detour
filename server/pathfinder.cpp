@@ -403,7 +403,7 @@ void TestPathfinderRealData(Database *db)
 	}
 }
 
-bool PF_FindPath(const Coordinates &coordStart, const Coordinates &coordGoal, double maxDeviation, std::vector<Coordinates> &path, std::vector<TouristicPlace> &places, Database *database)
+bool PF_FindPath(const Coordinates &coordStart, const Coordinates &coordGoal, int duration, std::vector<Coordinates> &path, std::vector<TouristicPlace> &places, Database *database)
 {
 	Path resultPath;
 
@@ -421,7 +421,7 @@ bool PF_FindPath(const Coordinates &coordStart, const Coordinates &coordGoal, do
 			std::cout << "Path size: " << path.size() << std::endl;
 			std::cout << "Searching for a touristic path..." << std::endl;
 
-			if(BuildTouristicPath(resultPath, path, finalPath, places, filter, maxDeviation, database))
+			if(BuildTouristicPath(resultPath, path, finalPath, places, filter, duration, database))
 			{
 				path = finalPath;
 				FreePathResult(&resultPath);
