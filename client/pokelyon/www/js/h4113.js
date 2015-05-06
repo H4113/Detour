@@ -47,17 +47,51 @@ var H = {
 		}
 	},
 
+	gui: {
+
+		reveal: function(selector) {
+
+			$(selector).each( function() {
+
+				var x = 0,y =0;
+				if( $(this).hasClass('hidden-bottom') ) {
+					x = -1;
+					y = -1 -$(window).height();
+
+				} else if( $(this).hasClass('hidden-right') ) {
+					x = -1 -$(window).width();
+					y = -1;
+				}
+
+				$(this).transition({x:x,y:y});
+			});
+		}
+
+	},
+
 	//   EVENTS
 
-	createEvent: function(name, properties) {
-		var evt = document.createEvent("Event");
-		evt.initEvent(name,true,true);
-		if( properties ) {
-			for( var p in properties ) {
-				evt[p] = properties[p];
+	events: {
+
+		dispatch: function( event ) {
+			document.dispatchEvent(event);
+		},
+
+		create: function(name, properties) {
+			var evt = document.createEvent("Event");
+			evt.initEvent(name,true,true);
+			if( properties ) {
+				for( var p in properties ) {
+					evt[p] = properties[p];
+				}
 			}
+			return evt;
+		},
+
+		on: function( name, callback ) {
+			document.addEventListener(name,callback);
 		}
-		return evt;
+
 	},
 
 	processData: function (obj){
@@ -120,14 +154,17 @@ var H = {
 		// --> WebSocket is the new black
 		sendMessage: function( message, callback, error ) {
 			//ws = new WebSocket('ws://151.80.143.42:4853', 'tcp');
+			console.log("H.ws.sendMessage");
 			var ws = new WebSocket('ws://echo.websocket.org');
 			ws.onopen = function() {
+				console.log("H.ws.sendMessage.onopen");
 				ws.send( message );
 			};
 
 			ws.onmessage = function(evt) {
 				console.log(evt.data);
 				alert( "answer : "+evt.data);
+				ws.close();
 			};
 
 			ws.onclose = function() {
@@ -283,11 +320,12 @@ $("#itinaryForm").submit( function() {
 	}
 });
 
-/*
-$('.menu [type="checkbox"]').each( function() {
-	$(this).bootstrapToggle({
-    	on: Lang.get('Yes'),
-    	off: Lang.get('No')
+H.events.on('globalization-enabled', function(evt) {
+	$('.menu [type="checkbox"]').each( function() {
+		$(this).bootstrapToggle({
+	    	on: Lang.get('Yes'),
+	    	off: Lang.get('No'),
+	    	size: "small"
+		});
 	});
 });
-*/

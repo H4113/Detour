@@ -87,7 +87,7 @@ var Map = {
 
 		this.layer.addTo(this.map);
 
-		var mapevt = H.createEvent('map-created',{Map:this});
+		var mapevt = H.events.create('map-created',{Map:this});
 		document.dispatchEvent( mapevt );
 	},
 
@@ -151,7 +151,8 @@ document.addEventListener('deviceready', function(e) {
 		navigator.geolocation.getCurrentPosition(onGeoSuccess, onGeoError);
 	}, 500);
 
-	document.dispatchEvent( H.createEvent('hashchange') );
+	document.dispatchEvent( H.events.create('hashchange') );
+
 });
 
 
@@ -174,7 +175,7 @@ State
 .addState('itinary','#directions', null,
 	// launch
 	function() {
-		H.jQuery.moveTopLeft('#directionsgui');
+		H.gui.reveal('#directionsgui');
 	},
 	// clear
 	function() {
@@ -183,7 +184,7 @@ State
 .addState('menu','#menu', null,
 	// launch
 	function() {
-		H.jQuery.moveTopLeft('#menugui');
+		H.gui.reveal('#menugui');
 	},
 	// clear
 	function() {
@@ -194,7 +195,7 @@ State
 	function() {
 		var close = $(".leaflet-popup-close-button")[0];
 		if(close) {
-			close.dispatchEvent( H.createEvent('click') );
+			close.dispatchEvent( H.events.create('click') );
 		}
 
 		var params = {
@@ -223,7 +224,12 @@ $(window).on('hashchange', function() {
 });
 
 $(window).on('resize', function(){
-	if( State.last = 'itinary' ) {
-		H.jQuery.moveTopLeft('#directionsgui');
+	switch( State.last ) {
+	case 'itinary':
+		H.gui.reveal('#directionsgui');
+		break;
+	case 'menu':
+		H.gui.reveal('#menugui');
+		break;
 	}
 });
