@@ -113,3 +113,8 @@ h1 {
     animation:fade 3000ms infinite;
     -webkit-animation:fade 3000ms infinite;
 }
+
+.alert-danger{
+    font-size:15px;
+    text-transform:none;
+}

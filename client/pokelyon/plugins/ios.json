@@ -13,17 +13,21 @@
                             "count": 1
                         },
                         {
+                            "xml": "<feature name=\"Globalization\"><param name=\"ios-package\" value=\"CDVGlobalization\" /></feature>",
+                            "count": 1
+                        },
+                        {
                             "xml": "<feature name=\"Geolocation\"><param name=\"ios-package\" value=\"CDVLocation\" /></feature>",
                             "count": 1
                         }
                     ],
                     "/widget": [
                         {
-                            "xml": "<feature name=\"ChromeSystemNetwork\"><param name=\"ios-package\" value=\"ChromeSystemNetwork\" /></feature>",
+                            "xml": "<feature name=\"IosSocketsCommon\"><param name=\"ios-package\" value=\"IosSocketsCommon\" /></feature>",
                             "count": 1
                         },
                         {
-                            "xml": "<feature name=\"IosSocketsCommon\"><param name=\"ios-package\" value=\"IosSocketsCommon\" /></feature>",
+                            "xml": "<feature name=\"ChromeSystemNetwork\"><param name=\"ios-package\" value=\"ChromeSystemNetwork\" /></feature>",
                             "count": 1
                         },
                         {
@@ -78,7 +82,13 @@
         }
     },
     "installed_plugins": {
+        "com.ququplay.websocket.WebSocket": {
+            "PACKAGE_NAME": "com.h4113.pokelyon"
+        },
         "com.tlantic.plugins.socket": {
+            "PACKAGE_NAME": "com.h4113.pokelyon"
+        },
+        "cordova-plugin-globalization": {
             "PACKAGE_NAME": "com.h4113.pokelyon"
         },
         "cordova-plugin-whitelist": {
@@ -90,6 +100,9 @@
         "org.chromium.common": {
             "PACKAGE_NAME": "com.h4113.pokelyon"
         },
+        "org.chromium.iossocketscommon": {
+            "PACKAGE_NAME": "com.h4113.pokelyon"
+        },
         "org.chromium.socket": {
             "PACKAGE_NAME": "com.h4113.pokelyon"
         },
@@ -99,9 +112,6 @@
     },
     "dependent_plugins": {
         "org.chromium.system.network": {
-            "PACKAGE_NAME": "com.h4113.pokelyon"
-        },
-        "org.chromium.iossocketscommon": {
             "PACKAGE_NAME": "com.h4113.pokelyon"
         }
     }

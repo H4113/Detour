@@ -21,9 +21,35 @@
         "com.ququplay.websocket.WebSocket": {
             "PACKAGE_NAME": "com.h4113.pokelyon"
         },
+<<<<<<< HEAD
         "plugin.socket.io": {
+=======
+        "com.tlantic.plugins.socket": {
+            "PACKAGE_NAME": "com.h4113.pokelyon"
+        },
+        "cordova-plugin-globalization": {
+            "PACKAGE_NAME": "com.h4113.pokelyon"
+        },
+        "cordova-plugin-whitelist": {
+            "PACKAGE_NAME": "com.h4113.pokelyon"
+        },
+        "org.apache.cordova.geolocation": {
+            "PACKAGE_NAME": "com.h4113.pokelyon"
+        },
+        "org.chromium.common": {
+            "PACKAGE_NAME": "com.h4113.pokelyon"
+        },
+        "org.chromium.iossocketscommon": {
+            "PACKAGE_NAME": "com.h4113.pokelyon"
+        },
+        "org.chromium.socket": {
+>>>>>>> master
             "PACKAGE_NAME": "com.h4113.pokelyon"
         }
     },
-    "dependent_plugins": {}
+    "dependent_plugins": {
+        "org.chromium.system.network": {
+            "PACKAGE_NAME": "com.h4113.pokelyon"
+        }
+    }
 }

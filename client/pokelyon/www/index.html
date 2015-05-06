@@ -42,6 +42,9 @@
         <link rel="stylesheet" type="text/css" href="css/index.css">
         <link rel="stylesheet" type="text/css" href="css/leaflet.css">
         <link rel="stylesheet" type="text/css" href="css/app.css">
+        <link rel="stylesheet" type="text/css" href="css/bootstrap-theme.min.css">
+        <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="css/bootstrap-toggle.min.css">
         <title>PokeLyon</title>
     </head>
     <body>
@@ -64,26 +67,95 @@
                     </div>
                     <div id="menugui" class='hidden-right gui menu fullscreen'>
                         <div class='menu-header'>
-                            <div class='gui left'>
-                                <a href='#' class='return'>&lt;</a>
+                            <div class='row'>
+								<div class='col-xs-2 text-center'>
+                               	 	<h1><a href='#' class='return'><span class='glyphicon glyphicon-chevron-left'> </span></a></h1>
+								</div>
+								<div class='col-xs-10'>
+	                        		<h1><div class="lang" data-lang="0">Menu</div></h1>
+								</div>
                             </div>
-                        <h1><div class="lang" data-lang="0">Menu</div></h1>
 						 </div>
                          <div class='menu-body'>
                          </div>
                     </div>
                     <div id="directionsgui" class='hidden-bottom gui menu fullscreen'>
                         <div class='menu-header'>
-                            <div class='gui left'>
-                                <a href='#' class='return'>&lt;</a>
+                            <div class='row'>
+                                <div class='col-xs-2 text-center'>
+                                    <!--<div class='gui left'>
+                                        <a href='#' class='return'>&lt;</a>
+                                    </div>-->
+                                    <h1><a href='#' class='return'><span class='glyphicon glyphicon-chevron-left'> </span></a></h1>
+                                </div>
+                                <div class='col-xs-10'>
+                                    <h1><div class="lang" data-lang="1">Itinéraire</div></h1>
+                                </div> 
                             </div>
-                            <h1><div class="lang" data-lang="1">Itinéraire</div></h1>
                         </div>
+
                         <div class='menu-body'>
                             <form  id="itinaryForm">
-                                <input type='text' name='from'><br> 
-                                <input type='text' name='to'><br>
-                                <input type='submit' id='search'>
+                                <div id='divFrom' class='input-group'>
+                                    <span class='input-group-addon lang' data-lang="2" id='fromaddon'>De</span>
+                                    <input type='text' name='from' id='from' class='form-control' aria-describedby='fromaddon' placeholder="24 Cours Emile Zola, '45.770533, 4.864551'">
+                                    <span id='errorSignFrom' class="glyphicon glyphicon-remove form-control-feedback" style='display:none' aria-hidden="true"></span>
+                                    <br>
+                                </div>
+                                <div class='alert alert-danger lang' data-lang='4' role='alert' style='display:none' id='alertFrom'>Champ obligatoire</div>
+                                <br>
+                                <div id='divTo' class='input-group'>
+                                    <span class='input-group-addon lang' data-lang='3' id='toaddon'>A</span>
+                                    <input type='text' name='to' id='to' class='form-control' aria-describedby='toaddon' placeholder="Place Carnot, '45.7508139, 4.8288993'">
+                                     <span id='errorSignTo' class="glyphicon glyphicon-remove form-control-feedback" style='display:none' aria-hidden="true"></span>
+                                    <br>
+                                </div>
+                                <div class='alert alert-danger lang' data-lang='4' role='alert' style='display:none' id='alertTo'>Champ obligatoire</div>
+                                <br>
+                                <div id='divDist' class='input-group'>
+                                <span class='input-group-addon lang' data-lang='9' id='toaddon'>Temps disponible</span>
+                                    <input type='number' min='0' max='24' name='hours' id='hours' class='form-control' placeholder="Hours">
+                                    <input type='number' min='0' max='59' name='minutes' id='minutes' class='form-control' placeholder="Minutes">
+                                </div>
+                                <br>
+                                <div class="checkbox">
+                                    <div class='row'>
+                                        <div class='col-xs-8 col-hover'>
+                                            <label class='lang' data-lang='6' for='filter-food'>
+                                                Gastronomie
+                                            </label>
+                                        </div>
+                                        <div class='col-xs-4'>
+                                            <input type="checkbox" checked data-toggle="toggle" id='filter-food'>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="checkbox">
+                                    <div class='row'>
+                                        <div class='col-xs-8 col-hover'>
+                                            <label class='lang' data-lang='7' for='filter-night'>
+                                                Hebergement
+                                            </label>
+                                        </div>
+                                        <div class='col-xs-4'>
+                                            <input type="checkbox" checked data-toggle="toggle" id="filter-night">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="checkbox">
+                                    <div class='row'>
+                                        <div class='col-xs-8 col-hover'>
+                                            <label class='lang' data-lang='8' for='filter-tourism'>
+                                                Patrimoine
+                                            </label>
+                                        </div>
+                                        <div class='col-xs-4'>
+                                            <input type="checkbox" checked data-toggle="toggle" id="filter-tourism">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <button class="submit btn btn-primary btn-lg btn-block lang" type="submit" id='search' data-lang='5'>Soumettre</button>
                             </form> 
                         </div>
                     </div>
@@ -93,7 +165,11 @@
         <script type="text/javascript" src="js/leaflet.js"></script>
         <script type="text/javascript" src="js/jquery-2.1.3.min.js"></script>
         <script type="text/javascript" src="js/jquery.transit.min.js"></script>
+        <script type="text/javascript" src="js/lib/bootstrap.min.js"></script>
+        <script type="text/javascript" src="js/lib/bootstrap-toggle.min.js"></script>
+        
         <script type="text/javascript" src="js/h4113.js"></script>
+        <script type="text/javascript" src="js/globalization.js"></script>
         <script type="text/javascript" src="js/map.js"></script>
         <script type="text/javascript" src="js/utils.js"></script>
         <script type="text/javascript" src="js/index.js"></script>

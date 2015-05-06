@@ -75,9 +75,32 @@ static bool getTouristicClosestNodeOf(const TouristicPlace &place, const Path &r
 	return true;
 }
 
-bool BuildTouristicPath(const Path &resultPath, const std::vector<Coordinates> &initialPath, std::vector<Coordinates> &finalPath, std::vector<TouristicPlace> &places, const TouristicFilter &filter, Database *db)
+static double measureResult(const ResultNode *result)
+{
+	double ret = 0.;
+	for(const ResultNode *node = result; node; node = node->next)
+	{
+		if(node->roadToNext)
+			ret += node->roadToNext->distance;
+	}
+	return ret;
+}
+
+/*
+static double dabs(double a)
+{
+	return a < 0 ? -a : a;
+}
+*/
+
+bool BuildTouristicPath(const Path &resultPath, const std::vector<Coordinates> &initialPath, std::vector<Coordinates> &finalPath, std::vector<TouristicPlace> &places, const TouristicFilter &filter, int duration, Database *db)
 {
 	const unsigned int N_TOURISTIC_PLACES = 3;
+	const unsigned int MAX_TOURISTIC_PLACES = 8;
+	const unsigned int PACE = 2;
+
+	const double VELOCITY = 4000. / 60.; // m per min
+	const double STOP_TIME = 30; //30 min
 
 	QTouristicLocationsOptions options = {0, 0, 0, 0, filter};
 	std::vector<TouristicPlace> touristicPlaces;
@@ -102,11 +125,16 @@ bool BuildTouristicPath(const Path &resultPath, const std::vector<Coordinates> &
 	{
 		std::multimap<double, TouristicClosestNode> orderedPlaces;
 		std::multimap<double, TouristicClosestNode*> orderedPlacesFromStart;
-		unsigned int i = 0;
+		unsigned int i;
 		const Coordinates **points;
 		bool error = false;
+		double maxDuration = duration;
+		double currentDuration = 0;
+		double prevDuration;
 		Path newPath;
-		
+		unsigned int computedPlacesCount;
+		std::vector<Path> generatedPaths;
+
 		// Find the minimal distance between each place and all the intersections
 		for(std::vector<TouristicPlace>::const_iterator it = touristicPlaces.begin();
 			it != touristicPlaces.end();
@@ -117,66 +145,104 @@ bool BuildTouristicPath(const Path &resultPath, const std::vector<Coordinates> &
 				orderedPlaces.insert(std::pair<double, TouristicClosestNode>(closestNode.distance, closestNode));
 		}
 
-		// Choose only the closest ones
-		places.clear();
-		places.resize(N_TOURISTIC_PLACES);
-		for(std::multimap<double, TouristicClosestNode>::iterator it = orderedPlaces.begin();
-			it != orderedPlaces.end() && i < N_TOURISTIC_PLACES;
-			++it, ++i)
+		computedPlacesCount = N_TOURISTIC_PLACES;
+		do
 		{
-			double dist = squareDist2(*(resultPath.realStart), it->second.place->location);
-			orderedPlacesFromStart.insert(std::pair<double, TouristicClosestNode*>(dist, &(it->second)));
-			places[i] = *(it->second.place);
-		}
-	
-		// Create points array	
-		points = new const Coordinates*[2 + orderedPlacesFromStart.size()]; // +2 because of start and goal
-		points[0] = resultPath.realStart;
-		points[1 + orderedPlacesFromStart.size()] = resultPath.realGoal;
-		i = 1;
-		for(std::multimap<double, TouristicClosestNode*>::const_iterator it = orderedPlacesFromStart.begin();
-			it != orderedPlacesFromStart.end();
-			++it, ++i)
-		{
-			points[i] = &(it->second->place->location);
-		}
+			unsigned int oldOrderedSize = orderedPlacesFromStart.size();
 
-		// Create subpaths
-		for(i = 0; i < 1 + N_TOURISTIC_PLACES && !error; ++i)
-		{
-			Path subpath;
-			if(!PathFinder::Astar(*(points[i]), *(points[i+1]), i == 0 ? newPath : subpath))
-				error = true;
-			else if (i != 0) // Extend the first path
+			// Choose only the closest ones
+			places.clear();
+			i = 0;
+			for(std::multimap<double, TouristicClosestNode>::iterator it = orderedPlaces.begin();	
+				it != orderedPlaces.end() && i < computedPlacesCount;
+				++it, ++i)
 			{
-				ResultNode *node;
-				ResultNode *prec = 0;
-
-				for(node = newPath.result; node; node = node->next)
-					prec = node;
-
-				if(!prec) // Should be always false
+				if(i >= oldOrderedSize)
 				{
-					std::cerr << "[TouristicPath] An unknown error has occurred..." << std::endl;
-					error = true;
+					double dist = squareDist2(*(resultPath.realStart), it->second.place->location);
+					orderedPlacesFromStart.insert(std::pair<double, TouristicClosestNode*>(dist, &(it->second)));
 				}
-				else
+				places.push_back(*(it->second.place));
+			}
+		
+			// Create points array	
+			points = new const Coordinates*[2 + orderedPlacesFromStart.size()]; // +2 because of start and goal
+			points[0] = resultPath.realStart;
+			points[1 + orderedPlacesFromStart.size()] = resultPath.realGoal;
+			i = 1;
+			for(std::multimap<double, TouristicClosestNode*>::const_iterator it = orderedPlacesFromStart.begin();
+				it != orderedPlacesFromStart.end();
+				++it, ++i)
+			{
+				points[i] = &(it->second->place->location);
+			}
+
+			// Create subpaths
+			for(i = 0; i < 1 + computedPlacesCount && !error; ++i)
+			{
+				Path subpath;
+				if(!PathFinder::Astar(*(points[i]), *(points[i+1]), i == 0 ? newPath : subpath))
+					error = true;
+				else if (i != 0) // Extend the first path
 				{
-					prec->next = subpath.result;
-					newPath.realGoal = subpath.realGoal;
-					newPath.closestCoordGoal = subpath.closestCoordGoal;
+					ResultNode *node;
+					ResultNode *prec = 0;
+
+					for(node = newPath.result; node; node = node->next)
+						prec = node;
+
+					if(!prec) // Should be always false
+					{
+						std::cerr << "[TouristicPath] An unknown error has occurred..." << std::endl;
+						error = true;
+					}
+					else
+					{
+						prec->next = subpath.result;
+						newPath.realGoal = subpath.realGoal;
+						newPath.closestCoordGoal = subpath.closestCoordGoal;
+					}
 				}
 			}
-		}
-		delete [] points;
-	
-		if(error)
+			delete [] points;
+		
+			if(error)
+				return false;
+		
+			prevDuration = currentDuration;	
+			currentDuration = orderedPlacesFromStart.size() * STOP_TIME + measureResult(newPath.result) / VELOCITY;
+			
+			if(currentDuration < maxDuration)
+				computedPlacesCount += PACE;
+			else
+				computedPlacesCount = (computedPlacesCount < PACE ? 0 : computedPlacesCount - PACE);
+
+			generatedPaths.push_back(newPath);
+		} while(computedPlacesCount && computedPlacesCount <  MAX_TOURISTIC_PLACES && (prevDuration == 0 || (prevDuration - maxDuration) * (currentDuration - maxDuration) > 0));
+
+		if(!computedPlacesCount)
+		
+		{
+			for(std::vector<Path>::iterator it = generatedPaths.begin();
+				it != generatedPaths.end();
+				++it)
+				FreePathResult(&(*it));
 			return false;
+		}
 
 		finalPath.clear();
 		if(!PathFinder::BuildPath(newPath, finalPath))
+		{
+			for(std::vector<Path>::iterator it = generatedPaths.begin();
+				it != generatedPaths.end();
+				++it)
+				FreePathResult(&(*it));
 			return false;
-		FreePathResult(&newPath);
+		}
+		for(std::vector<Path>::iterator it = generatedPaths.begin();
+			it != generatedPaths.end();
+			++it)
+			FreePathResult(&(*it));
 
 		return true;
 	}

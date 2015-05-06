@@ -109,10 +109,24 @@ html, body, #app-container, #map {
 
  .menu-header {
  	min-height: 50px;
- 	background: #0080FF;
+ 	background: #337ab7;
  	color: white;
  }
 
+ .menu-header a {
+ 	text-decoration: none;
+ 	text-align: center;
+ 	color: inherit;
+ }
+
+ .menu-header span {
+ 	padding-left: 20px; 
+ }
+
+ .menu-body {
+ 	margin: 10px 15px 0px 15px;
+ }
+/*
  .menu-header .return {
  	text-decoration: none;
  	color: white;
@@ -124,3 +138,15 @@ html, body, #app-container, #map {
  	padding-bottom: 10px;
  	font-size: 2em;
  }
+ */
+/*
+ .menu form .submit {
+ 	margin-top: 10px;
+ 	margin-left: 5%;
+ 	width: 90%;
+ 	height: 50px;
+ 	background: #0080FF;
+ 	color: white;
+ 	font-size: 2em;
+ 	border: none;
+ }*/

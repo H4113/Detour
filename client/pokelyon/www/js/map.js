@@ -87,7 +87,7 @@ var Map = {
 
 		this.layer.addTo(this.map);
 
-		var mapevt = H.createEvent('map-created',{Map:this});
+		var mapevt = H.events.create('map-created',{Map:this});
 		document.dispatchEvent( mapevt );
 	},
 
@@ -106,9 +106,23 @@ document.addEventListener('map-created', function(e) {
 	var popup = L.popup();
 			
 	e.Map.onClick(function(click){
-		popup.setLatLng(click.latlng)
-			 .setContent("<a href='#go?lat="+click.latlng.lat+"&lng="+click.latlng.lng+"' class='gps-btn'>Aller ici</a>")
+		if( H.user.locationKnown() ){
+			popup.setLatLng(click.latlng)
+			 /*.setContent("<a href='?fromlat="
+			 	+H.user.lastKnownLocation.lat
+			 	+"&fromlng="+H.user.lastKnownLocation.lng
+			 	+"&tolat="+click.latlng.lat
+			 	+"&tolng="+click.latlng.lng
+			 	+"#go' class='gps-btn'>Aller ici</a>")*/
+			 .setContent("<a href='#go"+
+			 	H.objToUrl(H.makeItinaryObj(
+			 	H.user.lastKnownLocation.lat,
+			 	H.user.lastKnownLocation.lng,
+			 	click.latlng.lat,
+			 	click.latlng.lng))
+			 	+"' class='gps-btn'>Aller ici</a>")
 			 .openOn(e.Map.map);
+		}
 	});
 });
 
@@ -119,6 +133,7 @@ document.addEventListener('deviceready', function(e) {
 	circlePosUser = L.circleMarker([0, 0], 10, {}).addTo(Map.map);
 
 	var onGeoSuccess = function(position) {
+		H.user.updateLocation(position.coords.latitude, position.coords.longitude);
 		circlePosUser.setLatLng([position.coords.latitude, position.coords.longitude]);
 		circlePosUser.redraw();
 	};
@@ -136,14 +151,15 @@ document.addEventListener('deviceready', function(e) {
 		navigator.geolocation.getCurrentPosition(onGeoSuccess, onGeoError);
 	}, 500);
 
-	document.dispatchEvent( H.createEvent('hashchange') );
+	document.dispatchEvent( H.events.create('hashchange') );
+	
 
 });
 
 
 // States of the app
 function getParameterByName(name) {
-    var url = location.href.substring(location.href.lastIndexOf('?')+1);
+    var url = location.href.substring(location.href.lastIndexOf('?')+1/*,location.href.lastIndexOf('#')*/);
     var params = url.split('&');
     for( var i = 0; i < params.length; ++i) {
     	var regex = new RegExp( name +"=(.*)");
@@ -160,37 +176,42 @@ State
 .addState('itinary','#directions', null,
 	// launch
 	function() {
-		H.jQueryMoveTopLeft('#directionsgui');
+		H.gui.reveal('#directionsgui');
 	},
 	// clear
 	function() {
-		H.jQueryResetPos('#directionsgui');
+		H.jQuery.resetPos('#directionsgui');
 	})
 .addState('menu','#menu', null,
 	// launch
 	function() {
-		H.jQueryMoveTopLeft('#menugui');
+		H.gui.reveal('#menugui');
 	},
 	// clear
 	function() {
-		H.jQueryResetPos('#menugui');
+		H.jQuery.resetPos('#menugui');
 	})
 .addState('go','#go', null,
 	// launch
 	function() {
 		var close = $(".leaflet-popup-close-button")[0];
 		if(close) {
-			close.dispatchEvent( H.createEvent('click') );
+			close.dispatchEvent( H.events.create('click') );
 		}
 
 		var params = {
-			fromlat: Map.map.getCenter().lat,
-			fromlng: Map.map.getCenter().lng,
-			tolat: getParameterByName('lat'),
-			tolng: getParameterByName('lng')
+			fromlat: getParameterByName('fromlat'),
+			fromlng: getParameterByName('fromlng'),
+			tolat: getParameterByName('tolat'),
+			tolng: getParameterByName('tolng'),
+			patrimony: parseInt(getParameterByName('patrimony')),
+			gastronomy: parseInt(getParameterByName('gastronomy')),
+			accomodity: parseInt(getParameterByName('accomodity')),
+			hours: parseInt(getParameterByName('hours')),
+			minutes: parseInt(getParameterByName('minutes')),
+			onMap: (getParameterByName('onMap') === 'true')
 		};
-		
-		console.log(params);
+
 		H.requestWay( params, function(path){drawPathOnMap(Map.map, path);},function(){});
 	});
 
@@ -202,4 +223,15 @@ $(window).on('hashchange', function() {
   	if( index > -1 ) hash = hash.substring(0,index);
 
   	State.launch( State.hashToState(hash) );
+});
+
+$(window).on('resize', function(){
+	switch( State.last ) {
+	case 'itinary':
+		H.gui.reveal('#directionsgui');
+		break;
+	case 'menu':
+		H.gui.reveal('#menugui');
+		break;
+	}
 });

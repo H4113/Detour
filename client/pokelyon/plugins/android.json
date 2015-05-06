@@ -22,6 +22,10 @@
                         },
                         {
                             "xml": "<feature name=\"SocketIO\"><param name=\"android-package\" value=\"plugin.socket.io.SocketIO\" /></feature>",
+							"count": 1
+						},
+						{
+                            "xml": "<feature name=\"Globalization\"><param name=\"android-package\" value=\"org.apache.cordova.globalization.Globalization\" /></feature>",
                             "count": 1
                         }
                     ],
@@ -78,7 +82,14 @@
         "com.ququplay.websocket.WebSocket": {
             "PACKAGE_NAME": "com.h4113.pokelyon"
         },
+<<<<<<< HEAD
         "plugin.socket.io": {
+=======
+        "org.chromium.iossocketscommon": {
+            "PACKAGE_NAME": "com.h4113.pokelyon"
+        },
+        "cordova-plugin-globalization": {
+>>>>>>> master
             "PACKAGE_NAME": "com.h4113.pokelyon"
         }
     },

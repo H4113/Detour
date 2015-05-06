@@ -38,6 +38,7 @@ static void paramFilter(PathRequest pr)
 	std::cout << patrimony << " " << gastronomy << " " << accomodation << std::endl;
 }
 
+/*
 static void splitArray(char* c, const char* s, char* first, char* second)
 {
 	int i = 0;
@@ -54,6 +55,7 @@ static void splitArray(char* c, const char* s, char* first, char* second)
 	}
 	printf("second : %s\n", second);
 }
+*/
 
 PathRequest readData(std::string data)
 {
@@ -205,7 +207,12 @@ static void *clientRoutine(void* attr)
 		// BUILD PATH
 		std::vector<Coordinates> path;
 		std::vector<TouristicPlace> touristicPlaces;
-		if(PF_FindPath(pr.path.pointA, pr.path.pointB, path, touristicPlaces, sdb.database))
+		
+		int duration = pr.junk2;
+		
+		std::cout << duration << std::endl;
+
+		if(PF_FindPath(pr.path.pointA, pr.path.pointB, duration, path, touristicPlaces, sdb.database))
 		{
 			int16_t sizeType, sizeTypeDetail, sizeName, sizeAddress, sizeWorkingHours;
 			// ANSWER !!!!
