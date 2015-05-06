@@ -91,11 +91,14 @@ static double dabs(double a)
 	return a < 0 ? -a : a;
 }
 
-bool BuildTouristicPath(const Path &resultPath, const std::vector<Coordinates> &initialPath, std::vector<Coordinates> &finalPath, std::vector<TouristicPlace> &places, const TouristicFilter &filter, double maxDeviation, Database *db)
+bool BuildTouristicPath(const Path &resultPath, const std::vector<Coordinates> &initialPath, std::vector<Coordinates> &finalPath, std::vector<TouristicPlace> &places, const TouristicFilter &filter, int duration, Database *db)
 {
 	const unsigned int N_TOURISTIC_PLACES = 3;
 	const unsigned int MAX_TOURISTIC_PLACES = 8;
 	const unsigned int PACE = 2;
+
+	const double VELOCITY = 4000. / 60.; // m per min
+	const double STOP_TIME = 30; //30 min
 
 	QTouristicLocationsOptions options = {0, 0, 0, 0, filter};
 	std::vector<TouristicPlace> touristicPlaces;
@@ -123,11 +126,13 @@ bool BuildTouristicPath(const Path &resultPath, const std::vector<Coordinates> &
 		unsigned int i;
 		const Coordinates **points;
 		bool error = false;
+		double maxDuration = duration;
 		double referenceMeasure = measureResult(resultPath.result);
-		double discrepancyMeasure = 0;
+		double discrepancyDuration = 0;
 		double prevDiscrepancy;
 		Path newPath;
 		unsigned int computedPlacesCount;
+		std::vector<Path> generatedPaths;
 
 		// Find the minimal distance between each place and all the intersections
 		for(std::vector<TouristicPlace>::const_iterator it = touristicPlaces.begin();
@@ -204,27 +209,43 @@ bool BuildTouristicPath(const Path &resultPath, const std::vector<Coordinates> &
 			if(error)
 				return false;
 		
-			prevDiscrepancy = discrepancyMeasure;	
-			discrepancyMeasure = measureResult(newPath.result) - referenceMeasure;
+			prevDiscrepancy = discrepancyDuration;	
+			discrepancyDuration = orderedPlacesFromStart.size() * STOP_TIME + (measureResult(newPath.result) - referenceMeasure) / VELOCITY;
 			
 			std::cout << "Reference: " << referenceMeasure << std::endl;
-			std::cout << "Actual: " << measureResult(newPath.result) << std::endl;
-			std::cout << "Discrepancy: " << discrepancyMeasure << std::endl;
+			std::cout << "Discrepancy: " << discrepancyDuration << std::endl;
 			
-			if(dabs(discrepancyMeasure) < maxDeviation)
+			if(dabs(discrepancyDuration) < maxDuration)
 				computedPlacesCount += PACE;
 			else
 				computedPlacesCount = (computedPlacesCount < PACE ? 0 : computedPlacesCount - PACE);
 
-		} while(computedPlacesCount <  MAX_TOURISTIC_PLACES && (prevDiscrepancy == 0 || (prevDiscrepancy - maxDeviation) * (discrepancyMeasure - maxDeviation) > 0));
+			generatedPaths.push_back(newPath);
+		} while(computedPlacesCount && computedPlacesCount <  MAX_TOURISTIC_PLACES && (prevDiscrepancy == 0 || (prevDiscrepancy - maxDuration) * (discrepancyDuration - maxDuration) > 0));
 
 		if(!computedPlacesCount)
+		
+		{
+			for(std::vector<Path>::iterator it = generatedPaths.begin();
+				it != generatedPaths.end();
+				++it)
+				FreePathResult(&(*it));
 			return false;
+		}
 
 		finalPath.clear();
 		if(!PathFinder::BuildPath(newPath, finalPath))
+		{
+			for(std::vector<Path>::iterator it = generatedPaths.begin();
+				it != generatedPaths.end();
+				++it)
+				FreePathResult(&(*it));
 			return false;
-		FreePathResult(&newPath);
+		}
+		for(std::vector<Path>::iterator it = generatedPaths.begin();
+			it != generatedPaths.end();
+			++it)
+			FreePathResult(&(*it));
 
 		return true;
 	}

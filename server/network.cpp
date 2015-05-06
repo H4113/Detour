@@ -84,7 +84,7 @@ static void *clientRoutine(void* attr)
 		std::vector<Coordinates> path;
 		std::vector<TouristicPlace> touristicPlaces;
 		
-		const double MAX_DEVIATION = 1000.; // TODO: param to be sent by client
+		const int MAX_DEVIATION = 60; // TODO: param to be sent by client
 		
 		if(PF_FindPath(pr.path.pointA, pr.path.pointB, MAX_DEVIATION, path, touristicPlaces, sdb.database))
 		{
