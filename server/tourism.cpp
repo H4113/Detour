@@ -161,8 +161,8 @@ bool BuildTouristicPath(const Path &resultPath, const std::vector<Coordinates> &
 				{
 					double dist = squareDist2(*(resultPath.realStart), it->second.place->location);
 					orderedPlacesFromStart.insert(std::pair<double, TouristicClosestNode*>(dist, &(it->second)));
-					places.push_back(*(it->second.place));
 				}
+				places.push_back(*(it->second.place));
 			}
 		
 			// Create points array	

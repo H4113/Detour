@@ -145,7 +145,7 @@ function drawTourismOnMap(map, obj){
 
 	var index = 0;
 	for(var i=0;i<obj.length;++i){
-		tourism_array[index++] = L.circle([obj[i].x, obj[i].y], 100, {color:'#F00',fillColor: '#FF0000', fillOpacity:0.9}).addTo(map);
+		tourism_array[index++] = L.circle([obj[i].x, obj[i].y], 100, {color:'#F00',fillColor: '#FF0000', fillOpacity:0.4}).addTo(map);
 		var strall = obj[i].str.join("<br />\n");
 		tourism_array[index++] = L.marker([obj[i].x, obj[i].y], {icon: redIcon}).addTo(map).bindPopup(strall);
 	}
