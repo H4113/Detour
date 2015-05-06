@@ -84,9 +84,11 @@ static void *clientRoutine(void* attr)
 		std::vector<Coordinates> path;
 		std::vector<TouristicPlace> touristicPlaces;
 		
-		const int MAX_DEVIATION = 60; // TODO: param to be sent by client
+		int duration = pr.junk2;
 		
-		if(PF_FindPath(pr.path.pointA, pr.path.pointB, MAX_DEVIATION, path, touristicPlaces, sdb.database))
+		std::cout << duration << std::endl;
+
+		if(PF_FindPath(pr.path.pointA, pr.path.pointB, duration, path, touristicPlaces, sdb.database))
 		{
 			int16_t sizeType, sizeTypeDetail, sizeName, sizeAddress, sizeWorkingHours;
 			// ANSWER !!!!
