@@ -79,11 +79,11 @@ var H = {
 		//console.log("ICI"+message);
 		var abuffer = [];
 		//var ws = new WebSocket('ws://echo.websocket.org');
-		var ws = new WebSocket('ws://151.80.143.42:80');
+		var ws = new WebSocket('ws://192.168.56.101:80');
 		
 		ws.onopen = function (event) {
 			alert("caca lauwl ta soeur");
-			ws.send( message );
+			ws.send( message, { binary: true} );
 		};
 
 		ws.onmessage = function(evt) {
@@ -140,7 +140,7 @@ var H = {
 			gpscoord[0] = position.coords.latitude;
 			gpscoord[1] = position.coords.longitude;
 			console.log(buf);
-			H.sendQuery(buf);
+			H.sendMessage(buf);
 		};
 
 		navigator.geolocation.getCurrentPosition(geo_sendQuery, function() {});

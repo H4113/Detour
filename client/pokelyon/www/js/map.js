@@ -138,7 +138,6 @@ document.addEventListener('deviceready', function(e) {
 
 	document.dispatchEvent( H.createEvent('hashchange') );
 
-	H.sendMessage("test",function(obj){alert('it works');},function(obj){});
 });
 
 
