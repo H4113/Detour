@@ -119,7 +119,13 @@
 		  svg.append("g")
 			  .attr("class", "x axis")
 			  .attr("transform", "translate(0," + height + ")")
-			  .call(xAxis);
+			  .call(xAxis)
+			.append("text")
+			  .attr("transform", "translate("+width+",.0)")
+			  .attr("x", 3)
+			  .attr("dy", "2.71em")
+			  .style("text-anchor", "end")
+			  .text("Nb clients");
 
 		  svg.append("g")
 			  .attr("class", "y axis")
@@ -133,7 +139,7 @@
 
 		  var city = svg.selectAll(".city")
 			  .data(cities)
-			.enter().append("g")
+			  .enter().append("g")
 			  .attr("class", "city");
 
 		  city.append("path")
