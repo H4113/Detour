@@ -202,9 +202,9 @@ State
 			fromlng: getParameterByName('fromlng'),
 			tolat: getParameterByName('tolat'),
 			tolng: getParameterByName('tolng'),
-			patrimony: getParameterByName('patrimony'),
-			gastronomy: getParameterByName('gastronomy'),
-			accomodity: getParameterByName('accomodity')
+			patrimony: parseInt(getParameterByName('patrimony')),
+			gastronomy: parseInt(getParameterByName('gastronomy')),
+			accomodity: parseInt(getParameterByName('accomodity'))
 		};
 
 		H.requestWay( params, function(path){drawPathOnMap(Map.map, path);},function(){});

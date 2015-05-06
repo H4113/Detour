@@ -138,16 +138,13 @@ var H = {
 	
 
 	requestWay: function( params, callback, error ) {
-		console.log(params.patrimony);
-		console.log(params.gastronomy);
-		console.log(params.accomodity);
 		if( ! params.fromlat ) throw 'required fromlat param is missing.';
 		if( ! params.fromlng ) throw 'required fromlng param is missing.';
 		if( ! params.tolat ) throw 'required tolat param is missing.';
 		if( ! params.tolng ) throw 'required tolng param is missing.';
-		if(! typeof(params.patrimony) === 'Int16' ) throw 'required patrimony param is missing.';
-		if(! typeof(params.gastronomy) === 'Int16' ) throw 'required gastronomy param is missing.';
-		if(! typeof(params.accomodity) === 'Int16' ) throw 'required accomodity param is missing.';
+		if(!(typeof(params.patrimony) === 'number' )) throw 'required patrimony param is missing.';
+		if(!(typeof(params.gastronomy) === 'number' )) throw 'required gastronomy param is missing.';
+		if(!(typeof(params.accomodity) === 'number' )) throw 'required accomodity param is missing.';
 
 		var buf = new ArrayBuffer(8+4*8);
 		var type_req = new Int16Array(buf,0,1);
@@ -156,7 +153,6 @@ var H = {
 		var gpscoord = new Float64Array(buf,8,4);
 		
 		type_req[0] = 0;
-		type_junk[0] = 42;
 		type_junk2[0] = 42;
 
 		gpscoord[0] = params.fromlat;
@@ -165,10 +161,9 @@ var H = {
 		gpscoord[3] = params.tolng;
 
 		// Change when buttons available
-
 		type_junk[0] = params.patrimony + (params.gastronomy << 1) + (params.accomodity << 2);
 		console.log(type_junk);
-
+		
 		var geo_sendQuery = function(position) {
 			gpscoord[0] = position.coords.latitude;
 			gpscoord[1] = position.coords.longitude;
@@ -196,9 +191,9 @@ var H = {
 		if( ! itinaryObj.fromlng ) throw 'requested fromlng parameter missing.';
 		if( ! itinaryObj.tolat ) throw 'requested tolat parameter missing.';
 		if( ! itinaryObj.tolng ) throw 'requested tolng parameter missing.';
-		if(! typeof(itinaryObj.patrimony) === 'Int16' ) throw 'requested patrimony parameter missing.';
-		if(! typeof(itinaryObj.gastronomy) === 'Int16' ) throw 'requested gastronomy parameter missing.';
-		if(! typeof(itinaryObj.accomodity) === 'Int16' ) throw 'requested accomodity parameter missing.';
+		if(!(typeof(itinaryObj.patrimony) === 'number' )) throw 'requested patrimony parameter missing.';
+		if(!(typeof(itinaryObj.gastronomy) === 'number' )) throw 'requested gastronomy parameter missing.';
+		if(!(typeof(itinaryObj.accomodity) === 'number' )) throw 'requested accomodity parameter missing.';
 		window.location.hash = '#go' + this.objToUrl(itinaryObj);
 	},
 
