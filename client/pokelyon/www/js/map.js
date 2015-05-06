@@ -207,7 +207,8 @@ State
 			gastronomy: parseInt(getParameterByName('gastronomy')),
 			accomodity: parseInt(getParameterByName('accomodity')),
 			hours: parseInt(getParameterByName('hours')),
-			minutes: parseInt(getParameterByName('minutes'))
+			minutes: parseInt(getParameterByName('minutes')),
+			onMap: (getParameterByName('onMap') === 'true')
 		};
 
 		H.requestWay( params, function(path){drawPathOnMap(Map.map, path);},function(){});
