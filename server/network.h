@@ -62,7 +62,7 @@ class WebServer
 };
 
 void startServer(Database *db);
-
+PathRequest readData(std::string data);
 
 std::string buildData(void* attr);
 

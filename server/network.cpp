@@ -55,17 +55,17 @@ static void splitArray(char* c, const char* s, char* first, char* second)
 	printf("second : %s\n", second);
 }
 
-
-
-std::string buildData(Database* database) {
-	std::cout << "DEBUT SEND"<<std::endl;
-
+PathRequest readData(std::string data)
+{
+	data.resize(40);
+	const char* dat = data.c_str();
 	PathRequest pr;
-	pr.type = PT_PathQuery;
-	pr.path.pointA.longitude = 45.782741199999996695169102167711;
-	pr.path.pointA.latitude = 4.873665800000000380975961888907;
-	pr.path.pointB.longitude = 45.782249782982248120788426604122;
-	pr.path.pointB.latitude = 4.878101348876953125000000000000;
+	memcpy(&pr, dat, 40);
+	return pr;
+}
+
+std::string buildData(Database* database, PathRequest const& pr) {
+	std::cout << "DEBUT SEND"<<std::endl;
 
 	printf("Here is the request from the client: %d %d\n",pr.type,pr.junk);
 	printf("%.30f %.30f %.30f %.30f\n", pr.path.pointA.longitude, pr.path.pointA.latitude, pr.path.pointB.longitude, pr.path.pointB.latitude);
@@ -337,11 +337,12 @@ WebServer::~WebServer(){
 void WebServer::on_message(websocketpp::connection_hdl hdl, server::message_ptr msg) {
 	std::cout << "JE PASSE ICI prout prout" <<std::endl;
     std::cout << msg->get_payload() << std::endl;
+    PathRequest pr = readData(msg->get_payload());
     std::cout << "on_message called with hdl: " << hdl.lock().get()
           << " and message: " << msg->get_payload()
           << std::endl;
-    std::string str = buildData(db);
-    std::cout<<"DATA:::::"<<std::endl<<str<<std::endl;
+    std::string str = buildData(db, pr);
+    //std::cout<<"DATA:::::"<<std::endl<<str<<std::endl;
     webserver.send(hdl, str, websocketpp::frame::opcode::BINARY);
     std::cout<<"DATA ::: SENT"<<std::endl;
 }
