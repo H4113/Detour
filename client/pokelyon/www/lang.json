@@ -64,5 +64,12 @@
 		"fr" : "Patrimoine",
 		"es" : "Patrimonio",
 		"de" : "Tourismus"
+	},
+	"9" : {
+		"en" : "Available time",
+		"fr" : "Temps disponible",
+		"es" : "Tiempo disponible",
+		"de" : "Zeit nicht"
 	}
+
 }

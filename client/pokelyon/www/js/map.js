@@ -204,7 +204,9 @@ State
 			tolng: getParameterByName('tolng'),
 			patrimony: parseInt(getParameterByName('patrimony')),
 			gastronomy: parseInt(getParameterByName('gastronomy')),
-			accomodity: parseInt(getParameterByName('accomodity'))
+			accomodity: parseInt(getParameterByName('accomodity')),
+			hours: parseInt(getParameterByName('hours')),
+			minutes: parseInt(getParameterByName('minutes'))
 		};
 
 		H.requestWay( params, function(path){drawPathOnMap(Map.map, path);},function(){});

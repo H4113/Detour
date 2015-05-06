@@ -145,6 +145,8 @@ var H = {
 		if(!(typeof(params.patrimony) === 'number' )) throw 'required patrimony param is missing.';
 		if(!(typeof(params.gastronomy) === 'number' )) throw 'required gastronomy param is missing.';
 		if(!(typeof(params.accomodity) === 'number' )) throw 'required accomodity param is missing.';
+		if(!(typeof(params.hours) === 'number' )) throw 'required hours param is missing.';
+		if(!(typeof(params.minutes) === 'number' )) throw 'required minutes param is missing.';
 
 		var buf = new ArrayBuffer(8+4*8);
 		var type_req = new Int16Array(buf,0,1);
@@ -153,7 +155,6 @@ var H = {
 		var gpscoord = new Float64Array(buf,8,4);
 		
 		type_req[0] = 0;
-		type_junk2[0] = 42;
 
 		gpscoord[0] = params.fromlat;
 		gpscoord[1] = params.fromlng;
@@ -162,7 +163,11 @@ var H = {
 
 		// Change when buttons available
 		type_junk[0] = params.patrimony + (params.gastronomy << 1) + (params.accomodity << 2);
-		console.log(type_junk);
+
+		//Change when time is available
+		type_junk2[0] = params.hours*60 + params.minutes;
+
+		console.log(type_junk2);
 		
 		var geo_sendQuery = function(position) {
 			gpscoord[0] = position.coords.latitude;
@@ -194,10 +199,12 @@ var H = {
 		if(!(typeof(itinaryObj.patrimony) === 'number' )) throw 'requested patrimony parameter missing.';
 		if(!(typeof(itinaryObj.gastronomy) === 'number' )) throw 'requested gastronomy parameter missing.';
 		if(!(typeof(itinaryObj.accomodity) === 'number' )) throw 'requested accomodity parameter missing.';
+		if(!(typeof(itinaryObj.hours) === 'number' )) throw 'requested hours parameter missing.';
+		if(!(typeof(itinaryObj.minutes) === 'number' )) throw 'requested minutes parameter missing.';
 		window.location.hash = '#go' + this.objToUrl(itinaryObj);
 	},
 
-	makeItinaryObj: function( fromlat, fromlng, tolat, tolng, patrimony, gastronomy, accomodity) {
+	makeItinaryObj: function( fromlat, fromlng, tolat, tolng, patrimony, gastronomy, accomodity, hours, minutes) {
 		return {
 			fromlat: fromlat,
 			fromlng: fromlng,
@@ -205,7 +212,9 @@ var H = {
 			tolng: tolng,
 			patrimony: patrimony,
 			gastronomy: gastronomy,
-			accomodity: accomodity
+			accomodity: accomodity,
+			hours: hours,
+			minutes: minutes
 		};
 	}
 
@@ -219,6 +228,16 @@ $("#itinaryForm").submit( function() {
 	var gastro = document.getElementById('filter-food').checked ? 1 : 0;
 	var heberg = document.getElementById('filter-night').checked ? 1 : 0;
 	var patrim = document.getElementById('filter-tourism').checked ? 1 : 0;
+
+	var hours = parseInt(document.getElementById('hours').value);
+	var minutes = parseInt(document.getElementById('minutes').value);
+
+	if(!hours) {
+		hours = 0;
+	}
+	if(!minutes) {
+		minutes = 0;
+	}
 
 	var isOk = true;
 
@@ -248,16 +267,16 @@ $("#itinaryForm").submit( function() {
 		document.getElementById('errorSignTo').style.display = 'none';
 	}
 	if(isOk) {
-		convertFields(from, to, patrim, gastro, heberg);	
+		convertFields(from, to, patrim, gastro, heberg, hours, minutes);	
 	}
 	return false;
 
-	function convertFields(from, to, patrimony, gastronomy, accomodity) {
+	function convertFields(from, to, patrimony, gastronomy, accomodity, hours, minutes) {
 		addressToCoordinates(from, function(coordsFrom){
 			addressToCoordinates(to, function(coordsTo){
 				var itinary = H.makeItinaryObj(coordsFrom.latitude,coordsFrom.longitude,
 												coordsTo.latitude,  coordsTo.longitude, 
-												patrimony, gastronomy, accomodity);
+												patrimony, gastronomy, accomodity, hours, minutes);
 				H.go(itinary);
 			});
 		});
