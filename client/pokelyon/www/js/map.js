@@ -179,6 +179,8 @@ State
 	},
 	// clear
 	function() {
+		removeAlert('From');
+		removeAlert('To');
 		H.jQuery.resetPos('#directionsgui');
 	})
 .addState('menu','#menu', null,

@@ -290,9 +290,8 @@ $("#itinaryForm").submit( function() {
 		isOk = false;
 	}
 	else {
-		document.getElementById('alertFrom').style.display = 'none';
-		$('#divFrom').removeClass('has-error has-feedback');
-		document.getElementById('errorSignFrom').style.display = 'none';
+		//in utils.js
+		removeAlert('From');
 	}
 	if(!to) {
 		document.getElementById('alertTo').style.display = 'block';
@@ -302,9 +301,8 @@ $("#itinaryForm").submit( function() {
 		isOk = false;
 	}
 	else {
-		document.getElementById('alertTo').style.display = 'none';
-		$('#divTo').removeClass('has-error has-feedback');
-		document.getElementById('errorSignTo').style.display = 'none';
+		//in utils.js
+		removeAlert('To');
 	}
 	if(isOk) {
 		convertFields(from, to, patrim, gastro, heberg, hours, minutes);	

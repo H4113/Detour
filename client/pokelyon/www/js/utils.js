@@ -235,3 +235,9 @@ function addressToCoordinates(address, ondone) {
 		ondone(new_coords);
 	});
 }
+
+function removeAlert(alert) {
+	document.getElementById('alert'+alert).style.display = 'none';
+	$('#div'+alert).removeClass('has-error has-feedback');
+	document.getElementById('errorSign'+alert).style.display = 'none';
+}
