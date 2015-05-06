@@ -148,40 +148,38 @@ var H = {
 
 	// --> WebSocket --------------------------------------------------
 	sendMessage: function( message, callback, error ) {
-		//console.log("ICI"+message);
 		var abuffer = [];
 		//var ws = new WebSocket('ws://echo.websocket.org');
 		var ws = new WebSocket('ws://192.168.56.101:80');
 		
 		ws.onopen = function (event) {
-			alert("caca lauwl ta soeur");
 			ws.send( message, { binary: true} );
 		};
 
 		ws.onmessage = function(evt) {
 			//console.log(evt.data);
-			alert( "answer  SIZE ");
+			//alert( "answer  SIZE ");
 			var arrayBuffer;
 			var fileReader = new FileReader();
 			fileReader.onload = function() {
 				arrayBuffer = this.result;
 				magicTcpReceive(abuffer, arrayBuffer, H.processData);
-				alert( "end");
 			};
 			fileReader.readAsArrayBuffer(evt.data);
 		};
 
 		ws.onfragment = function(evt) {
-			alert("prout");
+			//alert("prout");
 		}
 
 		ws.onclose = function() {
-			alert('connection closed');
+			//alert('connection closed');
 		};
 	},
 	
 
 	requestWay: function( params, callback, error ) {
+		
 		if( ! params.fromlat ) throw 'required fromlat param is missing.';
 		if( ! params.fromlng ) throw 'required fromlng param is missing.';
 		if( ! params.tolat ) throw 'required tolat param is missing.';
@@ -222,7 +220,7 @@ var H = {
 		if(params.onMap) {
 			navigator.geolocation.getCurrentPosition(geo_sendQuery, function() {});	
 		}
-		H.sendQuery(buf);
+		H.sendMessage(buf);
 	},
 
 	objToUrl : function( obj ) {
