@@ -150,13 +150,16 @@ var H = {
 	
 
 	requestWay: function( params, callback, error ) {
-
-		//console.log(params);
-		
+		console.log(params.patrimony);
+		console.log(params.gastronomy);
+		console.log(params.accomodity);
 		if( ! params.fromlat ) throw 'required fromlat param is missing.';
 		if( ! params.fromlng ) throw 'required fromlng param is missing.';
 		if( ! params.tolat ) throw 'required tolat param is missing.';
 		if( ! params.tolng ) throw 'required tolng param is missing.';
+		if(! typeof(params.patrimony) === 'Int16' ) throw 'required patrimony param is missing.';
+		if(! typeof(params.gastronomy) === 'Int16' ) throw 'required gastronomy param is missing.';
+		if(! typeof(params.accomodity) === 'Int16' ) throw 'required accomodity param is missing.';
 
 		var buf = new ArrayBuffer(8+4*8);
 		var type_req = new Int16Array(buf,0,1);
@@ -174,13 +177,13 @@ var H = {
 		gpscoord[3] = params.tolng;
 
 		// Change when buttons available
-		type_junk[0] = 1 + (1 << 1) + (1 << 2);
+
+		type_junk[0] = params.patrimony + (params.gastronomy << 1) + (params.accomodity << 2);
+		console.log(type_junk);
 
 		var geo_sendQuery = function(position) {
-			//alert("prout");
 			gpscoord[0] = position.coords.latitude;
 			gpscoord[1] = position.coords.longitude;
-			//console.log(buf);
 			H.sendQuery(buf);
 		};
 
@@ -205,15 +208,21 @@ var H = {
 		if( ! itinaryObj.fromlng ) throw 'requested fromlng parameter missing.';
 		if( ! itinaryObj.tolat ) throw 'requested tolat parameter missing.';
 		if( ! itinaryObj.tolng ) throw 'requested tolng parameter missing.';
+		if(! typeof(itinaryObj.patrimony) === 'Int16' ) throw 'requested patrimony parameter missing.';
+		if(! typeof(itinaryObj.gastronomy) === 'Int16' ) throw 'requested gastronomy parameter missing.';
+		if(! typeof(itinaryObj.accomodity) === 'Int16' ) throw 'requested accomodity parameter missing.';
 		window.location.hash = '#go' + this.objToUrl(itinaryObj);
 	},
 
-	makeItinaryObj: function( fromlat, fromlng, tolat, tolng) {
+	makeItinaryObj: function( fromlat, fromlng, tolat, tolng, patrimony, gastronomy, accomodity) {
 		return {
 			fromlat: fromlat,
 			fromlng: fromlng,
 			tolat: tolat,
-			tolng: tolng
+			tolng: tolng,
+			patrimony: patrimony,
+			gastronomy: gastronomy,
+			accomodity: accomodity
 		};
 	}
 
@@ -224,46 +233,48 @@ $("#itinaryForm").submit( function() {
 	var from = document.getElementById('from').value;
 	var to = document.getElementById('to').value;
 
+	var gastro = document.getElementById('filter-food').checked ? 1 : 0;
+	var heberg = document.getElementById('filter-night').checked ? 1 : 0;
+	var patrim = document.getElementById('filter-tourism').checked ? 1 : 0;
+
 	var isOk = true;
 
 	if(!from) {
-		//$('#from').addClass("red-border");
 		var f = document.getElementById('alertFrom');
 		f.style.display = 'block';
 		$('#divFrom').addClass('has-error has-feedback');
 		document.getElementById('errorSignFrom').style.display = 'block';
+
 		isOk = false;
 	}
 	else {
-		//$('#from').removeClass("red-border");
 		document.getElementById('alertFrom').style.display = 'none';
 		$('#divFrom').removeClass('has-error has-feedback');
 		document.getElementById('errorSignFrom').style.display = 'none';
 	}
 	if(!to) {
-		//$('#to').addClass("red-border");
 		document.getElementById('alertTo').style.display = 'block';
 		$('#divTo').addClass('has-error has-feedback');
 		document.getElementById('errorSignTo').style.display = 'block';
+
 		isOk = false;
 	}
 	else {
-		//$('#to').removeClass("red-border");
 		document.getElementById('alertTo').style.display = 'none';
 		$('#divTo').removeClass('has-error has-feedback');
 		document.getElementById('errorSignTo').style.display = 'none';
 	}
 	if(isOk) {
-		convertFields(from, to);	
+		convertFields(from, to, patrim, gastro, heberg);	
 	}
 	return false;
 
-	function convertFields(from, to) {
+	function convertFields(from, to, patrimony, gastronomy, accomodity) {
 		addressToCoordinates(from, function(coordsFrom){
 			addressToCoordinates(to, function(coordsTo){
-				console.log('coordsFrom', from, coordsFrom, 'coordsTo', to, coordsTo);
 				var itinary = H.makeItinaryObj(coordsFrom.latitude,coordsFrom.longitude,
-												coordsTo.latitude,  coordsTo.longitude);
+												coordsTo.latitude,  coordsTo.longitude, 
+												patrimony, gastronomy, accomodity);
 				H.go(itinary);
 			});
 		});
