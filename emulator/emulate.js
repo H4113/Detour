@@ -148,23 +148,22 @@ function launchClient(id){
 }
 
 function launchClientWS(id){
+	starttime = process.hrtime();
+	var nbtry = 0;
 	var url = 'ws://'+IP+'/';
-	console.log('Try '+url);
 	var client = new WebSocket(url);
 	var abuffer = [];
 	
 	var starttime;
 	var endstate = 0;
 
-	
-	client.on('open', function () {
-		console.log('Connected to '+IP+":"+PORT);
+	function connect(){
+		console.log('Connected to '+IP+":"+PORT+' ('+id+')');
 		
 		var data = getData();
 		data = toBuffer(data);
 		try {
 			client.send(data);
-			starttime = process.hrtime();  
 		} catch(e) {
 			console.log("EXCEPTION: "+e);
 		}
@@ -173,21 +172,32 @@ function launchClientWS(id){
 			magicTcpReceive(abuffer, toArrayBuffer(data),processData );
 			if(abuffer.length == 0){
 				eventclient.emit('time',id,process.hrtime(starttime));
-				eventclient.emit('end',id,endstate);
+				//eventclient.emit('end',id,endstate);
+				client.close();
 			}
 		}); 
 		
 		client.on('close', function () {
-			eventclient.emit('end',id,endstate);
+			if(endstate == 0)
+				eventclient.emit('end',id,endstate);
 			console.log('Connection closed');
 		}); 
 		
-		client.on('error', function(e) {
-			if(endstate == 0)
-				endstate = 1;
-			console.log('ERROR '+e);
-		});
-		
+	};
+	
+	
+	client.on('open', connect);
+	
+	client.on('error', function(e) {
+		++nbtry;
+		endstate = 1;
+		console.log('ERROR ('+id+') '+e);
+		if(nbtry<100){
+			console.log('retry '+id);
+			client = new WebSocket(url);
+			client.on('open', connect);
+		}else
+			eventclient.emit('end',id,1);
 	});
 
 }
@@ -240,13 +250,12 @@ function main(){
 				bench[nbclient] = [];
 			bench[nbclient].push(databenchmark);
 			objtofile(bench,"data/benchmark.json");
-			//process.exit(0);
 		}
 	});
 	
 	eventclient.on('time', function(id,time){
 		databenchmark[id].time = time[0]+time[1]/1000000000;
-		console.log('time '+id+' : '+time);
+		console.log('time '+id+' : '+time+' ');
 	});
 	
 	
@@ -256,6 +265,18 @@ function main(){
 		databenchmark[i] = {state:-1,time:0};
 		launchClientWS(i);
 	}
+	
+	eventclient.on('error', function(e) {
+			console.log('ERROR cli '+e);
+		});
+	
+	process.on('uncaughtException', function (err) {
+		console.log('Caught exception: ' + err);
+		if(err.code == 'ETIMEDOUT'){
+			console.log('retry'+i);
+			//launchClientWS(i);
+		}
+	});
 
 }
 
